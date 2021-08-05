@@ -15,10 +15,10 @@
 <br />
 <p align="center">
   <a href="https://github.com/wasi_master/wm_bot">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
+    <!-- <img src="images/logo.png" alt="Logo" width="80" height="80"> -->
   </a>
 
-  <h3 align="center">WM Bot</h3>
+  <h1 align="center">WM Bot</h1>
 
   <p align="center">
     A advanced bot with more than 220 commands to fit your needs
@@ -64,7 +64,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![WM Bot Screen Shot][product-screenshot]](https://example.com)
+<!-- [![WM Bot Screen Shot][product-screenshot]](https://example.com) -->
 
 I started learning python around March 2020. This project was started as a way to become better at python in July 7th 2020. And the code you'll see in this repository was written between then and now. some code may have really bad practices because of it. if you find any issues with the code, please report them to me in my discord: `Wasi Master#6969` or open a pull request. if you find any bugs or have any ideas then open a issue in the repository
 
