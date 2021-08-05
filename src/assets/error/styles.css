@@ -1,0 +1,33 @@
+@import url(https://cdn.jsdelivr.net/gh/tonsky/FiraCode@5.2/distr/fira_code.css);
+a {
+    cursor: pointer;
+}
+body{
+    background-color:#181A1B;
+}
+.line .highlight > pre {
+    padding: 3px;
+    margin: 0 0 0px;
+    font-size: 16px;
+    border:none;
+}
+.current > .code > .highlight > pre {
+    padding: 3px;
+    margin: 0 0 0px;
+    font-size: 16px;
+    border:none;
+    background: #474637;
+}
+.codebox {
+    font-family: 'Fira Code', monospace;
+    font-variant-ligatures: contextual;
+}
+@supports (font-variation-settings: normal) {
+    .codebox { font-family: 'Fira Code VF', monospace; font-variant-ligatures: contextual;}
+    }
+.object-link {
+    font-family: 'Fira Code', monospace;
+}
+.line > .current {
+    color: rgb(121, 121, 121);
+}

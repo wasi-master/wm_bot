@@ -1,0 +1,15 @@
+{
+    "owner_ids": [
+        723234115746398219
+    ],
+    "owner_prefix": "wm,",
+    "dm_prefix": [
+        "",
+        ",",
+        "wm,"
+    ],
+    "default_prefix": ",",
+    "bot_id": 847706412306268181,
+    "support_server":{"invite":"Support server is currently private"},
+    "dm_suggestions":false
+}

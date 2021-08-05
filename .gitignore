@@ -1,0 +1,27 @@
+# A file where I keep the commands that I abandoned
+extensions/abandoned.py
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+
+# Environment files
+.env
+
+# Scripts
+scripts
+
+# Project specific files
+.vscode/
+.history/
+
+# cache files
+.mypy_cache/
+
+# Error logs
+error_[0-9]*.txt
+error_[0-9]*.html
+# But not error template
+!error_template.html
+
+# My actual config
+config

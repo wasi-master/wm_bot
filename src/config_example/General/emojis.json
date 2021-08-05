@@ -1,0 +1,50 @@
+{
+    "status": {
+        "online": "",
+        "dnd": "",
+        "streaming": "",
+        "idle": "",
+        "offline": ""
+    },
+    "validation": {
+        "green_tick": "",
+        "red_tick": ""
+    },
+    "badges": {
+        "hypesquad": {
+            "bravery": "",
+            "brilliance": "",
+            "balance": ""
+        },
+        "early_supporter": "",
+        "bug_hunter_1": "",
+        "bug_hunter_2": "",
+        "verified_bot_dev": "",
+        "verified_bot": "",
+        "discord_partner": "",
+        "hypesquad_events": ""
+    },
+    "paginator": {
+        "first": "",
+        "previous": "",
+        "pause": "",
+        "next": "",
+        "last": "",
+        "numbered": "",
+        "stop": ""
+    },
+    "load": {
+        "typing": ""
+    },
+    "server": {
+        "boost_level": "",
+        "boosts": "",
+        "boosters": "",
+        "text_channel": "",
+        "voice_channel": "",
+        "category_channel": ""
+    },
+    "other": {
+        "python": ""
+    }
+}

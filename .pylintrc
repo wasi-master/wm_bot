@@ -1,0 +1,8 @@
+[MASTER]
+
+max-line-length=120
+good-names=i,j,k,f,fj,ex,Run,_,x,y,k,v
+disable=bad-continuation
+load-plugins=pylint.extensions.docparams,pylint.extensions.docstyle,pylint.extensions.mccabe,pylint.extensions.emptystring, dpylint
+check-quote-consistency=y
+output-format=colorized
