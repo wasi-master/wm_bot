@@ -16,7 +16,7 @@ __**You do not type in the brackets!**__<br>
 
 ----------------------------------
 
-> ```akinator```<br>
+> akinator<br>
 
 A command to play a game of akinator
 
@@ -31,7 +31,7 @@ A command to play a game of akinator
 
 ----------------------------------
 
-> ```cat```<br>
+> cat<br>
 
 Sends a random random cute cat picture
 
@@ -40,7 +40,7 @@ Sends a random random cute cat picture
 ![Command Example](https://i.imgur.com/J8vTsyK.gif)
 
 
-> ```dog```<br>
+> dog<br>
 
 Sends a random random cute dog picture
 
@@ -49,7 +49,7 @@ Sends a random random cute dog picture
 ![Command Example](https://i.imgur.com/nJIyoLq.gif)
 
 
-> ```panda```<br>
+> panda<br>
 
 Sends a random random cute panda picture
 
@@ -58,7 +58,7 @@ Sends a random random cute panda picture
 ![Command Example](https://i.imgur.com/GjsQ5AB.gif)
 
 
-> ```redpanda```<br>
+> redpanda<br>
 
 Sends a random random cute red panda picture
 
@@ -67,7 +67,7 @@ Sends a random random cute red panda picture
 ![Command Example](https://i.imgur.com/jgjohiu.gif)
 
 
-> ```koala```<br>
+> koala<br>
 
 Sends a random cute koala picture
 
@@ -76,7 +76,7 @@ Sends a random cute koala picture
 ![Command Example](https://i.imgur.com/y8VhA8d.gif)
 
 
-> ```bird```<br>
+> bird<br>
 
 Sends a random cute bird picture
 
@@ -85,7 +85,7 @@ Sends a random cute bird picture
 ![Command Example](https://i.imgur.com/wittKiF.gif)
 
 
-> ```racoon```<br>
+> racoon<br>
 
 Sends a random racoon picture
 
@@ -94,7 +94,7 @@ Sends a random racoon picture
 ![Command Example](https://i.imgur.com/u7xuVvG.gif)
 
 
-> ```kangaroo```<br>
+> kangaroo<br>
 
 Sends a random kangaroo picture
 
@@ -103,7 +103,7 @@ Sends a random kangaroo picture
 ![Command Example](https://i.imgur.com/rPvwWVW.gif)
 
 
-> ```fox```<br>
+> fox<br>
 
 Sends a random high quality fox picture
 
@@ -116,7 +116,7 @@ Sends a random high quality fox picture
 
 ----------------------------------
 
-> ```waifu```<br>
+> waifu<br>
 
 Sends a waifu
 
@@ -138,7 +138,7 @@ Evaluate math expressions.
 
 ----------------------------------
 
-> ```claptrap```<br>
+> claptrap<br>
 
 Can I shoot something now? Or climb some stairs? SOMETHING exciting? (has 500+ texts. can you get them all?)
 
@@ -175,7 +175,7 @@ Sends the unified todifference between first and second<br>Note: if the text is 
 Sends the only difference between first and second<br>Note: there is another diff command that can be used instead for<br>large texts and difference between multiple lines
 
 **__Aliases:__** `ndifference`, `ndif`
-> ```stackoverflow```<br>
+> stackoverflow<br>
 
 **__Aliases:__** `so`
 > ```pypi <package_name>```<br>
@@ -227,7 +227,7 @@ Sends information about a color<br>The following formats are accepted:<br><br>- 
 ![Command Example](https://i.imgur.com/zMQ7mz3.png)
 
 
-> ```randomcolour```<br>
+> randomcolour<br>
 
 Generates a random color.<br>Note: This is not fully random, but it is random enough for most purposes.
 
@@ -240,7 +240,7 @@ Generates a random color.<br>Note: This is not fully random, but it is random en
 
 ----------------------------------
 
-> ```base64```<br>
+> base64<br>
 
 Command for encoding and decoding text from and to [base64](https://en.wikipedia.org/wiki/Base64)
 
@@ -278,7 +278,7 @@ Sends the details about a [pokemon](https://en.wikipedia.org/wiki/Pok%C3%A9mon)
 Coronavirus Stats
 
 Sends statistics about the corona virus situation of a country<br>The area defaults to `global` if not specified
-> ```fact```<br>
+> fact<br>
 
 Sends a random fact
 
@@ -324,7 +324,7 @@ Translates a text to another language if specified, defaults to English
 Sends all details about a randomly generated person that does not exist.
 
 **__Aliases:__** `randomuser`, `randomdude`, `randomperson`, `ruser`, `rdude`, `rperson`, `randomidentity`
-> ```cookie```<br>
+> cookie<br>
 
 Who can catch the cookie first?
 
@@ -342,21 +342,21 @@ Sends the last deleted message in the channel, can be unavailable
 > ```imagine <thing>```<br>
 
 Tells you if the bot can imagine the thing
-> ```cakeday```<br>
+> cakeday<br>
 
 Shows the people who has their discord birthday today, inspired by reddit
 
 **__Server Only:__** This command can only be used in a server
-> ```advice```<br>
+> advice<br>
 
 Gives a random advice
-> ```topic```<br>
+> topic<br>
 
 Gives a random topic to discuss
 > ```brawlstarsmap <provided_map>```<br>
 
 **__Aliases:__** `bsm`, `bsmap`, `map`
-> ```groot```<br>
+> groot<br>
 
 Who... who are you?
 > ```howgay [member]```<br>
@@ -366,19 +366,19 @@ Shows how gay a person is (random)
 **__Aliases:__** `hg`, `howlesbian`, `hl`
 
 **__Server Only:__** This command can only be used in a server
-> ```meme```<br>
+> meme<br>
 
 Sends a random meme
 
 **__Aliases:__** `mem`
-> ```rockpaperscissors```<br>
+> rockpaperscissors<br>
 
 Play the classic rock paper scissors game
 
 **__Aliases:__** `rps`
 
 **__Server Only:__** This command can only be used in a server
-> ```chatbot```<br>
+> chatbot<br>
 
 Talk to AI Chatbot
 
@@ -390,7 +390,7 @@ See someone's penis size (random)
 **__Aliases:__** `pp`, `ppsize`
 
 **__Server Only:__** This command can only be used in a server
-> ```emojiparty```<br>
+> emojiparty<br>
 
 The bot will send the name of every emoji reacted to the bot's message
 ## Image
@@ -486,7 +486,7 @@ Shows info about a emoji
 
 ----------------------------------
 
-> ```madlibs```<br>
+> madlibs<br>
 
 Let's play MadLibs!
 ## Messages
@@ -543,23 +543,23 @@ See a list of top active users in a channel
 Search for a command in the bot
 
 **__Aliases:__** `cs`
-> ```hello```<br>
+> hello<br>
 
 Use this to know if the bot is online or not
-> ```lines```<br>
+> lines<br>
 
 Shows the amount of lines and some other information about the bot's code
 
 **__Aliases:__** `linecount`, `lc`
-> ```ping```<br>
+> ping<br>
 
 Shows the bot's speed
 
 **__Aliases:__** `p`
-> ```support```<br>
+> support<br>
 
 Get a invite link to the bot's support server
-> ```botinfo```<br>
+> botinfo<br>
 
 Lists some general stats about the bot.
 
@@ -570,17 +570,17 @@ Lists some general stats about the bot.
 > ```source [command]```<br>
 
 Displays the bot's full source code or source code for a specific command.<br><br>To display the source code of a subcommand you can separate it by<br>periods, e.g. `tag.create` for the create subcommand of the tag command<br>or by spaces e.g. `tag create`.
-> ```users```<br>
+> users<br>
 
 Shows the top 10 bot users
 
 **__Aliases:__** `usr`, `user`
-> ```usage```<br>
+> usage<br>
 
 Shows usage statistics about commands
 
 **__Aliases:__** `usg`, `usages`
-> ```uptime```<br>
+> uptime<br>
 
 Shows how long the bot is online for
 
@@ -597,7 +597,7 @@ Cleans up the bot's messages from the channel.<br><br>If a search number is spec
 Send a invite link for the bot. if another bot is specified, sends the invite link for that bot instead
 
 **__Aliases:__** `botinvite`, `inv`
-> ```stats```<br>
+> stats<br>
 
 Sends some statistics about the bot
 
@@ -643,7 +643,7 @@ Changes the nickname of a person
 Bans a member from the server.
 
 **__Required Permissions:__** This command requires the following permission(s) to use: `Ban Members`
-> ```recentbans```<br>
+> recentbans<br>
 
 Shows the recent bans, who banned them and why
 
@@ -731,15 +731,15 @@ Unblocks a previously blocked user from the channel
 
 ----------------------------------
 
-> ```bot_message```<br>
+> bot_message<br>
 
 To do stuff with the bot's messages
 
 **__Aliases:__** `msg`
-> ```leaveserver```<br>
+> leaveserver<br>
 
 This makes the bot leave the server
-> ```shutdown```<br>
+> shutdown<br>
 
 Shuts the bot down
 
@@ -781,7 +781,7 @@ The user asks a yes-no question to the ball, then the bot reveals an answer.
 Chooses a random item from a list of items.
 
 **__Aliases:__** `pick`, `choice`, `ch`
-> ```randomcommand```<br>
+> randomcommand<br>
 
 Sends a random command for you to try
 
@@ -809,7 +809,7 @@ Searches wikipedia for specific search term
 Searches google for specific search term
 
 **__Aliases:__** `search`, `g`
-> ```fake_person```<br>
+> fake_person<br>
 
 Sends the image of a fake person generated by AI
 
@@ -848,33 +848,33 @@ Changes the prefix for a server
 **__Aliases:__** `setprefix`, `setwmbotprefix`
 
 **__Required Permissions:__** This command requires the following permission(s) to use: `Manage Guild`
-> ```serverinfo```<br>
+> serverinfo<br>
 
 See the information of the current server
 
 **__Aliases:__** `guildinfo`, `si`, `gi`
-> ```boosters```<br>
+> boosters<br>
 
 Sends all the boosters of this server
-> ```memberlist```<br>
+> memberlist<br>
 
 See all the members of this server sorted by their top role
 
 **__Aliases:__** `memlist`, `allmembers`, `am`, `servermembers`, `sm`, `memberslist`
-> ```firstjoins```<br>
+> firstjoins<br>
 
 See all the members of this server sorted by their join time
 
 **__Aliases:__** `fj`, `whojoinedfirst`, `wjf`, `firstmembers`, `fmem`, `oldmembers`
-> ```newjoins```<br>
+> newjoins<br>
 
 See the newest members of this server
 
 **__Aliases:__** `nj`, `whojoinedlast`, `wjl`, `lastmembers`, `lm`, `newmembers`
-> ```bots```<br>
+> bots<br>
 
 See all the bots in this server sorted by their join date
-> ```humans```<br>
+> humans<br>
 
 Sends all the humans of this server sorted by their join date
 > ```emoji <task> <emoji_name>```<br>
@@ -891,7 +891,7 @@ Shows the amount of badges in the server. Kind of a useless command.
 
 ----------------------------------
 
-> ```tag```<br>
+> tag<br>
 
 Shows the content of a tag
 
@@ -905,7 +905,7 @@ Show all tags of a user
 
 ----------------------------------
 
-> ```typeracer```<br>
+> typeracer<br>
 
 See your typing speed
 
@@ -995,7 +995,7 @@ See someones time or your time<br><br>The person needs to have their time zone s
 
 ----------------------------------
 
-> ```notawayfromkeyboard```<br>
+> notawayfromkeyboard<br>
 
 Removes your afk status
 
@@ -1061,7 +1061,7 @@ Sends the names of all the people in the role specified
 > ```tos <term>```<br>
 
 Searches discord terms of service
-> ```dice```<br>
+> dice<br>
 
 Rolls a dice and gives you a number ranging from 1 to 6
 > ```pokemonhack [channel]```<br>
@@ -1069,7 +1069,7 @@ Rolls a dice and gives you a number ranging from 1 to 6
 Tells you which pokemon it is that has been last spawned by a bot
 
 **__Aliases:__** `ph`, `catch`
-> ```saveallemojis```<br>
+> saveallemojis<br>
 
 Saves all the emojis in the current server to a zip file and sends the zip file
 
