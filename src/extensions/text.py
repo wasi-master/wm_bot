@@ -99,9 +99,9 @@ class Text(commands.Cog):
     async def get_words(self):
         """Gets the words and saves them to self.words"""
         async with self.bot.session.get(
-            "https://raw.githubusercontent.com/derekchuank/high-frequency-vocabulary/master/10k.txt"
+            "https://gist.githubusercontent.com/h3xx/1976236/raw/bbabb412261386673eff521dddbe1dc815373b1d/wiki-100k.txt"
         ) as resp:
-            self.words = (await resp.text()).splitlines()
+            self.words = (await resp.text()).splitlines()[25:]
         rprint(f"[green]Loaded[/] [yellow]{len(self.words):,}[/] [green]words[/]")
 
 

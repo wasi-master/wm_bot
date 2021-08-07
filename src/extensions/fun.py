@@ -31,7 +31,7 @@ class Fun(commands.Cog):
     )
     async def random_identity(self, ctx, results: int = 1):
         """Sends all details about a randomly generated person that does not exist."""
-        async with self.bot.session.get(f"https://randomuser.me/api?results={results}") as r:
+        async with self.bot.session.get(f"https://randomuser.me/api", params={"results":results}) as r:
             # We wrap the results inside a Map class to make it easier to access nested data
             resp = Map(await r.json())
         # We use a list to store the embeds and pass them to the paginator

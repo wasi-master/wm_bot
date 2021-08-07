@@ -29,10 +29,8 @@ class Data(commands.Cog):
     @commands.bot_has_permissions(use_external_emojis=True)
     async def lyrics(self, ctx, *, song_name: str):
         """Sends the lyrics of a song"""
-        # We encode the song name for the web request
-        song_name = quote(song_name)
         # We get the actual json response
-        async with self.bot.session.get(f"https://some-random-api.ml/lyrics?title={song_name}") as cs:
+        async with self.bot.session.get(f"https://some-random-api.ml/lyrics", params={"title": song_name}) as cs:
             fj = await cs.json()
         # We make a paginator in case the song is more than 2048 characters
         paginator = commands.Paginator(prefix="", suffix="", max_size=2048)
@@ -63,7 +61,7 @@ class Data(commands.Cog):
         # We encode the song name for the web request
         pokemon = quote(pokemon)
         # We get the actual json response
-        async with self.bot.session.get(f"https://some-random-api.ml/pokedex?pokemon={pokemon}") as cs:
+        async with self.bot.session.get(f"https://some-random-api.ml/pokedex",params={"pokemon": pokemon}) as cs:
             fj = await cs.json()
         # We get the stats key and save it to a variable named stats
         stats = fj["stats"]
@@ -222,8 +220,8 @@ class Data(commands.Cog):
         except KeyError:
             raise NoAPIKey
 
-        url = f"https://gender-api.com/get?name={quote(name)}&key={api_key}"
-        async with self.bot.session.get(url) as r:
+        url = f"https://gender-api.com/get"
+        async with self.bot.session.get(url, params={"name":"name", "key":api_key}) as r:
             fj = json.loads(await r.text())
 
         # Getting the gender and assigning color corresponding to the gender
@@ -254,8 +252,8 @@ class Data(commands.Cog):
         except KeyError:
             raise NoAPIKey
 
-        url = f"http://api.openweathermap.org/data/2.5/weather?q={quote(location)}&APPID={api_key}"
-        async with self.bot.session.get(url) as r:
+        url = f"http://api.openweathermap.org/data/2.5/weather"
+        async with self.bot.session.get(url, params={'q': location, 'APPID':api_key}) as r:
             fj = json.loads(await r.text())
 
         if fj["cod"] == "404":

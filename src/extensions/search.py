@@ -190,7 +190,8 @@ class Search(commands.Cog):
         search_term = query
 
         async with self.bot.session.get(
-            f"https://api.tenor.com/v1/search?q={search_term}&key={apikey}&contentfilter=high"
+            f"https://api.tenor.com/v1/search",
+            params={'q': search_term, 'key': apikey, 'contentfilter':'high'}
         ) as response:
             gifs = json.loads(await response.text())
             gif = gifs["results"][0]["media"][0]["gif"]["url"]

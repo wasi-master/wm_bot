@@ -132,9 +132,17 @@ class Coding(commands.Cog):
     @commands.bot_has_permissions(use_external_emojis=True)
     async def stackoverflow_tag(self, ctx, tag_name):
         """Shows up to 30 recent questions for a tag on stackoverflow"""
-        url = f"https://api.stackexchange.com/2.3/questions?order=desc&sort=activity&tagged={quote(tag_name)}&site=stackoverflow&filter=!6VvPDzPz(cfXL"
+        url = f"https://api.stackexchange.com/2.3/questions"
 
-        async with self.bot.session.get(url) as response:
+        params = {
+            "order" : "desc",
+            "sort": "activity",
+            "tagged": tag_name,
+            "site": "stackoverflow",
+            "filter":"!6VvPDzPz(cfXL"
+        }
+
+        async with self.bot.session.get(url, params=params) as response:
             data = Map(await response.json())
         if len(data.items) == 0:
             return await ctx.send("No results found")
