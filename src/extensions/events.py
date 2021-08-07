@@ -4,11 +4,20 @@ import discord
 import humanize
 from discord.ext import commands
 from utils.functions import format_name
-
+import logging
 
 class Events(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.logger = logging.getLogger(__name__)
+
+    @commands.Cog.listener()
+    async def on_command(self, ctx):
+        self.logger.info("%s used by %s" % (ctx.command, ctx.author))
+
+    @commands.Cog.listener()
+    async def on_command_completion(self, ctx):
+        self.logger.info("%s finished by %s" % (ctx.command, ctx.author))
 
     @commands.Cog.listener()
     async def on_guild_join(self, guild):
