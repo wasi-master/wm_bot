@@ -1,11 +1,13 @@
 """Main file."""
 import datetime
+import logging
 import os
 
 from discord.ext import commands
 from playsound import PlaysoundException, playsound
 from rich.console import Console
 from rich.progress import track
+from rich.logging import RichHandler
 
 from utils.bot import WMBot, create_db_pool
 
@@ -21,7 +23,9 @@ initial_extensions = [
 
 bot = WMBot()
 console = Console()
-
+logging.basicConfig(
+    level="INFO", format="%(message)s", datefmt="[%X]", handlers=[RichHandler()]
+)
 
 async def on_ready():
     """Fires when the bot goes online"""
