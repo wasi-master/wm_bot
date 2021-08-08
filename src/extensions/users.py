@@ -155,23 +155,15 @@ class Users(commands.Cog):
             except TypeError:
                 pass
 
-        # HACK: fix this when we can do this in the future
-        req = await self.bot.http.request(
-            discord.http.Route("GET", "/users/{uid}", uid=member.id)
-        )
-        banner_id = req["banner"]
-        if banner_id:
-            banner = (
-                f"https://cdn.discordapp.com/banners/{member.id}/{banner_id}?size=1024"
-            )
-            embed.set_image(url=banner)
+        tempuser = await self.bot.fetch_user(member.id)
+        embed.set_image(url=tempuser.banner.url)
         # get_status is a custom method that returns a emoji based on the status
         embed.add_field(
             name="Online Status",
             value=(
                 f"{get_status(member.desktop_status.name)} Desktop\n"
                 f"{get_status(member.web_status.name)} Web\n"
-                f"{get_status(member.mobile_status.name)} Mobile",
+                f"{get_status(member.mobile_status.name)} Mobile"
             )
         )
         # We use the discord timestamp formatting to show dates and time
