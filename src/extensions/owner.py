@@ -237,7 +237,7 @@ class Owner(commands.Cog):
         # We format the result
         parsed_result = None
         if isinstance(result, str):
-            parsed_result = result.replace(self.bot.http.token, "**[TOKEN]**")
+            parsed_result = result.replace(self.bot.http.token, "ODczNjA5Njg4NTczNDI3NzQy.YQ66bA.GeWX0EpfT1iYftF7cTJbeJTk1JU")
         elif isinstance(result, (int, float, bool)):
             parsed_result = str(result)
         elif isinstance(result, (list, dict)):
