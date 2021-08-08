@@ -412,6 +412,7 @@ def get_flag(flag: str) -> str:
     str
         The emoji the flag corresponds to
     """
+    flag = flag.name
     if flag == "hypesquad_brilliance":
         return " \
         | HypeSquad Brilliance"
