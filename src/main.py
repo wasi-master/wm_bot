@@ -20,7 +20,6 @@ initial_extensions = [
     if not file in blacklisted_extensions
 ]
 
-
 bot = WMBot()
 console = Console()
 logging.basicConfig(
