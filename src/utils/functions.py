@@ -708,9 +708,9 @@ def make_permissions(
     perm = (
         discord.Permissions(perm_value)
         if isinstance(perm_value, int)
-        else getattr(discord.Permissions, perm_value)
+        else getattr(discord.Permissions, perm_value)()
     )
-    return discord.utils.oauth_url(oauth_url, perm) if oauth_url else perm
+    return discord.utils.oauth_url(oauth_url, permissions=perm) if oauth_url else perm
 
 
 def print_error(error: str) -> None:
