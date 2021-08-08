@@ -86,6 +86,7 @@ class Events(commands.Cog):
         # If the message had invoked a command and was deleted, we delete the response to that message
         # If the response was not found or deleted then we just ignore it
         if message in self.bot.command_uses:
+            self.logger.info("A message with a command %s was deleted by %s" % (message.content, message.author))
             try:
                 await self.bot.command_uses[message].delete()
             except discord.NotFound:
@@ -104,11 +105,15 @@ class Events(commands.Cog):
         if not hasattr(self.bot, "command_uses"):
             return self.bot.remove_listener(self.on_message_edit)
 
+        if after.content and before.content != after.content:
+            return
+
         # If the message had invoked a command and was edited, we delete the response
         # to that message and send a new response
         if before in self.bot.command_uses:
+            self.logger.info("A message with a command %s was edited by %s" % (before.content, before.author))
             await self.bot.command_uses[before].delete()
-        await self.bot.process_commands(after)
+            await self.bot.process_commands(after)
 
     @commands.Cog.listener()
     async def on_message(self, message):
