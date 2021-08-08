@@ -176,10 +176,8 @@ class Data(commands.Cog):
     @commands.command(name="screenshot", aliases=["ss"])
     async def ss(self, ctx, website: str):
         """Sends the screenshot of a website"""
-        print("ran")
-        # If the user tries to screenshot pornhub then we send a message :)
-        if "pornhub" in website:
-            return await ctx.send("why do u wanna see pornhub so much, just go to the website in your browser man")
+        # We strip embed markers
+        website = website.strip("<>")
         # We use thum.io for the screenshot
         image_url = f"https://image.thum.io/get/width/1920/crop/675/maxAge/1/noanimate/{website}"
         async with self.bot.session.get(image_url) as r:
@@ -195,6 +193,8 @@ class Data(commands.Cog):
         ) as resp:
             # We get the actual nsfw details
             response_json = json.loads(await resp.text())
+            if not response_json.get("adultContent"):
+                return await ctx.send("no")
             nsfw_score = response_json["adultContent"]["isAdultContentConfidence"]
             is_nsfw = response_json["adultContent"]["isAdultContent"]
         if is_nsfw:
@@ -202,7 +202,6 @@ class Data(commands.Cog):
             # I may change this later to show the nsfw score
             return await ctx.send("no")
         # If everything went fine then we send the screenshot
-        print("got to send")
         return await ctx.reply(
             embed=discord.Embed(title=website, url=website).set_image(
                 url=f"https://image.thum.io/get/width/1920/crop/675/maxAge/1/noanimate/{website}"
