@@ -446,7 +446,6 @@ class Coding(commands.Cog):
     @commands.command(aliases=["gh"])
     async def github(self, ctx, repo):
         """Shows information about a GitHub repository"""
-        # TODO: add more information about the repository
         url = f"https://api.github.com/repos/{repo}"
         async with self.bot.session.get(url) as response:
             if response.status != 200:
@@ -455,6 +454,16 @@ class Coding(commands.Cog):
             data = Map(await response.json())
         embed = discord.Embed(title=data.full_name, description=data.description, url = data.html_url)
         embed.set_author(name=data.owner.login, icon_url=data.owner.avatar_url)
+        if data.license and data.license.name:
+            embed.add_field(name="License", value=data.license.name)
+        desc = "\n\n"
+        desc += f"🌍 **Language:** {data.language}\n" if data.language else ""
+        desc += f"⭐ **Stargazers:** {data.stargazers_count}\n"
+        desc += f"👀 **Watchers:** {data.watchers}\n"
+        desc += f"🍴 **Forks:** {data.forks_count}\n"
+        desc += f"❔ **Open Issues:** {data.open_issues}\n"
+        desc += f"🏠 **Home Page:** {data.homepage}\n" if data.homepage else ""
+        embed.description += desc
         await ctx.send(embed=embed)
 
 
