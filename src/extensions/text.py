@@ -380,6 +380,11 @@ class Text(commands.Cog):
         await ctx.send(result)
 
 
+    @commands.command(aliases=["cc", "charcount"])
+    async def charactercount(self, ctx, *, text):
+        await ctx.send(len(text))
+
+
     @commands.command(name="uwuify", aliases=["uwu"], description="uwuifies a given text")
     async def uwuify_(self, ctx, *, text: commands.clean_content):
         await ctx.send(uwuify.uwu(text))
