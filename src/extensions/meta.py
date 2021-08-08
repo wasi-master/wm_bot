@@ -60,7 +60,7 @@ class MasterHelp(commands.HelpCommand):
         for page in split_by_slice(list(alteredmapping.items()), 6):
             emb = discord.Embed(
                 title="Help",
-                description=f"Total {len(self.context.bot.commands)} Commands",
+                description=f"Total {len(self.context.bot.commands)} Commands,\n https://wasi-master.github.io/wm_bot/commands",
                 color=get_random_color(),
             )
             cogs = []
