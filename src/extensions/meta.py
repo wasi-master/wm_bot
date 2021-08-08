@@ -335,7 +335,7 @@ class Meta(commands.Cog):
         branch = "main"
 
         if command is None:
-            return await ctx.send(source_url)
+            return await ctx.send(source_url + "\nBe sure to ⭐ star it if you like it")
 
         if command == "help":
             src = type(self.bot.help_command)
@@ -355,13 +355,13 @@ class Meta(commands.Cog):
         lines, firstlineno = inspect.getsourcelines(src)
         if not module.startswith("discord"):
             # not a built-in command
-            location = os.path.relpath(filename).replace("\\", "/")
+            location = "src/" + os.path.relpath(filename).replace("\\", "/")
         else:
             location = module.replace(".", "/") + ".py"
             source_url = "https://github.com/Rapptz/discord.py"
             branch = "master"
 
-        final_url = f"<{source_url}/blob/{branch}/{location}#L{firstlineno}-L{firstlineno + len(lines) - 1}>"
+        final_url = f"<{source_url}/blob/{branch}/{location}#L{firstlineno}-L{firstlineno + len(lines) - 1}>\nBe sure to ⭐ star it if you like it"
         await ctx.send(final_url)
 
     @commands.command(aliases=["usr", "user"])
