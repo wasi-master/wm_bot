@@ -443,6 +443,21 @@ class Coding(commands.Cog):
         )
         await ctx.send(embed=embed)
 
+    @commands.command(aliases=["gh"])
+    async def github(self, ctx, repo):
+        """Shows information about a GitHub repository"""
+        # TODO: add more information about the repository
+        url = f"https://api.github.com/repos/{repo}"
+        async with self.bot.session.get(url) as response:
+            if response.status != 200:
+                return await ctx.send("Could not find repo.")
+            # We wrap it inside a Map so we can use dot notation
+            data = Map(await response.json())
+        embed = discord.Embed(title=data.full_name, description=data.description, url = data.html_url)
+        embed.set_author(name=data.owner.login, icon_url=data.owner.avatar_url)
+        await ctx.send(embed=embed)
+
+
     @commands.command(name="npm")
     async def node_package(self, ctx, package_name: str):
         """Searches npm for node packages"""
