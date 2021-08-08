@@ -4,7 +4,9 @@ import datetime
 import json
 import os
 import random
+import re
 import shutil
+from typing import Union
 from zipfile import ZipFile
 
 import discord
@@ -79,8 +81,22 @@ class Utility(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command(aliases=["pt"])
-    async def parsetoken(self, ctx, token):
-        """Parses a token and sends who the token is for"""
+    async def parsetoken(self, ctx, token: Union[discord.Message, str]=None):
+        """Parses a token and sends who the token is for
+
+        The token can be provided in the message or the message can be a reply to another message containing the token
+        """
+        if not token:
+            if ctx.message.reference:
+                token = ctx.message.reference.resolved
+            else:
+                return await ctx.send("You need to specify a token to parse or a message to get the token from")
+
+        if isinstance(token, discord.Message):
+            token = re.search(r"([a-zA-Z0-9]{24}\.[a-zA-Z0-9]{6}\.[a-zA-Z0-9_\-]{27}|mfa\.[a-zA-Z0-9_\-]{84})", token.content)
+            if not token:
+                return await ctx.send(f"Couldn't find a token in the message")
+            token = token.group()
         user, _, _ = token.split(".")
 
         user_id = base64.b64decode(user).decode("utf-8")
