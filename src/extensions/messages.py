@@ -81,11 +81,18 @@ class Messages(commands.Cog):
     @commands.cooldown(1, 5, BucketType.user)
     async def rawjson(self, ctx, message: discord.Message):
         """Shows raw json of a message gotten from the discord API"""
+
+        if not message:
+            if ctx.message.reference:
+                message = ctx.message.reference.resolved
+            else:
+                return await ctx.send("You need to specify a token to parse or a message to get the token from")
+
         res = await self.bot.http.get_message(message.channel.id, message.id)
         data = json.dumps(res, indent=4)
         
         if len(data) < 2000:
-            await ctx.send(f"{message.jump_url}\n```json\n{data}```")
+            await ctx.send(discord.Embed(title="Jump URL", url=message.jump_url, description=f"```json\n{data}```"))
         else:
             await ctx.send(
                 "Raw Content too large",
