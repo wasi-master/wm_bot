@@ -117,13 +117,19 @@ class Events(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
-        """This is just for afk detection"""
+        """This is just for afk and mention detection"""
 
         # We remove this listener if there isn't a db attribute to our bot,
         # This can happen when people copy paste the code here but do not make the attribute
         # We do not make the attribute ourselves because the person copying should use their own db
         if not hasattr(self.bot, "db"):
             return self.bot.remove_listener(self.on_message)
+
+
+        # If the bot is mentioned then we send hi
+        if message.guild.me.mention == message.content:
+            prefix = "wm,"
+            await message.reply(f"Hi, my prefix is {prefix}", mention_author=False)
 
         # We ignore, if the message author is a bot, if the message is in a dm
         if message.author.bot or message.guild is None:
