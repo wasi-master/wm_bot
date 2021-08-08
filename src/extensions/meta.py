@@ -332,7 +332,7 @@ class Meta(commands.Cog):
         or by spaces e.g. `tag create`.
         """
         source_url = "https://github.com/wasi-master/wm_bot"
-        branch = "master"
+        branch = "main"
 
         if command is None:
             return await ctx.send(source_url)
