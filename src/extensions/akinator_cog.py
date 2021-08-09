@@ -124,7 +124,7 @@ class AkinatorView(discord.ui.View):
         return discord.utils.get(self.children, label=button)
 
     async def get_embed(self) -> discord.Embed:
-        """Maked a embed with all th current stats_url
+        """Maked a embed with all the current stats
 
         Returns
         -------
