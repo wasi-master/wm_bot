@@ -1,5 +1,5 @@
 @ECHO OFF
-Title Hype Bot
+Title WM Bot
 @ECHO ON
 cd src
 python main.py
