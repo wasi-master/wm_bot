@@ -16,6 +16,8 @@ First lets know some information about the commands.
 
 ## Akinator
 
+The beloved Akinator game
+
 ----------------------------------
 
 ### akinator
@@ -30,6 +32,8 @@ A command to play a game of akinator
 
 
 ## Animals
+
+Sends a random cute picture of animals
 
 ----------------------------------
 
@@ -116,6 +120,8 @@ Sends a random high quality fox picture
 
 ## Anime
 
+Anime commands
+
 ----------------------------------
 
 ### waifu
@@ -124,6 +130,8 @@ Sends a waifu
 
 Sends [Waifu](https://www.dictionary.com/e/fictional-characters/waifu) pictures<br>Note: This command is nsfw only
 ## Calculator
+
+Calculator calculates stuff (math)
 
 ----------------------------------
 
@@ -138,6 +146,8 @@ Evaluate math expressions.
 
 ## Claptrap
 
+Absurd nonsensical talk
+
 ----------------------------------
 
 ### claptrap
@@ -150,6 +160,8 @@ Can I shoot something now? Or climb some stairs? SOMETHING exciting? (has 500+ t
 
 
 ## Coding
+
+Commands releated to Programming
 
 ----------------------------------
 
@@ -223,6 +235,8 @@ Searches npm for node packages
 Gets the source for an object from the discord.py library
 ## Colors
 
+Color releated commands
+
 ----------------------------------
 
 ### color \<color\>
@@ -245,6 +259,8 @@ Generates a random color.<br>Note: This is not fully random, but it is random en
 
 ## Cryptography
 
+Encoding and Decoding text releated commands
+
 ----------------------------------
 
 ### base64
@@ -263,6 +279,8 @@ Converts binary to text, the input needs to be encoded in binary format
 
 ***Aliases:*** `unbin`
 ## Data
+
+Commands to get some data
 
 ----------------------------------
 
@@ -308,6 +326,8 @@ Get the gender of the person with the name specified
 Sends the weather information of a specific location
 ## English
 
+Commands for the english language
+
 ----------------------------------
 
 ### define \<word\>
@@ -323,6 +343,8 @@ Translates a text to another language if specified, defaults to English
 
 ***Aliases:*** `tr`
 ## Fun
+
+Fun commands :)
 
 ----------------------------------
 
@@ -402,6 +424,8 @@ See someone's penis size (random)
 The bot will send the name of every emoji reacted to the bot's message
 ## Image
 
+Image manipulation commands
+
 ----------------------------------
 
 ### qrcode \<text\>
@@ -467,6 +491,8 @@ Converts the given text to a [qr code](https://en.wikipedia.org/wiki/QR_code)
 ### jpeg [member]
 ## Information
 
+Information commands releated to discord
+
 ----------------------------------
 
 ### inviteinfo \<invite\>
@@ -491,12 +517,16 @@ Shows info about a emoji
 ***Aliases:*** `ei`, `emoteinfo`
 ## MadLibs
 
+The classic [madlibs game](https://en.wikipedia.org/wiki/Mad_Libs)
+
 ----------------------------------
 
 ### madlibs
 
 Let's play MadLibs!
 ## Messages
+
+Message releated commands
 
 ----------------------------------
 
@@ -542,6 +572,8 @@ See someone's messages in a channel, defaults to the command invoker
 
 See a list of top active users in a channel
 ## Meta
+
+All the bot rleated commands
 
 ----------------------------------
 
@@ -614,6 +646,8 @@ Sends some statistics about the bot
 Shows this message
 ## Miscellaneous
 
+For commands that don't fit in any other category
+
 ----------------------------------
 
 ### say [channel] \<text\>
@@ -630,6 +664,8 @@ Test your timing!<br><br>As soon as the message shows, click on the reaction aft
 
 ***Aliases:*** `t`
 ## Moderation
+
+commands to help you moderate a server
 
 ----------------------------------
 
@@ -736,6 +772,8 @@ Unblocks a previously blocked user from the channel
 ***Required Permissions:*** This command requires the following permission(s) to use: `Manage Channels`
 ## Owner
 
+Commands only available to be used by the bot owner
+
 ----------------------------------
 
 ### bot_message
@@ -773,6 +811,8 @@ Evaluates input.<br>Input is interpreted as newline seperated statements.<br>If 
 ***Aliases:*** `e`
 ## Random
 
+Random commands
+
 ----------------------------------
 
 ### choosebestof [times] [choices...]
@@ -795,6 +835,8 @@ Sends a random command for you to try
 ***Aliases:*** `rcmd`
 ## Reddit
 
+Needs to be worked upon
+
 ----------------------------------
 
 ### subreddit \<subreddit\> [post_filter]
@@ -803,6 +845,8 @@ Gets a random post from a subreddit<br><br>you can pass a optional post_filter t
 
 ***Aliases:*** `sr`
 ## Search
+
+For searching for things in the world wide web :^)
 
 ----------------------------------
 
@@ -845,6 +889,8 @@ Sends a gif from tenor
 
 ***Aliases:*** `yti`, `ytinfo`, `youtubei`, `videoinfo`, `youtubevideoinfo`, `ytvi`, `vi`
 ## Server
+
+Server releated commands
 
 ----------------------------------
 
@@ -896,6 +942,8 @@ Shows the amount of badges in the server. Kind of a useless command.
 ***Aliases:*** `flags`
 ## Tags
 
+Tag System
+
 ----------------------------------
 
 ### tag
@@ -909,6 +957,8 @@ Show all tags of a user
 
 ***Aliases:*** `every`
 ## Text
+
+Commands that take a input as text and send a output as text
 
 ----------------------------------
 
@@ -977,12 +1027,16 @@ uwuifies a given text
 Ỉ s̰hͨo̹u̳lͪd͆ r͈͍e͓̬a͓͜lͨ̈l̘̇y̡͟ h͚͆a̵͢v͐͑eͦ̓ i͋̍̕n̵̰ͤs͖̟̟t͔ͤ̉ǎ͓͐ḻ̪ͨl̦͒̂ḙ͕͉d͏̖̏ ṡ̢ͬö̹͗m̬͔̌e̵̤͕ a̸̫͓͗n̹ͥ̓͋t̴͍͊̍i̝̿̾̕v̪̈̈͜i̷̞̋̄r̦̅́͡u͓̎̀̿s̖̜̉͌...
 ## TicTacToe
 
+
+
 ----------------------------------
 
 ### tictactoe [player1] [player2]
 
 ***Aliases:*** `ttt`
 ## Time
+
+Commands related to time
 
 ----------------------------------
 
@@ -1002,6 +1056,8 @@ See someones time or your time<br><br>The person needs to have their time zone s
 
 ***Aliases:*** `tm`
 ## Users
+
+Details About Users
 
 ----------------------------------
 
@@ -1031,6 +1087,8 @@ See your or another users spotify info
 
 ***Aliases:*** `spt`
 ## Utility
+
+General utilities
 
 ----------------------------------
 
