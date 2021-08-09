@@ -14,7 +14,7 @@
 <!-- PROJECT LOGO -->
 <br />
 <p align="center">
-  <a href="https://github.com/wasi_master/wm_bot">
+  <a href="https://github.com/wasi-master/wm_bot">
     <!-- <img src="images/logo.png" alt="Logo" width="80" height="80"> -->
   </a>
 
@@ -26,11 +26,11 @@
     <a href="docs/commands.md"><strong>Explore the commands »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/wasi_master/wm_bot">View Demo</a>
+    <a href="https://github.com/wasi-master/wm_bot">View Demo</a>
     ·
-    <a href="https://github.com/wasi_master/wm_bot/issues">Report Bug</a>
+    <a href="https://github.com/wasi-master/wm_bot/issues">Report Bug</a>
     ·
-    <a href="https://github.com/wasi_master/wm_bot/issues">Request Feature</a>
+    <a href="https://github.com/wasi-master/wm_bot/issues">Request Feature</a>
   </p>
 </p>
 
@@ -98,7 +98,7 @@ This is an example of how to list things you need to use the software and how to
 1. Clone the repo
 
    ```sh
-   git clone https://github.com/wasi_master/wm_bot.git
+   git clone https://github.com/wasi-master/wm_bot.git
    ```
 
 2. Change directory to the cloned repo
