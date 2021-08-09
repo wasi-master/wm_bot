@@ -22,7 +22,7 @@ A command to play a game of akinator
 
 **__Aliases:__** `aki`
 
-**__Required Bot Permissions:__** This command requires the bot to have following permission(s): 
+**__Required Bot Permissions:__** This command requires the bot to have following permission(s): `Use External Emojis`
 
 ![Command Example](https://i.imgur.com/r6086QT.gif)
 
@@ -193,7 +193,7 @@ Searches pypi andreturns top 100 results
 
 **__Aliases:__** `pypi-search`, `pipsearch`, `pypis`, `pips`
 
-**__Required Bot Permissions:__** This command requires the bot to have following permission(s): 
+**__Required Bot Permissions:__** This command requires the bot to have following permission(s): `Use External Emojis`
 
 ![Command Example](https://i.imgur.com/xQK85rO.gif)
 
@@ -208,6 +208,11 @@ Searches crates for rust packages
 Searches rubygems for ruby packages
 
 **__Aliases:__** `gem`, `rg`
+> ```github <repo>```<br>
+
+Shows information about a GitHub repository
+
+**__Aliases:__** `gh`
 > ```npm <package_name>```<br>
 
 Searches npm for node packages
@@ -265,14 +270,14 @@ Sends the lyrics of a song
 
 **__Aliases:__** `lrc`
 
-**__Required Bot Permissions:__** This command requires the bot to have following permission(s): 
+**__Required Bot Permissions:__** This command requires the bot to have following permission(s): `Use External Emojis`
 > ```pokedex <pokemon>```<br>
 
 Sends the details about a [pokemon](https://en.wikipedia.org/wiki/Pok%C3%A9mon)
 
 **__Aliases:__** `pd`
 
-**__Required Bot Permissions:__** This command requires the bot to have following permission(s): 
+**__Required Bot Permissions:__** This command requires the bot to have following permission(s): `Use External Emojis`
 > ```covid [area]```<br>
 
 Coronavirus Stats
@@ -309,7 +314,7 @@ Sends the definition of a word
 
 **__Aliases:__** `def`, `df`
 
-**__Required Bot Permissions:__** This command requires the bot to have following permission(s): 
+**__Required Bot Permissions:__** This command requires the bot to have following permission(s): `Use External Emojis`
 > ```translate [lang] <text>```<br>
 
 Translates a text to another language if specified, defaults to English
@@ -956,6 +961,9 @@ Sends information about a character 🤓
 Emojify a text
 
 **__Aliases:__** `fancy`, `emf`, `banner`
+> ```charactercount <text>```<br>
+
+**__Aliases:__** `cc`, `charcount`
 > ```uwuify <text>```<br>
 
 uwuifies a given text
@@ -1039,9 +1047,9 @@ Show the date a snowflake ID was created
 Show all available data about a snowflake ID
 
 **__Aliases:__** `snowflakeinfo`, `snfi`, `idi`
-> ```parsetoken <token>```<br>
+> ```parsetoken [token]```<br>
 
-Parses a token and sends who the token is for
+Parses a token and sends who the token is for<br><br>The token can be provided in the message or the message can be a reply to another message containing the token
 
 **__Aliases:__** `pt`
 > ```redirects <url>```<br>
