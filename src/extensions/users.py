@@ -155,8 +155,9 @@ class Users(commands.Cog):
             except TypeError:
                 pass
 
-        tempuser = await self.bot.fetch_user(member.id)
-        embed.set_image(url=tempuser.banner.url)
+        # fetch_banner is a custom method
+        embed.set_image(url=await self.bot.fetch_banner(member))
+
         # get_status is a custom method that returns a emoji based on the status
         embed.add_field(
             name="Online Status",

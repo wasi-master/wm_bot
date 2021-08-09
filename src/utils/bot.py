@@ -141,6 +141,12 @@ class WMBot(commands.Bot):
         await self.session.close()
         await super().close()
 
+    async def fetch_banner(self, user: discord.User) -> str:
+        # TODO: Cache
+        tempuser = await self.fetch_user(user.id)
+        return tempuser.banner.url if tempuser.banner else None
+
+
     @property
     def owner(self) -> discord.User:
         """Call to get the owner of the bot."""
