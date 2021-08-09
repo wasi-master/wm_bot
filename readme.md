@@ -104,7 +104,7 @@ This is an example of how to list things you need to use the software and how to
 2. Change directory to the cloned repo
 
    ```sh
-   cd wm_bot
+   cd wm_bot/src
    ```
 
 3. Rename the folder config_example to config
@@ -175,9 +175,7 @@ If you find any code that you think is bad practice, code, or code style, please
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
-
-_For more examples, please refer to the [Documentation](docs/commands.md)_
+_For command examples, please refer to the [Documentation](docs/commands.md)_
 
 <!-- CONTRIBUTING -->
 ## Contributing
