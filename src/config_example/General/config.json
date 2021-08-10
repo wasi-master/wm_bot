@@ -8,7 +8,7 @@
         ",",
         "wm,"
     ],
-    "default_prefix": ",",
+    "default_prefix": "wm,",
     "bot_id": 847706412306268181,
     "support_server":{"invite":"Support server is currently private"},
     "dm_suggestions":false
