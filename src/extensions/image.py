@@ -227,7 +227,7 @@ class Image(commands.Cog):
         url2 = await get_image(ctx, member2)
 
         img = await self.bot.dagpi.image_process(
-            asyncdagpi.ImageFeatures.why_are_you_gay()(), url=str(url), url2=str(url2)
+            asyncdagpi.ImageFeatures.why_are_you_gay(), url=str(url), url2=str(url2)
         )
         file = discord.File(img.image, f"{ctx.command.name}.gif")
         em = discord.Embed(color=get_random_color())
