@@ -6,7 +6,7 @@ import os
 import random
 import re
 import shutil
-from typing import Union
+from typing import List, Optional, Union
 from zipfile import ZipFile
 
 import discord
@@ -231,34 +231,53 @@ class Utility(commands.Cog):
     @commands.command(
         aliases=["ph", "catch"],
     )
-    async def pokemonhack(self, ctx, channel: discord.TextChannel = None):
+    async def pokemonhack(self, ctx, channel: Optional[discord.TextChannel] = None, message: Optional[discord.Message]=None):
         """Tells you which pokemon it is that has been last spawned by a bot"""
-        # FIXME: document this command
-        #  msg1 = await ctx.send(f"Finding {self.bot.get_custom_emoji('load.typing')}")
-        channel = channel or ctx.channel
-        url = None
-        img_url = None
-        raw_result = None
-        async for message in channel.history(limit=8, oldest_first=False, before=ctx.message):
-            if message.author != ctx.guild.me:
-                if message.embeds:
-                    embed = message.embeds[0]
-                    if not embed.image:
-                        pass
-                    else:
-                        img_url = embed.image.url
-                else:
-                    pass
-            else:
-                pass
-        if not img_url:
+
+        if channel:
+            # If a channel was provided then we get the last 8 messages in the provided channel
+            messages = await channel.history(limit=8, oldest_first=False, before=ctx.message).flatten()
+        elif message:
+            # If a message was provided then we use the message
+            messages = [message]
+        else:
+            # If nothing was provided then we get the last 8 messages in the current channel
+            messages = await ctx.channel.history(limit=8, oldest_first=False, before=ctx.message).flatten()
+
+        # We get the messages and check for a image
+        async for message in messages:
+
+            # If the message was sent my the bot then we ignore it
+            if message.author == ctx.guild.me:
+                continue
+            # If the message does not have any embeds then we ignore it
+            if not message.embeds:
+                continue
+            # At this point the message will have a embed so we get it
+            embed = message.embeds[0]
+            # If the embed does not have an image then we ignore it
+            if not embed.image:
+                continue
+
+            # We get the image
+            img_url = embed.image.url
+            # We break the loop
+            break
+        else:
+            # If no images were found then we notify the user
             return await ctx.send("Message containing a pokemon Not Found")
+
         url = f"https://www.google.com/searchbyimage?hl=en-US&image_url={img_url}&start=0"
         headers = {"User-Agent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:61.0) Gecko/20100101 Firefox/61.0"}
-        msg1 = await ctx.send(f"Searching {self.bot.get_custom_emoji('load.typing')}")
+
+        msg = await ctx.send(f"Searching {self.bot.get_custom_emoji('load.typing')}")
+
         async with self.bot.session.get(url, headers=headers, allow_redirects=True) as r:
-            q = await r.read()
-        await msg1.edit(content=f"Getting the result {self.bot.get_custom_emoji('load.typing')}")
+            q = await r.text()
+
+        await msg.edit(content=f"Getting the result {self.bot.get_custom_emoji('load.typing')}")
+
+        # Sometimes it gets the wrong item so I just keep a dict
         result = ""
         wrong = {
             "bonsai": "bonsly",
@@ -274,39 +293,51 @@ class Utility(commands.Cog):
             "sword and shield coal": "rolycoly",
             "psychic type cute physic pokemon": "skitty",
         }
-        soup = BeautifulSoup(q.decode("utf-8"), "lxml")
+
+        soup = BeautifulSoup(q, "lxml")
+
+        # We get all the anchor tags with the class fKDtNb. this is the suggested name
         for best_guess in soup.findAll("a", class_="fKDtNb"):
-            #  await ctx.send(best_guess)
-            if not best_guess.get_text().replace("pokemon", "").strip().isdigit():
-                raw_result = best_guess.get_text()
-                result = (
-                    best_guess.get_text()
-                    .lower()
-                    .replace("pokemon go", "")
-                    .replace("pokemon", "")
-                    .replace("png", "")
-                    .replace("evolution", "")
-                    .replace("shiny", "")
-                    .replace("pokedex", "")
-                    .replace("pokémon", "")
-                    .strip()
-                )
-                if result in wrong:
-                    result = wrong[result]
-                break
-            else:
+            # Sometimes there is a number so we just ignore it
+            if best_guess.get_text().replace("pokemon", "").strip().isdigit():
                 continue
+
+            raw_result = best_guess.get_text()
+
+            result = (
+                best_guess.get_text()
+                .lower()
+                # These texts are sometimes included with the pokemon name
+                .replace("pokemon go", "")
+                .replace("pokemon", "")
+                .replace("png", "")
+                .replace("evolution", "")
+                .replace("shiny", "")
+                .replace("pokedex", "")
+                .replace("pokémon", "")
+                .strip()
+            )
+            # If the item is in the wrong dict then we get the right name
+            if result in wrong:
+                result = wrong[result]
+            # We break the loop
+            break
+        else:
+            return await ctx.send("Pokemon not found")
+
+        # Now we make the embed and send it
         emby = discord.Embed(description=f"**p!catch {result}**", color=0x2F3136)
         emby.set_author(name=result)
         emby.set_image(url=img_url)
         emby.set_footer(
-            text=f"Long press the p!catch {result} on mobile to copy quickly\n\nCommand Invoked by {ctx.author}\nRaw Result: {raw_result}",
+            text=
+            f"Long press the p!catch {result} on mobile to copy quickly\n\n"
+            f"Command Invoked by {ctx.author}\n"
+            f"Raw Result: {raw_result}",
             icon_url=ctx.author.avatar.url,
         )
         await ctx.send(embed=emby)
-        await msg1.delete()
-        #  kek = result.split(' ')
-        #  await ctx.send(result[0])
+        await msg.delete()
 
     @commands.command(
         aliases=["sae", "getallemojis", "gae"],
