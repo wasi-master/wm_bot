@@ -70,9 +70,9 @@ class Server(commands.Cog):
         """Sends all the boosters of this server"""
         people_who_boosted = sorted(ctx.guild.premium_subscribers, key=lambda member: member.joined_at)
 
-        peoples = commands.Paginator(max_size=500)
-        for i in people_who_boosted:
-            peoples.add_line(f"{i.name} (ID: {i.id})")
+        peoples = commands.Paginator(max_size=500, prefix="```ini\n", suffix="```")
+        for n, i in enumerate(people_who_boosted):
+            peoples.add_line(f"[{n}] {i.name} ID: [{i.id}]")
 
         embeds = []
         for page in peoples.pages:
@@ -88,9 +88,9 @@ class Server(commands.Cog):
         """See all the members of this server sorted by their top role"""
         people = sorted(ctx.guild.members, key=lambda member: member.top_role, reverse=True)
 
-        peoples = commands.Paginator(max_size=500)
+        peoples = commands.Paginator(max_size=500, prefix="```ini\n", suffix="```")
         for num, i in enumerate(people, 1):
-            peoples.add_line(f"{num}. {i.name} (ID: {i.id} TOP_ROLE: {i.top_role.name})")
+            peoples.add_line(f"[{num}] {i.name}\n    [ID] {i.id} [TOP ROLE] {i.top_role.name}")
 
         embeds = []
         for page in peoples.pages:
@@ -148,13 +148,13 @@ class Server(commands.Cog):
         people = filter(lambda member: member.bot, ctx.guild.members)
         people = sorted(people, key=lambda member: member.joined_at)
 
-        peoples = commands.Paginator(max_size=500)
+        peoples = commands.Paginator(max_size=500, prefix="```ini\n", suffix="```")
         for n, i in enumerate(people, 1):
-            peoples.add_line(f"{n}. {i.name} (ID: {i.id})")
+            peoples.add_line(f"[{n}] {i.name} [ID] {i.id}")
 
         embeds = []
         for page in peoples.pages:
-            embeds.append(discord.Embed(title=f"{len(peoples)} Bots", description=page))
+            embeds.append(discord.Embed(title=f"{len(people)} Bots", description=page))
 
         paginator = Paginator(embeds)
         await paginator.start(ctx)
@@ -165,9 +165,9 @@ class Server(commands.Cog):
         people = filter(lambda member: not member.bot, ctx.guild.members)
         people = sorted(people, key=lambda member: member.joined_at)
 
-        peoples = commands.Paginator(max_size=500)
+        peoples = commands.Paginator(max_size=500, prefix="```ini\n", suffix="```")
         for n, i in enumerate(people, 1):
-            peoples.add_line(f"{n}. {i.name} (ID: {i.id})")
+            peoples.add_line(f"[{n}] {i.name} [ID: {i.id}]")
 
         embeds = []
         for page in peoples.pages:
