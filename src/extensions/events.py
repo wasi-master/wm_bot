@@ -125,15 +125,15 @@ class Events(commands.Cog):
         if not hasattr(self.bot, "db"):
             return self.bot.remove_listener(self.on_message)
 
+        # We ignore, if the message author is a bot, if the message is in a dm
+        if message.author.bot or message.guild is None:
+            return
 
         # If the bot is mentioned then we send hi
         if message.guild.me.mention == message.content:
             prefix = "wm,"
             await message.reply(f"Hi, my prefix is {prefix}", mention_author=False)
 
-        # We ignore, if the message author is a bot, if the message is in a dm
-        if message.author.bot or message.guild is None:
-            return
         # OPTIMIZE: make it return if there isn't an afk person currently
         # We use an list just because a person can mention multiple afk people
         afk_people = []
