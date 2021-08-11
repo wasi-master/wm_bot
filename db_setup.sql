@@ -2,7 +2,7 @@ CREATE TABLE afk (
    last_seen TIMESTAMP,
    user_id BIGINT NOT NULL,
    reason TEXT,
-   PRIMARY KEY (user_id)
+   UNIQUE (user_id)
 );
 
 CREATE TABLE blocks (
@@ -39,7 +39,7 @@ CREATE TABLE status (
 CREATE TABLE timezones (
    timezone TEXT,
    user_id BIGINT NOT NULL,
-   PRIMARY KEY (user_id)
+   UNIQUE (user_id)
 );
 
 CREATE TABLE usages (
