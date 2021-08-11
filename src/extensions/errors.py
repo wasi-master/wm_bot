@@ -179,6 +179,15 @@ class Errors(commands.Cog):
             # If we are running tests then we just raise the error
             if os.environ.get("RUNNING_WMBOT_TESTS"):
                 raise error
+
+            if HAS_RICH:
+                # We make a traceback object for rich
+                trace = Traceback.extract(type(error), error, error.__traceback__, show_locals=True)
+                # We make a printable version of the traceback
+                rich_tb = Traceback(trace=trace)
+                # We print the traceback
+                rich.print(rich_tb)
+
             # We make a collector
             report = Report.from_exception(error)
 
@@ -204,13 +213,6 @@ class Errors(commands.Cog):
             else:
                 url = f"https://hastebin.com/{key}.txt"
 
-            if HAS_RICH:
-                # We make a traceback object for rich
-                trace = Traceback.extract(type(error), error, error.__traceback__, show_locals=True)
-                # We make a printable version of the traceback
-                rich_tb = Traceback(trace=trace)
-                # We print the traceback
-                rich.print(rich_tb)
 
             # If the user is the owner then we send the info
             if await self.bot.is_owner(ctx.author):
