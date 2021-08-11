@@ -59,33 +59,18 @@ class Time(commands.Cog):
             else:
                 await ctx.send(fj["error"])
 
-        # FIXME: use a single query
-        savedtimezone = await self.bot.db.fetchrow(
+        await self.bot.db.fetchrow(
             """
-            SELECT * FROM timezones
-            WHERE user_id = $1
+            INSERT INTO timezones (user_id, timezone)
+                VALUES ($1, $2)
+            ON CONFLICT (user_id) DO UPDATE
+                SET timezone = EXCLUDED.timezone
+            RETURNING *;
             """,
             ctx.author.id,
+            timezone
         )
-        if not savedtimezone is None:
-            savedtimezone = await self.bot.db.execute(
-                """
-                UPDATE timezones
-                SET timezone = $2
-                WHERE user_id = $1
-                """,
-                ctx.author.id,
-                timezone,
-            )
-        else:
-            await self.bot.db.execute(
-                """
-                INSERT INTO timezones (timezone, user_id)
-                VALUES ($1, $2)
-                """,
-                timezone,
-                ctx.author.id,
-            )
+
         embed = discord.Embed(
             title="Success",
             description=f"Timezone set to {location}",

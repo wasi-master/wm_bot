@@ -36,44 +36,24 @@ class Users(commands.Cog):
         await ctx.send("Removed your afk status")
 
     @commands.command(aliases=["afk"])
+    @commands.cooldown(1, 5, commands.BucketType.user)
     async def awayfromkeyboard(self, ctx, *, reason: commands.clean_content = None):
         """Sets your afk status"""
-        # FIXME: use a single query instead
-        is_afk = await self.bot.db.fetchrow(
+        await self.bot.db.fetchrow(
             """
-                SELECT *
-                FROM afk
-                WHERE user_id=$1
-                """,
+            INSERT INTO afk (user_id, last_seen, reason)
+                VALUES ($1, $2, $3)
+            ON CONFLICT (user_id) DO UPDATE
+                SET last_seen = EXCLUDED.last_seen,
+                    reason    = EXCLUDED.reason
+            RETURNING *;
+            """,
             ctx.author.id,
+            datetime.datetime.utcnow(),
+            reason
         )
-        time = datetime.datetime.utcnow()
-        if is_afk is None:
-            await self.bot.db.execute(
-                """
-                    INSERT INTO afk (last_seen, user_id, reason)
-                    VALUES ($1, $2, $3)
-                    """,
-                time,
-                ctx.author.id,
-                reason,
-            )
-        else:
-            await self.bot.db.execute(
-                """
-                UPDATE afk
-                SET last_seen = $1,
-                reason = $2
-                WHERE user_id = $3;
-                """,
-                time,
-                reason,
-                ctx.author.id,
-            )
-        if reason:
-            await ctx.send(f"You are now afk for {reason} :)")
-        else:
-            await ctx.send("You are now afk :)")
+
+        await ctx.send(f"You are now afk{' for '+ reason if reason else ''} :)")
 
     @commands.command(
         aliases=["pfp", "av", "profilepicture", "profile"],
