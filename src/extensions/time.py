@@ -59,7 +59,7 @@ class Time(commands.Cog):
             else:
                 await ctx.send(fj["error"])
 
-        await self.bot.db.fetchrow(
+        result = await self.bot.db.fetchrow(
             """
             INSERT INTO timezones (user_id, timezone)
                 VALUES ($1, $2)
@@ -70,12 +70,26 @@ class Time(commands.Cog):
             ctx.author.id,
             timezone
         )
+        if result:
+            if result["timezone"] == timezone:
+                embed = discord.Embed(
+                    title="Failure",
+                    description=f"Time zone not changed, it was already set to {timezone}",
+                    color=discord.Colour.red(),
+                )
+            else:
+                embed = discord.Embed(
+                    title="Success",
+                    description=f"Time zone changed from `{result['timezone']}` to `{timezone}`",
+                    color=discord.Colour.yellow(),
+                )
+        else:
+            embed = discord.Embed(
+                title="Success",
+                description=f"Time zone set to `{timezone}`",
+                color=discord.Colour.green(),
+            )
 
-        embed = discord.Embed(
-            title="Success",
-            description=f"Timezone set to {location}",
-            color=5028631,
-        )
         await ctx.send(embed=embed)
 
     @commands.command(aliases=["tm"], description="See time")
@@ -84,67 +98,43 @@ class Time(commands.Cog):
 
         The person needs to have their time zone saved
         """
-
-        # If the location is None then we show the user's time
         if location is None:
-            location_from_db = await self.bot.db.fetchrow(
+            location = ctx.author
+
+        # If the item provided is a member then we get their location from the database
+        if isinstance(location, discord.Member):
+            # TODO: Cache
+            result = await self.bot.db.fetchrow(
                 """
                 SELECT * FROM timezones
                 WHERE user_id = $1""",
-                ctx.author.id,
-            )
-            if location_from_db is None:
-                embed = discord.Embed(
-                    title="Timezone Not set",
-                    description='Set your time with the timeset command (shortest alias "ts")',
-                    color=14885931,
-                )
-                return await ctx.send(embed=embed)
-            location = location_from_db["location"]
-        # If the author mentions a user then we show the mentioned user's time'
-        if isinstance(location, discord.Member):
-            location_from_db = await self.bot.db.fetchrow(
-                """
-                SELECT * FROM timezones
-                WHERE user_id = $1
-                """,
                 location.id,
             )
-            if location_from_db is None:
+            if result is None:
                 embed = discord.Embed(
                     title=f"{location} Has not yet set is location",
-                    description='Ask him to set his time with the timeset command (shortest alias "ts")',
+                    description='He needs to set his timezone using the timeset command',
                     color=14885931,
                 )
                 return await ctx.send(embed=embed)
-            location = location_from_db["location"]
+            location = result["timezone"]
 
+        # We get the time
         async with self.bot.session.get(f"http://worldtimeapi.org/api/timezone/{location}") as r:
             fj = json.loads(await r.text())
-        # If the location was passed as a string then it may be wrong so we check for that
-        if isinstance(location, str):
-            # The error key exists only when there is a error
-            if fj.get("error"):
-                if fj["error"] == "unknown location":
-                    async with self.bot.session.get("http://worldtimeapi.org/api/timezone") as resp:
-                        locations = await resp.json()
 
-                    suggestions = difflib.get_close_matches(location, locations, n=5, cutoff=0.3)
-                    suggestions = "\n".join(suggestions)
+        # If there was a error then we notify the user
+        if fj.get("error")== "unknown location":
+            async with self.bot.session.get("http://worldtimeapi.org/api/timezone") as resp:
+                locations = await resp.json()
+            suggestions = difflib.get_close_matches(location, locations, n=5, cutoff=0.3)
+            suggestions = "\n".join(suggestions)
+            embed = discord.Embed(title="Unknown Location", description="The location couldn't be found", color=14885931)
+            embed.add_field(name="Did you mean?", value=suggestions)
+            return await ctx.send(embed=embed)
 
-                    embed = discord.Embed(
-                        title="Unknown Location",
-                        description="The location couldn't be found",
-                        color=14885931,
-                    )
-                    embed.add_field(name="Did you mean?", value=suggestions)
-
-                    await ctx.send(embed=embed)
-                else:
-                    await ctx.send(fj["error"])
 
         currenttime = datetime.datetime.strptime(fj["datetime"][:-13], "%Y-%m-%dT%H:%M:%S")
-
         embed = discord.Embed(title="Time", color=0x2F3136)
         embed.add_field(name=location, value=currenttime.strftime("%a, %d %B %Y, %H:%M:%S"))
         embed.add_field(name="UTC Offset", value=fj["utc_offset"])
