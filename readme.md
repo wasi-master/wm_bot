@@ -21,7 +21,7 @@
   <h1 align="center">WM Bot</h1>
 
   <p align="center">
-    A advanced bot with more than 220 commands to fit your needs
+    An advanced bot with more than 220 commands to fit your needs
     <br />
     <a href="docs/commands.md"><strong>Explore the commands »</strong></a>
     <br />
