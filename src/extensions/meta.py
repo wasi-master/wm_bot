@@ -29,10 +29,10 @@ async def _basic_cleanup_strategy(self, ctx, search):
 async def _complex_cleanup_strategy(self, ctx, search):
     prefix_for_this_guild = await self.bot.db.fetchrow(
         """
-            SELECT prefix
-            FROM guilds
-            WHERE id=$1
-            """,
+        SELECT prefix
+        FROM guilds
+        WHERE id=$1
+        """,
         ctx.guild.id,
     )
     prefix = str(prefix_for_this_guild["prefix"])
@@ -96,10 +96,10 @@ class MasterHelp(commands.HelpCommand):
             )
         command_usage = await self.context.bot.db.fetchrow(
             """
-                    SELECT *
-                    FROM usages
-                    WHERE name = $1;
-                    """,
+            SELECT *
+            FROM usages
+            WHERE name = $1;
+            """,
             command.name,
         )
         if not command_usage is None:
