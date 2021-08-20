@@ -252,7 +252,7 @@ class Coding(commands.Cog):
         hp = (
             "Github Repo"
             if re.match(
-                r"https:\/\/(www\.)?github\.com\/.{0,39}\/.{0,100}",
+                r"https://(www\.)?github\.com/[a-z\d](?:[a-z\d]|-(?=[a-z\d])){0,38}/[A-Za-z-]{0,100}",
                 parsed_json["home_page"],
             )
             else "Home Page"
@@ -260,7 +260,10 @@ class Coding(commands.Cog):
         if hp == "Home Page":
             hp = (
                 "Github Profile"
-                if re.match(r"https:\/\/(www\.)?github\.com\/.{0,39}", parsed_json["home_page"])
+                if re.match(
+                    r"https://(www\.)?github\.com/[a-z\d](?:[a-z\d]|-(?=[a-z\d])){0,38}/?",
+                    parsed_json["home_page"]
+                )
                 else hp
             )
         embed.add_field(
