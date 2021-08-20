@@ -21,7 +21,7 @@
   <h1 align="center">WM Bot</h1>
 
   <p align="center">
-    A advanced bot with more than 220 commands to fit your needs
+    With over 220 commands, this powerful bot can be tailored to meet your needs
     <br />
     <a href="docs/commands.md"><strong>Explore the commands »</strong></a>
     <br />
@@ -66,7 +66,7 @@
 
 <!-- [![WM Bot Screen Shot][product-screenshot]](https://example.com) -->
 
-I started learning python around March 2020. This project was started as a way to become better at python in July 7th 2020. And the code you'll see in this repository was written between then and now. some code may have really bad practices because of it. if you find any issues with the code, please report them to me in my discord: `Wasi Master#6969` or open a pull request. if you find any bugs or have any ideas then open a issue in the repository
+Around March 2020, I began learning Python. On July 7th, 2020, I started this project as a way of improving my knowledge of Python. I've written the code in this repository between then and now, so it may contain some bad practices. I would appreciate it if you reported any issues to me in my Discord: `Wasi Master#6969` or opened a pull request. Please open an issue if you see any bugs or have any suggestions
 
 ### Built With
 
@@ -78,13 +78,13 @@ I started learning python around March 2020. This project was started as a way t
 <!-- GETTING STARTED -->
 ## Getting Started
 
-Almost every folder on this repository has a readme file that you can check for more information on what that specific folder is for
+This repository has a readme file for almost every folder so you can learn more about what is contained in that folder
 <details>
 <summary>To get a local copy up and running follow these simple steps.</summary>
 
 ### Prerequisites
 
-This is an example of how to list things you need to use the software and how to install them.
+The following are the things you need to install in order to run the bot
 
 * **python**:
   Download and install python 3.8+ from <https://python.org>
@@ -120,14 +120,15 @@ This is an example of how to list things you need to use the software and how to
    ren config_example config
    ```
 
-4. Edit the config files to add your bot token and the database credentials. (For instructions see the `readme.md` file in each config directory)
+4. Insert the bot token and database credentials into the config files. (Instructions are in each directory's *readme.md* file)
+
 5. Run the required commands in your database
 
     ```bash
-    psql username -h hostname -d database_name -f db_setup.sql
+    psql <username> -h <hostname> -d <database_name> -f db_setup.sql
     ```
 
-    And replace `username` with your username. `hostname` with your database hostname and `database_name` with your database name.
+    And don't forget to replace `<username>` with your username. `<hostname>` with your database hostname and `<database_name>` with your database name.
 
 6. Install Required packages
 
@@ -159,28 +160,28 @@ This is an example of how to list things you need to use the software and how to
 <!-- COPYING GUIDE -->
 ## Copying Code
 
-If you want to copy any code from this repo please keep these in mind
+Keep these things in mind if you want to copy any code from this repo
 
-* Read the [license](license) and what it allows and disallows
-* If you want to copy a whole command
-  1. If you are in a cog keep `@commands.command` and if you are not in a command replace `@commands.command` with `@bot.command` or `@client.command` depending on what you named your bot
+* Read the [license] (license) and learn what it permits and disallows
+* To copy a whole command:
+  1. Keep *@commands.command* if you are in a cog; otherwise, replace *@commands.command* with *@bot.command* or *@client.command*, according to what your bot instance is named
 
-* If you see any functions/classes that you don't understand/don't know where it is defined, in the desktop version of github you can click the function/class name and see where it is defined
+* Whenever you see a function/class you are unsure about, you can click the name in the desktop version of github to find out where it is defined
 
 <!-- BAD PRACTICE -->
 ## Bad Practice, Code, or Code Style
 
-If you find any code that you think is bad practice, code, or code style, please report it to me in my discord: `Wasi Master#6969` or open a pull request or a issue. if you find any bugs or have any ideas then open a issue in the repository
+Whenever you find anything that you believe is bad practice, code, or code style, let me know in my discord: *Wasi Master#6969* or open an issue/pull request. Please open an issue if you see any bugs or have any suggestions
 
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-_For command examples, please refer to the [Documentation](docs/commands.md)_
+_For a list of commands this bot has, please refer to the [Documentation](docs/commands.md)_
 
 <!-- CONTRIBUTING -->
 ## Contributing
 
-Contributions are what make the open source community such an amazing place to be learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+Contributions are what makes the open-source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
 1. Fork the Project
 2. Add or Change some cool code
@@ -215,8 +216,8 @@ Distributed under the MIT License. See [LICENSE](LICENSE) for more information.
 
 ### Wasi Master
 
-* Discord: [Wasi Master#6969](https://discord.com/users/723234115746398219)<br>
-* Email: arianmollik323@gmail.com<br>
+* Discord: [Wasi Master#6969](https://discord.com/users/723234115746398219)\
+* Email: arianmollik323@gmail.com\
 
 <!-- ACKNOWLEDGEMENTS -->
 ## Acknowledgements
