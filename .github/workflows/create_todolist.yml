@@ -1,0 +1,40 @@
+# This workflow will generate a TODO.md file that has all the todos
+# Using the tool todot: https://pypi.org/packages/todot-python
+
+name: Create TODOs
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install todot-python
+    - name: Run todot
+      run: todot --format github --repo https://github.com/wasi-master/wm_bot --branch main --gitignore
+    - name: Change user
+      run: git config --local user.name  ${{ github.actor }}
+    - name: Check for changes
+      run: git status
+    - name: Stage changed files
+      run: git add .
+    - name: Commit changed files
+      run: git commit -m "Auto updated TODO.md"
+    - name: Fetch from master
+      run: git fetch origin master
+    - name: Push code to master
+      run: git push origin HEAD:master

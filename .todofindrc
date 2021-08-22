@@ -1,0 +1,7 @@
+[TODOFIND]
+format=color
+ignore=src\errors
+repo=https://github.com/wasi-master/wm_bot
+branch=main
+gitignore=yes
+tags=TODO,FIXME,XXX,HACK,OPTIMIZE
