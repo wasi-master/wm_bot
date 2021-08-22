@@ -34,7 +34,7 @@ jobs:
       run: git add .
     - name: Commit changed files
       run: git commit -m "Auto updated TODO.md"
-    - name: Fetch from master
-      run: git fetch origin master
-    - name: Push code to master
-      run: git push origin HEAD:master
+    - name: Fetch from main
+      run: git fetch origin main
+    - name: Push code to main
+      run: git push origin HEAD:main
