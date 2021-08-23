@@ -94,6 +94,7 @@ class MasterHelp(commands.HelpCommand):
                 name="Cooldown",
                 value=f"{round(command._buckets._cooldown.per)} seconds per {command._buckets._cooldown.rate} command{'s' if command._buckets._cooldown.rate > 1 else ''} usage",
             )
+        # OPTIMIZE: cache
         command_usage = await self.context.bot.db.fetchrow(
             """
             SELECT *
@@ -119,9 +120,33 @@ class MasterHelp(commands.HelpCommand):
             embed.set_image(url=image)
         await self.context.send(embed=embed)
 
-    # # !help <group>
-    # async def send_group_help(self, group):
-    #     await self.context.send("This is help group")
+    # !help <group>
+    async def send_group_help(self, group):
+        subcommands = group.commands
+        if len(subcommands) == 0:
+            return await self.send_command_help(group)
+
+        entries = await self.filter_commands(subcommands, sort=True)
+        if len(entries) == 0:
+            return await self.send_command_help(group)
+
+        embeds = []
+        for entries in split_by_slice(entries, 6):
+            embed = discord.Embed(
+                title=f'{group.qualified_name} Commands',
+                description=group.description,
+                colour=discord.Colour.blurple()
+            )
+
+            for command in entries:
+                signature = f'{command.qualified_name} {command.signature}'
+                embed.add_field(name=signature, value=command.short_doc or 'No help given...', inline=False)
+            embed.set_footer(text=f'Use "{self.context.clean_prefix}help command" for more info on a command.')
+            embeds.append(embed)
+
+        menu = Paginator(embeds=embeds)
+        await menu.start(self.context)
+
 
     # !help <cog>
     async def send_cog_help(self, cog):
