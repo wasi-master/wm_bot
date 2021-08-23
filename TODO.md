@@ -16,6 +16,6 @@
 - [ ] use cache #TODO @ ([src/extensions/events.py:143](https://github.com/wasi-master/wm_bot/blob/main/src/extensions/events.py#L143))  
 - [ ] re implement #TODO @ ([src/extensions/fun.py:288](https://github.com/wasi-master/wm_bot/blob/main/src/extensions/fun.py#L288))  
 - [ ] fix #TODO @ ([src/extensions/fun.py:446](https://github.com/wasi-master/wm_bot/blob/main/src/extensions/fun.py#L446))  
-- [ ] make it sort by usage and return the top 10 #TODO @ ([src/extensions/meta.py:376](https://github.com/wasi-master/wm_bot/blob/main/src/extensions/meta.py#L376))  
-- [ ] same as users #TODO @ ([src/extensions/meta.py:402](https://github.com/wasi-master/wm_bot/blob/main/src/extensions/meta.py#L402))  
+- [ ] make it sort by usage and return the top 10 #TODO @ ([src/extensions/meta.py:401](https://github.com/wasi-master/wm_bot/blob/main/src/extensions/meta.py#L401))  
+- [ ] same as users #TODO @ ([src/extensions/meta.py:427](https://github.com/wasi-master/wm_bot/blob/main/src/extensions/meta.py#L427))  
 - [ ] use a better way to get the message count #FIXME @ ([src/extensions/messages.py:220](https://github.com/wasi-master/wm_bot/blob/main/src/extensions/messages.py#L220))  
