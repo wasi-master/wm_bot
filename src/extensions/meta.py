@@ -335,7 +335,7 @@ class Meta(commands.Cog):
         branch = "main"
 
         if command is None:
-            return await ctx.send(source_url + "\nBe sure to ⭐ star it if you like it")
+            return await ctx.send(f"<{source_url}>\nBe sure to ⭐ star it if you like it")
 
         if command == "help":
             src = type(self.bot.help_command)
