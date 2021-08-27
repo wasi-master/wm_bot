@@ -8,9 +8,12 @@ asyncpg
 better_profanity
 bs4
 discord.py[speed] @ git+https://github.com/Rapptz/discord.py.git
+discord-ext-menus @ git+https://github.com/Rapptz/discord-ext-menus.git
+discord-ext-menus-views @ git+https://github.com/oliver-ni/discord-ext-menus-views.git
 dpytest
 gTTS
-humanize
+humanize @ git+https://github.com/jmoiron/humanize.git
+jishaku @ git+https://github.com/Gorialis/jishaku.git
 lxml
 Mako
 numpy
