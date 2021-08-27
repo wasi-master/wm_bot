@@ -17,7 +17,7 @@ from dotenv import load_dotenv
 from playsound import PlaysoundException, playsound
 
 from utils.classes import BlackListed, Config, CustomEmojis
-from utils.functions import load_json, read_file
+from utils.functions import load_json, print_error, read_file
 
 __all__ = ("WMBot", "WMBotContext")
 
@@ -174,7 +174,7 @@ class WMBot(commands.Bot):
         for user in self.users:
             if not user.bot:
                 yield user
-    
+
     @property
     def bots(self) -> Generator[discord.User, None, None]:
         """Use this to get all the members of the bot"""
@@ -372,13 +372,16 @@ class WMBotContext(commands.Context):
 
 async def create_db_pool(bot):
     """Connects to the db and sets it as a variable"""
-    bot.db = await asyncpg.create_pool(
-        host=os.environ["host"],
-        database=os.environ["database"],
-        user=os.environ["user"],
-        password=os.environ["password"],
-        ssl=os.environ["ssl"],
-    )
+    try:
+        bot.db = await asyncpg.create_pool(
+            host=os.environ["host"],
+            database=os.environ["database"],
+            user=os.environ["user"],
+            password=os.environ["password"],
+            ssl=os.environ["ssl"],
+        )
+    except Exception as e:
+        print_error("Could not connect to the database, Most likely because the database credentials are invalid")
     # We try to play a sound to let the user know that the bot is online
     # If the sound playing fails we just ignore it
     try:
