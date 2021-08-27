@@ -18,4 +18,4 @@
 - [ ] fix #TODO @ ([src/extensions/fun.py:446](https://github.com/wasi-master/wm_bot/blob/main/src/extensions/fun.py#L446))  
 - [ ] make it sort by usage and return the top 10 #TODO @ ([src/extensions/meta.py:401](https://github.com/wasi-master/wm_bot/blob/main/src/extensions/meta.py#L401))  
 - [ ] same as users #TODO @ ([src/extensions/meta.py:427](https://github.com/wasi-master/wm_bot/blob/main/src/extensions/meta.py#L427))  
-- [ ] use a better way to get the message count #FIXME @ ([src/extensions/messages.py:220](https://github.com/wasi-master/wm_bot/blob/main/src/extensions/messages.py#L220))  
+- [ ] use a better way to get the message count #FIXME @ ([src/extensions/messages.py:217](https://github.com/wasi-master/wm_bot/blob/main/src/extensions/messages.py#L217))  
