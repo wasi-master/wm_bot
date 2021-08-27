@@ -2,6 +2,7 @@
 import datetime
 import logging
 import os
+import discord
 
 from discord.ext import commands
 from playsound import PlaysoundException, playsound
@@ -83,4 +84,23 @@ async def on_ready():
 if __name__ == "__main__":
     bot.loop.run_until_complete(create_db_pool(bot))
     bot.loop.create_task(on_ready())
-    bot.run(os.environ["token"])
+    try:
+        bot.run(os.environ["token"])
+    except KeyboardInterrupt:
+        console.print("[red]Bot Closing[/]")
+    except discord.PrivilegedIntentsRequired:
+        console.print("[red]Go to [/][blue]https://discord.com/developers/applications/[/][red] and enable the intents that are required. Currently these are as follows:[/]")
+    except discord.LoginFailure:
+        console.print("[red]The token is most likely incorrect[/]")
+    except discord.ConnectionClosed as e:
+        console.print(f"[red]Connection closed[/][yellow]Code: {e.code} Reason: {e.reason}[/]")
+    except discord.HTTPException as e:
+        console.print("[red]Could not connect to discord.com ({e.status} {e.code}: {e.text})[/]")
+    except KeyError:
+        console.print("[red]No token found in the environment variables[/]")
+    except discord.GatewayNotFound:
+        console.print("[red]The API is probably having an outage,[/] [blue]see https://discordstatus.com[/]")
+    except Exception as e:
+        raise e
+
+
