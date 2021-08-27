@@ -122,7 +122,7 @@ The following are the things you need to install in order to run the bot
 
 4. Insert the bot token and database credentials into the config files. (Instructions are in each directory's *readme.md* file)
 
-5. Run the required commands in your database
+5. Run the required commands in your database (either use this command or do it another way)
 
     ```bash
     psql <username> -h <hostname> -d <database_name> -f db_setup.sql
