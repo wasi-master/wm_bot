@@ -3,6 +3,7 @@ import json
 
 from discord.ext import commands
 from dataclasses import dataclass
+from .functions import print_error
 
 __all__ = ('BlackListed', 'CodeStats', 'Config', 'CustomEmojis', 'Map', 'NoAPIKey')
 
@@ -96,3 +97,10 @@ class CustomEmojis(Config):
 
     # This does not have any code because this should just be a alias to Config.
     # I know there are better ways to make this an alias but this is well enough.
+
+class NoneClass:
+    def __init__(self, message):
+        self.message = message
+
+    def __getattr__(self, attr):
+        print_error(self.message)
