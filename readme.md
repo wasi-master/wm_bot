@@ -136,7 +136,28 @@ The following are the things you need to install in order to run the bot
    pip install -r requirements.txt
    ```
 
-7. Run the bot
+7. Add the required emojis to your desired server using the following command
+   * Windows:
+
+   ```sh
+   py emoji_adder
+   ```
+
+   * Linux:
+
+   ```sh
+   python emoji_adder
+   ```
+
+   * MacOS:
+
+   ```sh
+   python3 emoji_adder
+   ```
+
+   After that you can delete the emoji_adder folder or keep it if you ever want to add the emojis ever again
+
+8. Run the bot
    * Windows:
 
    ```sh
