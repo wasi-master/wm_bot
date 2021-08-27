@@ -24,38 +24,35 @@ class Messages(commands.Cog):
     async def firstmessage(self, ctx, channel: discord.TextChannel = None):
         """Sends the first message in a specified channel, defaults to the current channel"""
         channel = channel or ctx.channel
-        first_message = None
 
-        async for i in channel.history(oldest_first=True):
-            first_message = i
-        
-        if not first_message:
+        async for i in channel.history(limit=1, oldest_first=True):
+            message = i
+            break
+        else:
             return await ctx.send("No first message found")
         
-        embed = discord.Embed(title=f"First message in #{channel.name}", color=0x2F3136)
-        embed.add_field(name="Message Author", value=first_message.author)
+        embed = discord.Embed(title=f"First message in #{channel.name}", color=message.author.color or 0x2F3136)
+        embed.set_author(name=message.author.name, icon_url=message.author.avatar.url)
         
-        if hasattr(first_message, "content") and first_message.content:
-            embed.add_field(name="Message Content", value=first_message.content, inline=False)
-        else:
-            embed.add_field(name="Message Content", value="No message content", inline=False)
+        embed.add_field(name="Message Content", value=message.content or "No message content", inline=False)
         
-        if first_message.attachments:
-            attachments = "\n".join(f"[{i.filename}]({i.url})" for i in first_message.attachments)
+        if message.attachments:
+            attachments = "\n".join(f"[{i.filename}]({i.url})" for i in message.attachments)
             embed.add_field(name="Attachments", value=attachments, inline=False)
         
         embed.add_field(
             name="Message sent at",
-            value=f"{discord.utils.format_dt(first_message.created_at, 'R')} ({discord.utils.format_dt(first_message.created_at, 'R')})",
+            value=f"{discord.utils.format_dt(message.created_at, 'F')} "
+                  f"({discord.utils.format_dt(message.created_at, 'R')})",
         )
-        if first_message.edited_at:
+        if message.edited_at:
             embed.add_field(
-                name="Last edited at",
-                value=f'{first_message.edited_at.strftime("%a, %d %B %Y, %H:%M:%S")}'
-                      f'({humanize.precisedelta(datetime.datetime.utcnow() - first_message.edited_at)})',
+                name="Message last edited at",
+                value=f"{discord.utils.format_dt(message.edited_at, 'F')} "
+                      f"({discord.utils.format_dt(message.edited_at, 'R')})",
             )
             
-        embed.add_field(name="Jump to", value=first_message.jump_url)
+        embed.add_field(name="Jump to", value=message.jump_url)
         await ctx.send(embed=embed)
 
     @commands.command(aliases=["re"])
