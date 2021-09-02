@@ -90,10 +90,10 @@ class NumericStringParser(object):
             "+": operator.add,
             "-": operator.sub,
             "x": operator.mul,
+            "**": operator.pow,
             "*": operator.mul,
             "/": operator.truediv,
             "^": operator.pow,
-            "**": operator.pow,
         }
         # functions, You can add more functions here
         self.fn = {
@@ -147,9 +147,6 @@ class Calculator(commands.Cog):
     )
     async def calc(self, ctx, *, formula):
         """Evaluate math expressions."""
-
-        formula = formula.replace("*", "x")
-
         try:
             answer = self.nsp.eval(formula)
         except Exception as e:
