@@ -30,10 +30,10 @@ class Utility(commands.Cog):
     async def unshorten(self, ctx, url: str):
         """Got a shortened link? bit.ly? use this command to un shorten the link!
 
-        Does not work for website that do not redirect you to the long url directly.
+        Does not work for websites that do not redirect you to the long url directly.
         """
         async with self.bot.session.get(url, allow_redirects=True) as resp:
-            if resp.url == url: # XXX: there may be a better way to do this
+ammar            if resp.url == url: # XXX: there may be a better way to do this
                 return await ctx.send("The url didn't redirect me to any website :(")
             result_url = resp.url
 
