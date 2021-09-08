@@ -429,6 +429,9 @@ class WMBotContext(commands.Context):
                 raise error
             # If the content is too large then we send it using hastebin
             if error.status == 400 and error.code == 50035:
+                if not args:
+                    # If no content was passed (probably only embed was passed), we just raise the error
+                    raise error
                 # We check if the content was in a codeblock
                 cb = await CodeblockConverter().convert(self, args[0])
                 if cb is None:
