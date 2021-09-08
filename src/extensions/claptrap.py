@@ -4,7 +4,8 @@ import random
 
 import discord
 from discord.ext import commands
-from utils.functions import load_json, print_error
+from utils.functions import load_json
+from utils.errors import print_error
 
 
 class Claptrap(commands.Cog):

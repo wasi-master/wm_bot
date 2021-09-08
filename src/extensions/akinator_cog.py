@@ -3,7 +3,8 @@ from typing import Optional
 
 import discord
 from discord.ext import commands
-from utils.functions import button_from_json, get_p, print_error
+from utils.functions import button_from_json, get_p
+from utils.errors import print_error
 from utils.paginator import Paginator
 
 

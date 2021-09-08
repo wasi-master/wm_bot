@@ -7,7 +7,7 @@ from urllib.parse import quote
 import discord
 from discord.ext import commands
 from discord.ext.commands import BucketType
-from utils.classes import NoAPIKey
+from utils.errors import NoAPIKey
 from utils.paginator import Paginator
 
 

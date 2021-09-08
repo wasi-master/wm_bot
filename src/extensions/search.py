@@ -10,7 +10,7 @@ import wikipedia
 import youtube_dl as ytdl
 from discord.ext import commands
 from discord.ext.commands import BucketType
-from utils.classes import NoAPIKey
+from utils.errors import NoAPIKey
 from utils.paginator import Paginator
 from utils.functions import convert_sec_to_min
 from youtubesearchpython.__future__ import VideosSearch

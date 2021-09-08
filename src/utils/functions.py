@@ -2,7 +2,6 @@
 import asyncio
 import datetime
 import functools
-import inspect
 import json
 import os
 import random
@@ -18,7 +17,8 @@ from discord.ext import commands
 from rich.console import Console
 from rich.syntax import Syntax
 
-from utils.classes import CustomEmojis
+from .classes import CustomEmojis
+
 
 VALID_JSON_TYPES = Union[str, int, bool, list, dict, None]
 
@@ -45,7 +45,6 @@ __all__ = (
     "levenshtein_match_calc",
     "load_json",
     "make_permissions",
-    "print_error",
     "read_file",
     "split_by_slice",
     "write_file",
@@ -711,29 +710,6 @@ def make_permissions(
         else getattr(discord.Permissions, perm_value)()
     )
     return discord.utils.oauth_url(oauth_url, permissions=perm) if oauth_url else perm
-
-
-def print_error(error: str) -> None:
-    """Prints a error with formatting
-
-    Parameters
-    ----------
-    error : str
-        The error message to display
-    """
-    # We get the 2nd item in the call stack to find where this function is called from
-    frame = inspect.stack()[1]
-    # We get the module of the caller
-    module = inspect.getmodule(frame[0])
-    if module is None:
-        filename = "Unknown"
-    else:
-        # We get the file of the module
-        filepath = module.__file__
-        # We get the relative file path of the module
-        filename = os.path.relpath(filepath)
-    # We print the info with some color
-    rich.print(f"[bold underline red]ERROR:[/] [blue]({filename})[/] : {error}")
 
 
 def read_file(filepath: str, *args, **kwargs) -> AnyStr:

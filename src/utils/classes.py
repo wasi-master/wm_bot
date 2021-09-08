@@ -3,16 +3,9 @@ import json
 
 from discord.ext import commands
 from dataclasses import dataclass
-from .functions import print_error
+from .errors import print_error
 
-__all__ = ('BlackListed', 'CodeStats', 'Config', 'CustomEmojis', 'Map', 'NoAPIKey')
-
-class BlackListed(commands.CheckFailure):
-    """Don't respond if the user is blocked from using the bot."""
-
-
-class NoAPIKey(commands.CheckFailure):
-    """The bot owner didn't setup a api key yet."""
+__all__ = ('CodeStats', 'Config', 'CustomEmojis', 'Map',)
 
 
 @dataclass
@@ -34,7 +27,7 @@ class CodeStats:
     docstrings: int = 0
     embeds = 0
 
-
+# TODO: use attrdict instead https://pypi.org/project/attrdict/
 class Map(dict):
     """A subclass of dict that allows you to use a dot (.) to get items"""
 
