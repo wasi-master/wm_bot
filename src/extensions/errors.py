@@ -78,13 +78,13 @@ class Errors(commands.Cog):
                 invalid_arg = invalid_arg.replace("_", " ")
             # https://docs.python.org/3/library/stdtypes.html#str.title
             invalid_arg = invalid_arg.title()
-            # we replace the original signature witht the argument to be more user friendly
+            # we replace the original signature with the argument to be more user friendly
             # like, `wm,help [command_name]` becomes `wm,help [Command Name]`
             signature = signature.replace(invalid_arg_original, invalid_arg)
             # now we format the error message, we use ```ml to make it colorized
             error_message = "```ml\n"
             error_message += signature + "\n"
-            error_message += " " * signature.index(invalid_arg) + " " * round(len(invalid_arg) / 2) + "^\n"
+            error_message += " " * signature.index(invalid_arg) + "^" * round(len(invalid_arg)) + "\n"
             error_message += f"SyntaxError: the required argument {invalid_arg} is missing```"
             # and now we send
             await ctx.send(embed=discord.Embed(title="Missing Argument", description=error_message))
