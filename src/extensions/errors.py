@@ -1,21 +1,18 @@
+import time
 import difflib
 import os
 import re
-from utils.error_formatter.collector import Report
+
+from rich.console import Console
 import aiohttp
 import discord
 from discord.ext import commands
 
-try:
-    import rich
-    from rich.traceback import Traceback
+import rich
+from rich.traceback import Traceback
+from utils.functions import format_name
+from utils.errors import BlackListed, print_error
 
-    HAS_RICH = True
-except ImportError:
-    HAS_RICH = False
-from utils.functions import format_name, print_error
-from utils.classes import BlackListed
-from utils.error_formatter import HTMLFormatter, TextFormatter, Report
 
 
 
@@ -178,48 +175,38 @@ class Errors(commands.Cog):
         else:
             # If we are running tests then we just raise the error
             if os.environ.get("RUNNING_WMBOT_TESTS"):
+                assert error is not None
                 raise error
 
-            if HAS_RICH:
-                # We make a traceback object for rich
-                trace = Traceback.extract(type(error), error, error.__traceback__, show_locals=True)
-                # We make a printable version of the traceback
-                rich_tb = Traceback(trace=trace)
-                # We print the traceback
-                rich.print(rich_tb)
+            # We make a console for rich
+            console = Console(record=True)
 
-            # We make a collector
-            report = Report.from_exception(error)
+            # We make a traceback object for rich
+            trace = Traceback.extract(type(error), error, error.__traceback__, show_locals=True)
+            # We make a printable version of the traceback
+            rich_tb = Traceback(trace=trace)
+            # We print the traceback
+            console.print(rich_tb)
 
-            # We make a html and a text formatter
-            html = HTMLFormatter().format(report)
-            text = TextFormatter().format(report)
+            # We get the current timestamp
+            timestamp = time.time()
 
-            # We save the traceback to files
-            with open(f"errors/error_{report.timestamp}.html", "wb") as f:
-                f.write(html)
-            with open(f"errors/error_{report.timestamp}.txt", "w", encoding="utf-8") as f:
-                f.write(text)
+            # We save the traceback to a html and a txt file
+            console.save_html(f"errors/error_{timestamp}.html")
+            console.save_text(f"errors/error_{timestamp}.txt")
+
+            # We get the text from the console
+            text = console.export_text()
 
             # We upload the text to the cloud
-            req = await self.bot.session.post("https://hastebin.com/documents", data=text)
-            reqjson = None
-            try:
-                reqjson = await req.json()
-                key = reqjson["key"]
-            except (KeyError, aiohttp.ContentTypeError):
-                print_error(f"[red]Could not upload error,[/] Raw Data: {reqjson or 'Could not get'}")
-                url = "No URL"
-            else:
-                url = f"https://hastebin.com/{key}.txt"
-
+            url = await self.bot.hastebin_upload(text)
 
             # If the user is the owner then we send the info
             if await self.bot.is_owner(ctx.author):
                 embed = discord.Embed(
                     title="Error",
-                    description=f"HTML File Saved: `errors/error_{report.timestamp}.html`\n"
-                    f"Text File Saved: `errors/error_{report.timestamp}.txt`\n"
+                    description=f"HTML File Saved: `errors/error_{timestamp}.html`\n"
+                    f"Text File Saved: `errors/error_{timestamp}.txt`\n"
                     f"Text File Cloud: {url}",
                 )
                 # We send the error and then delete it after 10 secs
@@ -227,7 +214,7 @@ class Errors(commands.Cog):
             else:
                 embed = discord.Embed(
                     title="Error Occured",
-                    description=f"The Error code is `{report.timestamp}`. pls ask the owner to fix",
+                    description=f"The Error code is `{timestamp}`. pls ask the owner to fix thx",
                 )
                 # We send the error and then delete it after 2 mins
                 await ctx.send(embed=embed, delete_after=120)
