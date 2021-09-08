@@ -1,6 +1,7 @@
 # TODO.md
 
-- [ ] Cache #TODO @ ([src/utils/bot.py:145](https://github.com/wasi-master/wm_bot/blob/main/src/utils/bot.py#L145))  
+- [ ] use attrdict instead https://pypi.org/project/attrdict/ #TODO @ ([src/utils/classes.py:30](https://github.com/wasi-master/wm_bot/blob/main/src/utils/classes.py#L30))  
+- [ ] Cache #TODO @ ([src/utils/bot.py:147](https://github.com/wasi-master/wm_bot/blob/main/src/utils/bot.py#L147))  
 - [ ] make it sort by usage and return the top 10 #TODO @ ([src/extensions/meta.py:401](https://github.com/wasi-master/wm_bot/blob/main/src/extensions/meta.py#L401))  
 - [ ] same as users #TODO @ ([src/extensions/meta.py:427](https://github.com/wasi-master/wm_bot/blob/main/src/extensions/meta.py#L427))  
 - [ ] there may be a better way to do this #XXX @ ([src/extensions/utility.py:36](https://github.com/wasi-master/wm_bot/blob/main/src/extensions/utility.py#L36))  
