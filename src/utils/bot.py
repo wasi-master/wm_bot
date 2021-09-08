@@ -16,8 +16,10 @@ from discord.ext import commands
 from dotenv import load_dotenv
 from playsound import PlaysoundException, playsound
 
-from utils.classes import BlackListed, Config, CustomEmojis, NoneClass
-from utils.functions import load_json, print_error, read_file
+from utils.classes import Config, CustomEmojis, NoneClass
+from utils.converters import CodeblockConverter
+from utils.functions import load_json, read_file
+from utils.errors import print_error, BlackListed
 
 __all__ = ("WMBot", "WMBotContext")
 
@@ -230,6 +232,31 @@ class WMBot(commands.Bot):
 
         return discord.utils.find(pred, users)
 
+    async def hastebin_upload(self, text: str) -> Union[str, None]:
+        """Uploads the given text to hastebin
+
+        Parameters
+        ----------
+        text : str
+            the text to upload to hastebin
+
+        Returns
+        -------
+        Union[str, None]
+            The URL of the uploaded file or None if the upload failed
+        """
+        req = await self.session.post("https://hastebin.com/documents", data=text)
+        reqjson = None
+        try:
+            reqjson = await req.json()
+            key = reqjson["key"]
+        except (TypeError, KeyError, aiohttp.ContentTypeError):
+            print_error(f"[red]Could not upload error,[/] Raw Data: {reqjson or 'Could not get raw data'}")
+            url = None
+        else:
+            url = f"https://hastebin.com/{key}.txt"
+        return url
+
     async def before_invoke(self, ctx):
         """
         Starts typing in the channel to let the user know that the bot received the command and is working on it.
@@ -350,9 +377,44 @@ class WMBotContext(commands.Context):
         return self.bot.get_user(self.bot.config.owner_ids[0])
 
     async def send(self, *args, **kwargs) -> discord.Message:
-        """Use this to send a message."""
+        """Sends a message
+
+        Parameters
+        ----------
+        *args : tuple
+            Arguments to be passed to discord.abc.Messagable.send or discord.Message.reply
+        **kwargs : dict, optional
+            Keyword Arguments to be passed to discord.abc.Messagable.send or discord.Message.reply
+        no_reply : bool, optional
+            Whether to send a reply or not, by default False
+        no_cloud : bool, optional
+            Whether to upload the content to cloud or not if the content is too long, by default False
+
+
+        Returns
+        -------
+        discord.Message
+            The message that was sent
+
+        Raises
+        --------
+        discord.HTTPException
+            Sending the message failed. If the message was too long,
+            the content would be not uploaded to cloud and this
+            wouldn't be raised unless the no_cloud option is set to True.
+        discord.Forbidden
+            You do not have the proper permissions to send the message.
+        discord.InvalidArgument
+            The files list is not of the appropriate size,
+            you specified both file and files,
+            or you specified both embed and embeds,
+            or the reference object is not a discord.Message,
+            discord.MessageReference or discord.PartialMessage.
+
+        """
         if kwargs.get("no_reply") is True:
-            return await self.send(*args, **kwargs)
+            # If the no_reply flag is set, we don't want to send a reply
+            message = await self.send(*args, **kwargs)
         # Wrapping this in a try/except block because the original message can be deleted.
         # and if it is deleted then we won't be able to reply and it will raise an error
         try:
@@ -361,13 +423,32 @@ class WMBotContext(commands.Context):
         except discord.NotFound:
             # If the original message was deleted, we just send it normally
             message = await self.send(*args, **kwargs, no_reply=True)
+        except discord.HTTPException as error:
+            if kwargs.get("no_upload") is True:
+                # If the no_upload flag is set, we just raise the error instead of uploading
+                raise error
+            # If the content is too large then we send it using hastebin
+            if error.status == 400 and error.code == 50035:
+                # We check if the content was in a codeblock
+                cb = await CodeblockConverter().convert(self, args[0])
+                if cb is None:
+                    # If it's not in a codeblock, we just make a url normally
+                    url = await self.bot.hastebin_upload(args[0])
+                else:
+                    # If it's in a codeblock, we make a url with the code language for syntax highlighting
+                    url = await self.bot.hastebin_upload(cb.content)
+                    url = url + "." + cb.language
+                message = await self.send(embed=discord.Embed(title="Content too long", description=f"Uploaded to cloud: {url}"))
+            else:
+                raise error
+        except Exception as error:
+            raise error
+        # We add the current message to the command_uses dictionary for tracking
+        self.bot.command_uses[self.message] = message
         if not hasattr(self.bot, "command_uses"):
             # If for some reason the command_uses is not there, we just add it
             self.bot.command_uses = {}
-        # We add the current message to the command_uses dictionary for tracking
-        self.bot.command_uses[self.message] = message
-        # We return the message because this is the intended behaviour of commands.Context.send
-        return message
+
 
 
 async def create_db_pool(bot):
