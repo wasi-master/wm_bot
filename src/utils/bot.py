@@ -166,7 +166,7 @@ class WMBot(commands.Bot):
                 yield member
 
     @property
-    def member_count(self) -> List[discord.Member]:
+    def member_count(self) -> int:
         """Use this to get all the members of the bot"""
         return sum([g.member_count for g in self.guilds])
 
