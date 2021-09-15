@@ -2,7 +2,7 @@
 import collections
 import inspect
 import re
-from typing import Deque
+from typing import Deque, Optional
 
 from discord.ext import commands
 
@@ -21,7 +21,7 @@ time_dict = {"h": 3600, "s": 1, "m": 60, "d": 86400, "mo": 2592000}
 class WMBotConverter(commands.Converter):
     """A subclass of commands.Converter to handle parameters."""
 
-    def get_param_name(self, ctx: commands.Context) -> str:
+    def get_param_name(self, ctx: commands.Context) -> Optional[str]:
         """Returns the name of the parameter where the converter was used
 
         Parameters
@@ -31,13 +31,13 @@ class WMBotConverter(commands.Converter):
 
         Returns
         -------
-        str
-            the parameter name
+        Optional[str]
+            the parameter name, or None if not found.
         """
         typehint_regex = rf"(?P<param_name>[A-Za-z_]+)\s*:\s*(?P<module>[A-Za-z_]+\.)?(?P<typehint_class>{self.__class__.__name__})"
         sig = str(inspect.signature(ctx.command.callback))
         param_name = re.search(typehint_regex, sig)
-        return param_name.group("param_name")
+        return param_name.group("param_name") if param_name else "None"
 
 
 class TimeConverter(WMBotConverter):
