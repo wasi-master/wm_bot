@@ -207,8 +207,11 @@ class Errors(commands.Cog):
                     f"Text File Saved: `errors/error_{timestamp}.txt`\n"
                     f"Text File Cloud: {url}",
                 )
-                # We send the error and then delete it after 10 secs
-                await ctx.send(embed=embed, delete_after=10)
+                # We DM the owner the error and then delete it after 10 secs
+                await ctx.owner.send(embed=embed, delete_after=10)
+                await ctx.send(
+                    f"There was a error but the owner has been notified. your error name is `error_{timestamp}`"
+                )
             else:
                 embed = discord.Embed(
                     title="Error Occured",
