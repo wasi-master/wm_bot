@@ -1,6 +1,8 @@
 """A file for all the classes."""
 import json
 
+import attrdict
+
 from discord.ext import commands
 from dataclasses import dataclass
 from .errors import print_error
@@ -27,55 +29,10 @@ class CodeStats:
     docstrings: int = 0
     embeds = 0
 
-# TODO: use attrdict instead https://pypi.org/project/attrdict/
-class Map(dict):
-    """A subclass of dict that allows you to use a dot (.) to get items"""
+# Alias for backwards compatibility
+Map = attrdict.AttrDict
 
-    def __init__(self, *args, **kwargs):
-        super(Map, self).__init__(*args, **kwargs)
-        for arg in args:
-            if isinstance(arg, dict):
-                for key, value in arg.items():
-                    if isinstance(value, dict):
-                        value = Map(value)
-                    if isinstance(value, list):
-                        self.__convert(value)
-                    self[key] = value
-
-        if kwargs:
-            for key, value in kwargs.items():
-                if isinstance(value, dict):
-                    value = Map(value)
-                elif isinstance(value, list):
-                    self.__convert(value)
-                self[key] = value
-
-    def __convert(self, value):
-        for element in range(0, len(value)):
-            if isinstance(value[element], dict):
-                value[element] = Map(value[element])
-            elif isinstance(value[element], list):
-                self.__convert(value[element])
-
-    def __getattr__(self, attr):
-        return self.get(attr)
-
-    def __setattr__(self, key, value):
-        self.__setitem__(key, value)
-
-    def __setitem__(self, key, value):
-        super(Map, self).__setitem__(key, value)
-        self.__dict__.update({key: value})
-
-    def __delattr__(self, item):
-        self.__delitem__(item)
-
-    def __delitem__(self, key):
-        super(Map, self).__delitem__(key)
-        del self.__dict__[key]
-
-
-class Config(Map):
+class Config(attrdict.AttrDict):
     """A class to handle config stuff"""
 
     @classmethod

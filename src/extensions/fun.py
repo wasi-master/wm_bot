@@ -6,8 +6,8 @@ import unicodedata
 from typing import Union
 
 import discord
+from attrdict import AttrDict
 from discord.ext import commands
-from utils.classes import Map
 from utils.functions import (
     closest_smaller,
     compare_date,
@@ -32,8 +32,8 @@ class Fun(commands.Cog):
     async def random_identity(self, ctx, results: int = 1):
         """Sends all details about a randomly generated person that does not exist."""
         async with self.bot.session.get(f"https://randomuser.me/api", params={"results":results}) as r:
-            # We wrap the results inside a Map class to make it easier to access nested data
-            resp = Map(await r.json())
+            # We wrap the results inside a Attrdict to make it easier to access nested data
+            resp = AttrDict(await r.json())
         # We use a list to store the embeds and pass them to the paginator
         embeds = []
         for item in resp.results:

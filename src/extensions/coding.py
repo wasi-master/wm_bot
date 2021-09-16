@@ -10,10 +10,11 @@ from urllib.parse import quote
 
 import discord
 import humanize
+from attrdict import AttrDict
 from bs4 import BeautifulSoup
 from discord.ext import commands
 from rich import print as rprint
-from utils.classes import Map
+from utils.classes import AttrDict
 from utils.functions import split_by_slice
 from utils.paginator import Paginator
 
@@ -143,7 +144,7 @@ class Coding(commands.Cog):
         }
 
         async with self.bot.session.get(url, params=params) as response:
-            data = Map(await response.json())
+            data = AttrDict(await response.json())
         if len(data.items) == 0:
             return await ctx.send("No results found")
 
@@ -184,7 +185,7 @@ class Coding(commands.Cog):
         # using https://api.stackexchange.com/docs/advanced-search
         url = f"https://api.stackexchange.com/2.3/search/advanced?order=desc&sort=activity&title={quote(query)}&site=stackoverflow"
         async with self.bot.session.get(url) as response:
-            data = Map(await response.json())
+            data = AttrDict(await response.json())
         if len(data.items) == 0:
             return await ctx.send("No results found")
         embeds = []
@@ -453,8 +454,8 @@ class Coding(commands.Cog):
         async with self.bot.session.get(url) as response:
             if response.status != 200:
                 return await ctx.send("Could not find repo.")
-            # We wrap it inside a Map so we can use dot notation
-            data = Map(await response.json())
+            # We wrap it inside a AttrDict so we can use dot notation
+            data = AttrDict(await response.json())
         embed = discord.Embed(title=data.full_name, description=data.description, url = data.html_url)
         embed.set_author(name=data.owner.login, icon_url=data.owner.avatar_url)
         if data.license and data.license.name:
