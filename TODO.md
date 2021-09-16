@@ -15,6 +15,8 @@
 - [ ] Should use 2.0 flags #FIXME @ ([src/extensions/text.py:27](https://github.com/wasi-master/wm_bot/blob/main/src/extensions/text.py#L27))  
 - [ ] I don't know how this works but I need to to make it cleaner #HACK @ ([src/extensions/text.py:288](https://github.com/wasi-master/wm_bot/blob/main/src/extensions/text.py#L288))  
 - [ ] use flags #TODO @ ([src/extensions/english.py:55](https://github.com/wasi-master/wm_bot/blob/main/src/extensions/english.py#L55))  
+- [ ] better formatting #TODO @ ([src/extensions/space.py:73](https://github.com/wasi-master/wm_bot/blob/main/src/extensions/space.py#L73))  
+- [ ] better formatting #TODO @ ([src/extensions/space.py:106](https://github.com/wasi-master/wm_bot/blob/main/src/extensions/space.py#L106))  
 - [ ] use cache #TODO @ ([src/extensions/events.py:143](https://github.com/wasi-master/wm_bot/blob/main/src/extensions/events.py#L143))  
 - [ ] Cache #TODO @ ([src/extensions/time.py:106](https://github.com/wasi-master/wm_bot/blob/main/src/extensions/time.py#L106))  
 - [ ] re implement #TODO @ ([src/extensions/fun.py:288](https://github.com/wasi-master/wm_bot/blob/main/src/extensions/fun.py#L288))  
