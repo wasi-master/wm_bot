@@ -15,7 +15,6 @@ from bs4 import BeautifulSoup
 from discord.ext import commands
 from rich import print as rprint
 
-from utils.classes import AttrDict
 from utils.functions import split_by_slice
 from utils.paginator import Paginator
 
