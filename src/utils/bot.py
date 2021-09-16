@@ -108,7 +108,7 @@ class WMBot(commands.Bot):
         self.google_api = async_cse.Search(os.environ["google_search"], session=session)
         self.translate_api = aiogoogletrans.Translator()
         self.aki = Akinator()
-        self.apis = ["OMDB", "tenor", "owlbot", "gender_api"]
+        self.apis = ["OMDB", "tenor", "owlbot", "gender_api", "nasa"]
         self.api_keys = {api: os.environ[api.lower()] for api in self.apis}
 
         # For the snipe command

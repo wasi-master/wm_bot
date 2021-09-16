@@ -27,6 +27,22 @@ After signing in you will be prompted to `Create App`, Click on that and fill ou
 Thats it! Wait for your app to be approved and when it's approved you will get a dashoard like this with all the info!
 ![token page](https://i.imgur.com/RvBr728.png)
 
+## NASA (Optional)
+
+Go to <https://api.nasa.gov>
+
+Scroll down and fill out the form
+
+![form](https://i.imgur.com/8luW8nK.png)
+
+Then press the Sign Up button
+
+![sign up button](https://i.imgur.com/1RJYoIx.png)
+
+Then you'll get your api key
+
+![proof](https://i.imgur.com/wGasLl7.png)
+
 ## Open Weather Map
 
 Sign-up: <https://home.openweathermap.org/users/sign_up>.
@@ -55,7 +71,7 @@ Press `Register for API token` at the top right
 Enter your email address and submit
 ![api_token_register_email](https://i.imgur.com/rEWSxWv.png)
 
-# Gender api
+## Gender api
 
 Go to <https://gender-api.com/en/account?discount=15>
 Fill in the form or sign in via google
