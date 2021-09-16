@@ -6,21 +6,22 @@ import string
 
 import discord
 from discord.ext import commands
+
 from utils.functions import read_file
+
 
 class MadLibs(commands.Cog):
     """The classic [madlibs game](https://en.wikipedia.org/wiki/Mad_Libs)"""
 
     def __init__(self, bot):
         self.bot = bot
-        
+
         # Setup our regex
         self.regex = re.compile(r"\[\[[^\[\]]+\]\]")
 
     @commands.command()
     async def madlibs(self, ctx):
         """Let's play MadLibs!"""
-
 
         # Check if our folder exists
         if not os.path.isdir("assets/madlibs"):
@@ -64,7 +65,7 @@ class MadLibs(commands.Cog):
             vowels = "aeiou"
             # The [2:-2] is there to remove the first [[ and the last ]] used by our syntax
             word = word[2:-2]
-            
+
             # If the word starts with a vowel then we use an instead of a
             is_vowel = word[0].lower() in vowels
             await ctx.channel.send(f"I need a{'n' if is_vowel else ''} **{word}** (word *{i + 1}/{len(words)}*).")
@@ -102,7 +103,6 @@ class MadLibs(commands.Cog):
 
         # Send the result
         await ctx.channel.send(data)
-
 
 
 def setup(bot):

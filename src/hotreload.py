@@ -1,5 +1,6 @@
 """A cog used for reloading other cogs after they're edited
 """
+import datetime
 import os
 import pathlib
 
@@ -8,7 +9,6 @@ from discord.ext import commands, tasks
 from rich.console import Console
 from rich.panel import Panel
 from rich.style import Style
-import datetime
 
 # put your extension names in this list
 # if you don't want them to be reloaded

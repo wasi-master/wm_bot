@@ -14,9 +14,9 @@ import humanize
 from bs4 import BeautifulSoup
 from discord.ext import commands
 from discord.ext.commands import BucketType
-from utils.paginator import Paginator
 
 from utils.functions import get_all_file_paths, get_p
+from utils.paginator import Paginator
 
 
 class Utility(commands.Cog):
@@ -25,7 +25,6 @@ class Utility(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-
     @commands.command(aliases=["redirect", "unshort", "us"])
     async def unshorten(self, ctx, url: str):
         """Got a shortened link? bit.ly? use this command to un shorten the link!
@@ -33,7 +32,7 @@ class Utility(commands.Cog):
         Does not work for websites that do not redirect you to the long url directly.
         """
         async with self.bot.session.get(url, allow_redirects=True) as resp:
-            if resp.url == url: # XXX: there may be a better way to do this
+            if resp.url == url:  # XXX: there may be a better way to do this
                 return await ctx.send("The url didn't redirect me to any website :(")
             result_url = resp.url
 
@@ -70,7 +69,9 @@ class Utility(commands.Cog):
 
         embed = discord.Embed(title=snowflake_id, description="Discord snowflake ID")
         embed.add_field(name="Date created", value=formatted_date, inline=False)
-        embed.add_field(name="Internal worker/process", value=f"{internal_worker_id}/{internal_process_id}", inline=False)
+        embed.add_field(
+            name="Internal worker/process", value=f"{internal_worker_id}/{internal_process_id}", inline=False
+        )
         embed.add_field(name="Internal counter", value=internal_counter, inline=False)
         embed.add_field(name="As user ping", value="<@{}>".format(snowflake_id))
         embed.add_field(name="As channel ping", value="<#{}>".format(snowflake_id))
@@ -81,7 +82,7 @@ class Utility(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command(aliases=["pt"])
-    async def parsetoken(self, ctx, token: Union[discord.Message, str]=None):
+    async def parsetoken(self, ctx, token: Union[discord.Message, str] = None):
         """Parses a token and sends who the token is for
 
         The token can be provided in the message or the message can be a reply to another message containing the token
@@ -93,7 +94,9 @@ class Utility(commands.Cog):
                 return await ctx.send("You need to specify a token to parse or a message to get the token from")
 
         if isinstance(token, discord.Message):
-            token = re.search(r"([a-zA-Z0-9]{24}\.[a-zA-Z0-9]{6}\.[a-zA-Z0-9_\-]{27}|mfa\.[a-zA-Z0-9_\-]{84})", token.content)
+            token = re.search(
+                r"([a-zA-Z0-9]{24}\.[a-zA-Z0-9]{6}\.[a-zA-Z0-9_\-]{27}|mfa\.[a-zA-Z0-9_\-]{84})", token.content
+            )
             if not token:
                 return await ctx.send(f"Couldn't find a token in the message")
             token = token.group()
@@ -169,7 +172,7 @@ class Utility(commands.Cog):
                 await ctx.send(f"Sent by {ctx.author}", embed=emby)
         except Exception as exc:
             if hasattr(exc, "code"):
-                exc: discord.HTTPException # to make my linter shut up
+                exc: discord.HTTPException  # to make my linter shut up
                 if exc.code == 50006:
                     return await ctx.send("Invalid embed (probably empty)")
                 elif exc.code == 50035:
@@ -204,7 +207,7 @@ class Utility(commands.Cog):
             embeds.append(
                 discord.Embed(
                     description=page,
-                    color=role.color or 0x2F3136 ,
+                    color=role.color or 0x2F3136,
                 )
             )
 
@@ -216,7 +219,6 @@ class Utility(commands.Cog):
         """Searches discord terms of service"""
         # I may remove this in the future
         await ctx.send(f"Go to <https://discord.com/terms>. Press Ctrl+F and write {term}")
-
 
     @commands.command()
     async def dice(self, ctx):
@@ -231,7 +233,9 @@ class Utility(commands.Cog):
     @commands.command(
         aliases=["ph", "catch"],
     )
-    async def pokemonhack(self, ctx, channel: Optional[discord.TextChannel] = None, message: Optional[discord.Message]=None):
+    async def pokemonhack(
+        self, ctx, channel: Optional[discord.TextChannel] = None, message: Optional[discord.Message] = None
+    ):
         """Tells you which pokemon it is that has been last spawned by a bot"""
 
         if channel:
@@ -330,8 +334,7 @@ class Utility(commands.Cog):
         emby.set_author(name=result)
         emby.set_image(url=img_url)
         emby.set_footer(
-            text=
-            f"Long press the p!catch {result} on mobile to copy quickly\n\n"
+            text=f"Long press the p!catch {result} on mobile to copy quickly\n\n"
             f"Command Invoked by {ctx.author}\n"
             f"Raw Result: {raw_result}",
             icon_url=ctx.author.avatar.url,
@@ -360,10 +363,9 @@ class Utility(commands.Cog):
         time_required = 0.25 * len(emojis)
         embed = discord.Embed(
             title=f"Saving {self.bot.get_custom_emoji('load.typing')}",
-            description=f"This should take {round(time_required, 2)} seconds", # FIXME: use discord relative time
+            description=f"This should take {round(time_required, 2)} seconds",  # FIXME: use discord relative time
         )
         msg = await ctx.send(embed=embed)
-
 
         ###################
         # The saving part #
@@ -372,7 +374,7 @@ class Utility(commands.Cog):
             name="Progress",
             value=f"0 {get_p(done / (len(emojis) / 100))} {len(emojis)}",
         )
-        for done, item in enumerate(emojis,1):
+        for done, item in enumerate(emojis, 1):
             name = item.name
             ext = "." + str(item.url).rsplit(".")[-1]
 
@@ -384,7 +386,7 @@ class Utility(commands.Cog):
                 time_required = 0.25 * (len(emojis) - done)
                 embed = discord.Embed(
                     title=f"Saving {self.bot.get_custom_emoji('load.typing')}",
-                    description=f"This should take {round(time_required, 2)} more seconds", # FIXME: use discord relative time
+                    description=f"This should take {round(time_required, 2)} more seconds",  # FIXME: use discord relative time
                 )
                 embed.add_field(
                     name="Progress",

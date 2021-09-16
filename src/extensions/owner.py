@@ -5,11 +5,13 @@ import textwrap
 import traceback
 
 import discord
-import utils
 from discord.ext import commands
+
+import utils
 from utils.converters import CodeblockConverter
 from utils.functions import get_agreement
 from utils.paginator import Paginator
+
 
 def insert_returns(body):
     """Inserts return statements"""
@@ -28,13 +30,11 @@ def insert_returns(body):
         insert_returns(body[-1].body)
 
 
-
 class Owner(commands.Cog):
     """Commands only available to be used by the bot owner"""
 
     def __init__(self, bot):
         self.bot = bot
-
 
     @commands.is_owner()
     @commands.group(invoke_without_command=False, aliases=["msg"], name="bot_message")
@@ -90,7 +90,7 @@ class Owner(commands.Cog):
     async def blockfrombot(self, ctx, task: str):
         """Blocks the specified user from using the bot."""
 
-    @blockfrombot.command(name="add", aliases=["a","new"])
+    @blockfrombot.command(name="add", aliases=["a", "new"])
     async def blockfrombot_add(self, ctx, user: discord.User):
         """Adds a new user to the bot's blocked users."""
         await self.bot.db.execute(
@@ -98,7 +98,7 @@ class Owner(commands.Cog):
             INSERT INTO blocks (user_id)
             VALUES ($1);
             """,
-            user.id
+            user.id,
         )
         await ctx.send("Done")
 
@@ -111,7 +111,7 @@ class Owner(commands.Cog):
             WHERE user_id=$1
             RETURNING *;
             """,
-            user.id
+            user.id,
         )
         if not user:
             return await ctx.send("He was not blocked")
@@ -126,7 +126,7 @@ class Owner(commands.Cog):
             FROM blocks
             LIMIT 20;
             """
-            )
+        )
         blocked_users = []
         for i in list_of_users:
             # idk why I do this but idk what to do about it
@@ -226,18 +226,20 @@ class Owner(commands.Cog):
         # We add our current globals to the environment
         env.update(globals())
         # We add a yellow circle to specify that the code is being executed
-        await ctx.message.add_reaction("\U0001f7e1") # 🟡
+        await ctx.message.add_reaction("\U0001f7e1")  # 🟡
 
         exec(compile(parsed, filename="<eval>", mode="exec"), env)
         result = await eval(f"{fn_name}()", env)
         # We add a green circle to indicate that the code was executed successfully and remove the yellow circle
-        await ctx.message.add_reaction("\U0001f7e2") # 🟢
-        await ctx.message.remove_reaction("\U0001f7e1", ctx.me) # 🟡
+        await ctx.message.add_reaction("\U0001f7e2")  # 🟢
+        await ctx.message.remove_reaction("\U0001f7e1", ctx.me)  # 🟡
 
         # We format the result
         parsed_result = None
         if isinstance(result, str):
-            parsed_result = result.replace(self.bot.http.token, "ODczNjA5Njg4NTczNDI3NzQy.YQ66bA.GeWX0EpfT1iYftF7cTJbeJTk1JU")
+            parsed_result = result.replace(
+                self.bot.http.token, "ODczNjA5Njg4NTczNDI3NzQy.YQ66bA.GeWX0EpfT1iYftF7cTJbeJTk1JU"
+            )
         elif isinstance(result, (int, float, bool)):
             parsed_result = str(result)
         elif isinstance(result, (list, dict)):

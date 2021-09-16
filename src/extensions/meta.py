@@ -12,9 +12,9 @@ from discord.ext import commands
 from discord.ext.commands import BucketType
 from tabulate import tabulate
 
+from utils.classes import CodeStats
 from utils.functions import get_random_color, make_permissions, split_by_slice
 from utils.paginator import Paginator
-from utils.classes import CodeStats
 
 
 async def _basic_cleanup_strategy(self, ctx, search):
@@ -70,9 +70,7 @@ class MasterHelp(commands.HelpCommand):
                 filtered = await self.filter_commands(commands, sort=True)
                 if not filtered:
                     continue
-                commands_string = "".join(
-                    f"`{command.qualified_name}`, " for command in filtered
-                )
+                commands_string = "".join(f"`{command.qualified_name}`, " for command in filtered)
                 cogs.append(cog.qualified_name)
                 emb.add_field(
                     name=cog.qualified_name,
@@ -104,18 +102,14 @@ class MasterHelp(commands.HelpCommand):
             command.name,
         )
         if not command_usage is None:
-            embed.add_field(
-                name="Popularity", value=f"Used {command_usage['usage']} times"
-            )
+            embed.add_field(name="Popularity", value=f"Used {command_usage['usage']} times")
         else:
             embed.add_field(name="Popularity", value="Command never used by anyone")
         if not command.help is None:
             embed.description = f"{command.description}\n\n{command.help}"
         else:
             embed.description = command.description or "No help found..."
-        embed.add_field(
-            name="Usage", value=self.get_command_signature(command), inline=False
-        )
+        embed.add_field(name="Usage", value=self.get_command_signature(command), inline=False)
         if (image := command.extras.get("image")) is not None:
             embed.set_image(url=image)
         await self.context.send(embed=embed)
@@ -133,37 +127,31 @@ class MasterHelp(commands.HelpCommand):
         embeds = []
         for entries in split_by_slice(entries, 6):
             embed = discord.Embed(
-                title=f'{group.qualified_name} Commands',
-                description=group.description,
-                colour=discord.Colour.blurple()
+                title=f"{group.qualified_name} Commands", description=group.description, colour=discord.Colour.blurple()
             )
 
             for command in entries:
-                signature = f'{command.qualified_name} {command.signature}'
-                embed.add_field(name=signature, value=command.short_doc or 'No help given...', inline=False)
+                signature = f"{command.qualified_name} {command.signature}"
+                embed.add_field(name=signature, value=command.short_doc or "No help given...", inline=False)
             embed.set_footer(text=f'Use "{self.context.clean_prefix}help command" for more info on a command.')
             embeds.append(embed)
 
         menu = Paginator(embeds=embeds)
         await menu.start(self.context)
 
-
     # !help <cog>
     async def send_cog_help(self, cog):
         items = []
         commands = await self.filter_commands(cog.get_commands())
         for page in split_by_slice(commands, 6):
-            embed = discord.Embed(
-                title=f"{cog.qualified_name} Commands", color=get_random_color()
-            )
+            embed = discord.Embed(title=f"{cog.qualified_name} Commands", color=get_random_color())
             embed.set_footer(
                 text="<x> means the argument x is required\n[x] means the argument x is optional\n[x=y] means the argument x is optional and has a default value of y"
             )
             for command in page:
                 embed.add_field(
                     name=f"__{command.name}__ {command.signature}",
-                    value=(command.help if command.help else command.description)
-                    or "None",
+                    value=(command.help if command.help else command.description) or "None",
                 )
             items.append(embed)
         if len(items) == 1:
@@ -202,12 +190,7 @@ class Meta(commands.Cog):
         await ctx.send(
             embed=discord.Embed(
                 title="Search results for " + cmd,
-                description="\n".join(
-                    [
-                        f"**{index}.**  {command}"
-                        for index, command in enumerate(cmds, start=1)
-                    ]
-                ),
+                description="\n".join([f"**{index}.**  {command}" for index, command in enumerate(cmds, start=1)]),
             )
         )
 
@@ -296,9 +279,7 @@ class Meta(commands.Cog):
         )
         embed.set_author(name="Ping")
         embed.set_footer(text=f"Asked by {ctx.author}")
-        embed.add_field(
-            name="Websocket Latency", value=f"{round(self.bot.latency * 1000)}ms"
-        )
+        embed.add_field(name="Websocket Latency", value=f"{round(self.bot.latency * 1000)}ms")
         message = await ctx.send(embed=embed)
         end = time.time()
         message_ping = (end - start) * 1000
@@ -319,9 +300,7 @@ class Meta(commands.Cog):
     @commands.command(aliases=["info"])
     async def botinfo(self, ctx):
         """Lists some general stats about the bot."""
-        await ctx.send(
-            "Bot made by Wasi Master. Use these commands: `linecount`, `ping`, `help` for more info"
-        )
+        await ctx.send("Bot made by Wasi Master. Use these commands: `linecount`, `ping`, `help` for more info")
 
     @commands.command(
         aliases=["sug", "suggestion", "rep", "report"],
@@ -329,9 +308,7 @@ class Meta(commands.Cog):
     @commands.cooldown(1, 3600, BucketType.user)
     async def suggest(self, ctx, *, suggestion: commands.clean_content):
         if self.bot.config.dm_suggestions:
-            return await self.bot.owner.send(
-                f"Suggestion by {ctx.author}: {suggestion}"
-            )
+            return await self.bot.owner.send(f"Suggestion by {ctx.author}: {suggestion}")
 
         guild = self.bot.get_guild(576016234152198155)
         channel = guild.get_channel(740071107041689631)
@@ -404,19 +381,11 @@ class Meta(commands.Cog):
         for i in command_usage:
             user = self.bot.get_user(i["user_id"])
             dict_command_usage[str(user)] = i["usage"]
-        dict_c_u = list(
-            reversed(sorted(dict_command_usage.items(), key=lambda item: item[1]))
-        )
-        tabular = tabulate(
-            dict_c_u[:10], headers=["User", "Commands Used"], tablefmt="fancy_grid"
-        )
-        await ctx.send(
-            embed=discord.Embed(title="Top 10 Users", description=f"```{tabular}```")
-        )
+        dict_c_u = list(reversed(sorted(dict_command_usage.items(), key=lambda item: item[1])))
+        tabular = tabulate(dict_c_u[:10], headers=["User", "Commands Used"], tablefmt="fancy_grid")
+        await ctx.send(embed=discord.Embed(title="Top 10 Users", description=f"```{tabular}```"))
 
-    @commands.command(
-        aliases=["usg", "usages"], description="Shows usage statistics about commands"
-    )
+    @commands.command(aliases=["usg", "usages"], description="Shows usage statistics about commands")
     @commands.cooldown(1, 10, BucketType.user)
     async def usage(self, ctx):
         command_usage = await self.bot.db.fetch(
@@ -429,15 +398,9 @@ class Meta(commands.Cog):
         dict_command_usage = {}
         for i in command_usage:
             dict_command_usage[i["name"]] = i["usage"]
-        dict_c_u = list(
-            reversed(sorted(dict_command_usage.items(), key=lambda item: item[1]))
-        )
-        tabular = tabulate(
-            dict_c_u[:15], headers=["Name", "Usage"], tablefmt="fancy_grid"
-        )
-        await ctx.send(
-            embed=discord.Embed(title="Top 15 Commands", description=f"```{tabular}```")
-        )
+        dict_c_u = list(reversed(sorted(dict_command_usage.items(), key=lambda item: item[1])))
+        tabular = tabulate(dict_c_u[:15], headers=["Name", "Usage"], tablefmt="fancy_grid")
+        await ctx.send(embed=discord.Embed(title="Top 15 Commands", description=f"```{tabular}```"))
 
     @commands.command(aliases=["upt"])
     async def uptime(self, ctx):
@@ -446,17 +409,11 @@ class Meta(commands.Cog):
         precisedelta = humanize.precisedelta(delta, minimum_unit="seconds")
         naturalday = humanize.naturalday(ctx.bot.started_at)
 
-        naturalday = (
-            "" if naturalday == "today" else f"Bot is online since {naturalday}"
-        )
+        naturalday = "" if naturalday == "today" else f"Bot is online since {naturalday}"
 
-        embed = discord.Embed(
-            description=f"Bot is online for {precisedelta}\n{naturalday}"
-        )
+        embed = discord.Embed(description=f"Bot is online for {precisedelta}\n{naturalday}")
         embed.set_author(name="Bot Uptime")
-        embed.set_footer(
-            text=f"Note: This also means thr bot hasn't been updated for {precisedelta}"
-        )
+        embed.set_footer(text=f"Note: This also means thr bot hasn't been updated for {precisedelta}")
 
         await ctx.send(embed=embed)
 
@@ -488,9 +445,7 @@ class Meta(commands.Cog):
 
         await ctx.send("\n".join(messages), delete_after=10)
 
-    @commands.command(
-        aliases=["botinvite", "inv"]
-    )
+    @commands.command(aliases=["botinvite", "inv"])
     async def invite(self, ctx, bot: discord.Member = None):
         """Send a invite link for the bot. if another bot is specified, sends the invite link for that bot instead"""
         bot = bot or ctx.me
@@ -502,16 +457,14 @@ class Meta(commands.Cog):
             description="**Here are the invites you can choose from:**\n\n",
             color=bot.color,
         )
-        
+
         # These are either classmethods of discord.Permissions or the values of permissions
         perms = [8, "all", "none", 109640, "general", "voice", "text"]
         # We define all the variables
         admin, all_, none, suggested, default, voice, text = (make_permissions(i, oauth_url=bot.id) for i in perms)
         if ctx.guild:
-            current = discord.utils.oauth_url(
-                bot.id, permissions=bot.guild_permissions
-            )
-            
+            current = discord.utils.oauth_url(bot.id, permissions=bot.guild_permissions)
+
         # We make a description
         desc = (
             f'[Administrator]({admin} "Invite link with only the administrator permission")',
@@ -520,9 +473,7 @@ class Meta(commands.Cog):
             else "",
             f'[All Permissions]({all_} "Invite link with all permissions")',
             f'[No Permissions]({none} "Invite link with no permissions")',
-            f'[Suggested Permissions]({suggested} "Invite link with suggested permissions")'
-            if bot == ctx.me
-            else "",
+            f'[Suggested Permissions]({suggested} "Invite link with suggested permissions")' if bot == ctx.me else "",
             f'[Default Permissions]({default} "Invite link with default permissions")',
             f'[Voice Permissions]({voice} "Invite link with all voice related permissions")',
             f'[Text Permissions]({text} "Invite link with text related permissions")',

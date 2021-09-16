@@ -1,19 +1,17 @@
-import time
 import difflib
 import os
 import re
+import time
 
-from rich.console import Console
 import aiohttp
 import discord
-from discord.ext import commands
-
 import rich
+from discord.ext import commands
+from rich.console import Console
 from rich.traceback import Traceback
-from utils.functions import format_name
+
 from utils.errors import BlackListed, print_error
-
-
+from utils.functions import format_name
 
 
 class Errors(commands.Cog):

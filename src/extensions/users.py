@@ -4,12 +4,8 @@ from io import BytesIO
 import discord
 import humanize
 from discord.ext import commands
-from utils.functions import (
-    convert_sec_to_min,
-    get_flag,
-    get_p,
-    get_status,
-)
+
+from utils.functions import convert_sec_to_min, get_flag, get_p, get_status
 
 
 class Users(commands.Cog):
@@ -18,9 +14,7 @@ class Users(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(
-        aliases=["nafk", "unafk", "rafk", "removeafk", "dafk", "disableafk"]
-    )
+    @commands.command(aliases=["nafk", "unafk", "rafk", "removeafk", "dafk", "disableafk"])
     async def notawayfromkeyboard(self, ctx):
         """Removes your afk status"""
         is_afk = await self.bot.db.fetchrow(
@@ -50,7 +44,7 @@ class Users(commands.Cog):
             """,
             ctx.author.id,
             datetime.datetime.utcnow(),
-            reason
+            reason,
         )
 
         await ctx.send(f"You are now afk{' for '+ reason if reason else ''} :)")
@@ -63,9 +57,7 @@ class Users(commands.Cog):
         user = user or ctx.author
         ext = "gif" if user.is_avatar_animated() else "png"
 
-        await ctx.send(
-            file=discord.File(BytesIO(await user.avatar.url.read()), f"{user}.{ext}")
-        )
+        await ctx.send(file=discord.File(BytesIO(await user.avatar.url.read()), f"{user}.{ext}"))
 
     @commands.command(
         aliases=["ui", "whois", "wi", "whoami", "me"],
@@ -86,10 +78,7 @@ class Users(commands.Cog):
         # Badges
         flags = list(member.public_flags.all())
 
-        join_position = (
-            sorted(ctx.guild.members, key=lambda member: member.joined_at).index(member)
-            + 1
-        )
+        join_position = sorted(ctx.guild.members, key=lambda member: member.joined_at).index(member) + 1
         embed = discord.Embed(colour=member.color)
         embed.set_thumbnail(url=member.avatar.url)
         embed.set_author(name=f"{member}", icon_url=member.avatar.url)
@@ -111,13 +100,10 @@ class Users(commands.Cog):
             embed.add_field(
                 name="Join Position",
                 value=f"{join_position:,}/{len(ctx.guild.members):,} "
-                f"({join_position_for_bots:,}/{len(bots):,} in bots)"
+                f"({join_position_for_bots:,}/{len(bots):,} in bots)",
             )
         else:
-            embed.add_field(
-                name="Join Position",
-                value=f"{join_position:,}/{len(ctx.guild.members):,}"
-            )
+            embed.add_field(name="Join Position", value=f"{join_position:,}/{len(ctx.guild.members):,}")
 
         # If the member has badges then we show them
         if len(flags) != 0:
@@ -127,10 +113,7 @@ class Users(commands.Cog):
             try:
                 embed.add_field(
                     name="Last Seen",
-                    value=humanize.precisedelta(
-                        datetime.datetime.utcnow() - status["last_seen"]
-                    )
-                    + " ago",
+                    value=humanize.precisedelta(datetime.datetime.utcnow() - status["last_seen"]) + " ago",
                 )
             except TypeError:
                 pass
@@ -145,7 +128,7 @@ class Users(commands.Cog):
                 f"{get_status(member.desktop_status.name)} Desktop\n"
                 f"{get_status(member.web_status.name)} Web\n"
                 f"{get_status(member.mobile_status.name)} Mobile"
-            )
+            ),
         )
         # We use the discord timestamp formatting to show dates and time
         embed.add_field(
@@ -169,9 +152,7 @@ class Users(commands.Cog):
 
         await ctx.send(embed=embed)
 
-    @commands.command(
-        aliases=["spt"]
-    )
+    @commands.command(aliases=["spt"])
     async def spotify(self, ctx, *, member: discord.Member = None):
         """See your or another users spotify info"""
         member = member or ctx.author
@@ -199,9 +180,7 @@ class Users(commands.Cog):
                 embed.add_field(name="Album", value="None")
 
             if len(str(activity.duration)[2:-7]) > 1:
-                embed.add_field(
-                    name="Song Duration", value=str(activity.duration)[2:-7]
-                )
+                embed.add_field(name="Song Duration", value=str(activity.duration)[2:-7])
 
             embed.add_field(
                 name="Spotify Link",
@@ -210,17 +189,15 @@ class Users(commands.Cog):
             # I don't know why I have this in a try except but I don't wanna remove it
             try:
                 current_time = convert_sec_to_min(
-                    (datetime.datetime.utcnow()- activity.start.replace(tzinfo=None)).total_seconds()
+                    (datetime.datetime.utcnow() - activity.start.replace(tzinfo=None)).total_seconds()
                 )
                 progress_bar = get_p(
-                    (abs((datetime.datetime.utcnow()- activity.start.replace(tzinfo=None)).total_seconds())) /
-                    (abs(((activity.start - activity.end)).total_seconds()) / 100),
-                    length=13
+                    (abs((datetime.datetime.utcnow() - activity.start.replace(tzinfo=None)).total_seconds()))
+                    / (abs(((activity.start - activity.end)).total_seconds()) / 100),
+                    length=13,
                 )
                 total_time = str(activity.duration)[2:-7]
-                embed.add_field(
-                    name="Time", value=f"{current_time} {progress_bar} {total_time}", inline=False
-                )
+                embed.add_field(name="Time", value=f"{current_time} {progress_bar} {total_time}", inline=False)
             except IndexError:
                 pass
             embed.set_footer(text="Track ID: " + activity.track_id)

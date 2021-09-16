@@ -4,12 +4,14 @@ from discord.ext import commands
 
 __all__ = ("BlackListed", "NoAPIKey", "print_error")
 
+
 class BlackListed(commands.CheckFailure):
     """Don't respond if the user is blocked from using the bot."""
 
 
 class NoAPIKey(commands.CheckFailure):
     """The bot owner didn't setup a api key yet."""
+
 
 def print_error(error: str) -> None:
     """Prints a error with formatting

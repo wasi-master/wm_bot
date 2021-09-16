@@ -2,16 +2,15 @@
 import datetime
 import logging
 import os
-import discord
 
+import discord
 from discord.ext import commands
 from playsound import PlaysoundException, playsound
 from rich.console import Console
-from rich.progress import track
 from rich.logging import RichHandler
+from rich.progress import track
 
 from utils.bot import WMBot, create_db_pool
-
 
 blacklisted_extensions = ["abandoned.py"]
 initial_extensions = [
@@ -23,9 +22,8 @@ initial_extensions = [
 
 bot = WMBot()
 console = Console()
-logging.basicConfig(
-    level="INFO", format="%(message)s", datefmt="[%X]", handlers=[RichHandler()]
-)
+logging.basicConfig(level="INFO", format="%(message)s", datefmt="[%X]", handlers=[RichHandler()])
+
 
 async def on_ready():
     """Fires when the bot goes online"""
@@ -89,7 +87,9 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         console.print("[red]Bot Closing[/]")
     except discord.PrivilegedIntentsRequired:
-        console.print("[red]Go to [/][blue]https://discord.com/developers/applications/[/][red] and enable the intents that are required. Currently these are as follows:[/]")
+        console.print(
+            "[red]Go to [/][blue]https://discord.com/developers/applications/[/][red] and enable the intents that are required. Currently these are as follows:[/]"
+        )
     except discord.LoginFailure:
         console.print("[red]The token is most likely incorrect[/]")
     except discord.ConnectionClosed as e:
@@ -102,5 +102,3 @@ if __name__ == "__main__":
         console.print("[red]The API is probably having an outage,[/] [blue]see https://discordstatus.com[/]")
     except Exception as e:
         raise e
-
-

@@ -26,7 +26,6 @@ class Reddit(commands.Cog):
         if len(subreddit.lstrip("r/")) > 21:
             return await ctx.send("Invalid subreddit")
 
-
         base = "https://www.reddit.com/"
         # We generate the url
         if post_filter is None:

@@ -21,7 +21,6 @@ async def synonyms(self, ctx, *, word):
     await ctx.send(embed=embed)
 
 
-
 # Games cog
 import asyncio
 import json
@@ -190,8 +189,6 @@ def setup(bot):
     """Adds the cog to the bot"""
     bot.add_cog(Games(bot))
 
-
-
     @commands.command(aliases=["fe", "fi"])
     @commands.cooldown(1, 10, BucketType.user)
     async def fileinfo(self, ctx, file_extension: str):
@@ -227,11 +224,11 @@ def setup(bot):
         await msg.delete()
 
 
-
 @commands.group(aliases=["dl"], invoke_without_command=False)
 @commands.cooldown(1, 15, BucketType.user)
 async def download(self, ctx):
     pass
+
 
 @download.command(name="mpeg4", aliases=["mp4"])
 @commands.cooldown(1, 15, BucketType.user)
@@ -251,8 +248,7 @@ async def download_mpeg4(self, ctx, url):
     try:
         msg = await self.bot.wait_for(
             "message",
-            check=lambda msg: msg.author == ctx.author
-            and msg.channel == ctx.channel,
+            check=lambda msg: msg.author == ctx.author and msg.channel == ctx.channel,
             timeout=60,
         )
     except asyncio.TimeoutError:
@@ -438,4 +434,3 @@ def setup(bot):
 #                 missed[channel] = "Can't copy this type of channel"
 #     else:
 #         await ctx.send("The bot is not in that server")
-

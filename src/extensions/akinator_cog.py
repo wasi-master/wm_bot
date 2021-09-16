@@ -3,8 +3,9 @@ from typing import Optional
 
 import discord
 from discord.ext import commands
-from utils.functions import button_from_json, get_p
+
 from utils.errors import print_error
+from utils.functions import button_from_json, get_p
 from utils.paginator import Paginator
 
 
@@ -206,7 +207,7 @@ class Akinator(commands.Cog):
 def setup(bot):
     """Adds the cog to the bot"""
     try:
-        import akinator # pylint: disable=import-outside-toplevel
+        import akinator  # pylint: disable=import-outside-toplevel
     except ImportError:
         print_error(
             "You don't have akinator installed. please install all "

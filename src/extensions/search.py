@@ -10,10 +10,11 @@ import wikipedia
 import youtube_dl as ytdl
 from discord.ext import commands
 from discord.ext.commands import BucketType
-from utils.errors import NoAPIKey
-from utils.paginator import Paginator
-from utils.functions import convert_sec_to_min
 from youtubesearchpython.__future__ import VideosSearch
+
+from utils.errors import NoAPIKey
+from utils.functions import convert_sec_to_min
+from utils.paginator import Paginator
 
 
 async def a(m: discord.Message):
@@ -68,7 +69,7 @@ class Search(commands.Cog):
                 title=result.title,
                 description=result.description,
                 url=result.url,
-                color=0x2F3136, # invisible color
+                color=0x2F3136,  # invisible color
             )
             # Sometimes the images are invalid so we are just validating that
             if re.match(r"(http(s?):)(.)*\.(?:jpg|gif|png)", result.image_url):
@@ -183,8 +184,7 @@ class Search(commands.Cog):
         search_term = query
 
         async with self.bot.session.get(
-            f"https://api.tenor.com/v1/search",
-            params={'q': search_term, 'key': apikey, 'contentfilter':'high'}
+            f"https://api.tenor.com/v1/search", params={"q": search_term, "key": apikey, "contentfilter": "high"}
         ) as response:
             gifs = json.loads(await response.text())
             gif = gifs["results"][0]["media"][0]["gif"]["url"]
@@ -199,7 +199,7 @@ class Search(commands.Cog):
 
         await ctx.send(embed=embed)
 
-    @commands.command(aliases=["yti","ytinfo","youtubei","videoinfo","youtubevideoinfo","ytvi","vi"])
+    @commands.command(aliases=["yti", "ytinfo", "youtubei", "videoinfo", "youtubevideoinfo", "ytvi", "vi"])
     @commands.cooldown(1, 10, commands.BucketType.user)
     async def youtubeinfo(self, ctx, video_url: str):
         with ytdl.YoutubeDL({}) as ydl:

@@ -7,15 +7,17 @@ import string
 import unicodedata
 import urllib
 
-from rich import print as rprint
 import discord
 import gtts
 import humanize
+import uwuify
 from better_profanity import profanity
 from discord.ext import commands
 from discord.ext.commands import BucketType
-import uwuify
+from rich import print as rprint
+
 from utils.functions import levenshtein_match_calc, load_json
+
 
 def tts(lang: str, text: str):
     """Generates a tts file"""
@@ -27,6 +29,7 @@ def tts(lang: str, text: str):
 # FIXME: Should use 2.0 flags
 class Font(commands.Converter):
     """A font converter"""
+
     async def convert(self, ctx, argument):
         try:
             if "--" in argument:
@@ -104,7 +107,6 @@ class Text(commands.Cog):
             self.words = (await resp.text()).splitlines()[25:]
         rprint(f"[green]Loaded[/] [yellow]{len(self.words):,}[/] [green]words[/]")
 
-
     @commands.command(aliases=["trc"])
     async def typeracer(self, ctx):
         """See your typing speed"""
@@ -129,7 +131,6 @@ class Text(commands.Cog):
         # We send the message
         bot_message = await ctx.send(f"__**Type the words given below**__\n```{send_text}```")
 
-
         start = bot_message.created_at
         try:
             message = await self.bot.wait_for("message", check=check, timeout=120)
@@ -141,7 +142,9 @@ class Text(commands.Cog):
         acc = levenshtein_match_calc(message.content, correct_text)
         # If the accuracy is less than 70% then the user is most likely trolling
         if acc < 70:
-            return await message.reply("why didn't you write the whole thing? If you can't write why did you use the command 😒?")
+            return await message.reply(
+                "why didn't you write the whole thing? If you can't write why did you use the command 😒?"
+            )
 
         # We calculate his time
         time = (end - start).total_seconds()
@@ -322,7 +325,6 @@ class Text(commands.Cog):
         embed = discord.Embed(title=text, description=result, color=0x2F3136)
         await ctx.send(embed=embed)
 
-
     @commands.command(aliases=["tts"])
     @commands.cooldown(1, 5, BucketType.user)
     async def texttospeech(self, ctx, lang: str, *, text: str):
@@ -340,6 +342,7 @@ class Text(commands.Cog):
     )
     async def charinfo(self, ctx, *, characters: str):
         """Sends information about a character 🤓"""
+
         def to_string(c):
             #  l.append("a")
             digit = f"{ord(c):x}"
@@ -379,11 +382,9 @@ class Text(commands.Cog):
 
         await ctx.send(result)
 
-
     @commands.command(aliases=["cc", "charcount"])
     async def charactercount(self, ctx, *, text):
         await ctx.send(len(text))
-
 
     @commands.command(name="uwuify", aliases=["uwu"], description="uwuifies a given text")
     async def uwuify_(self, ctx, *, text: commands.clean_content):
@@ -394,7 +395,7 @@ class Text(commands.Cog):
         if text is None:
             await ctx.channel.send(
                 f"Usage: `{ctx.prefix}ascii [font (optional)] [text]`\n(font list at http://artii.herokuapp.com/fonts_list)"
-                )
+            )
             return
 
         # Get list of fonts
@@ -422,7 +423,7 @@ class Text(commands.Cog):
 
     @commands.command()
     async def zalgo(self, ctx, *, message):
-        """Ỉ s̰hͨo̹u̳lͪd͆ r͈͍e͓̬a͓͜lͨ̈l̘̇y̡͟ h͚͆a̵͢v͐͑eͦ̓ i͋̍̕n̵̰ͤs͖̟̟t͔ͤ̉ǎ͓͐ḻ̪ͨl̦͒̂ḙ͕͉d͏̖̏ ṡ̢ͬö̹͗m̬͔̌e̵̤͕ a̸̫͓͗n̹ͥ̓͋t̴͍͊̍i̝̿̾̕v̪̈̈͜i̷̞̋̄r̦̅́͡u͓̎̀̿s̖̜̉͌...""" # pylint: disable=line-too-long
+        """Ỉ s̰hͨo̹u̳lͪd͆ r͈͍e͓̬a͓͜lͨ̈l̘̇y̡͟ h͚͆a̵͢v͐͑eͦ̓ i͋̍̕n̵̰ͤs͖̟̟t͔ͤ̉ǎ͓͐ḻ̪ͨl̦͒̂ḙ͕͉d͏̖̏ ṡ̢ͬö̹͗m̬͔̌e̵̤͕ a̸̫͓͗n̹ͥ̓͋t̴͍͊̍i̝̿̾̕v̪̈̈͜i̷̞̋̄r̦̅́͡u͓̎̀̿s̖̜̉͌..."""  # pylint: disable=line-too-long
         words = message.split()
         try:
             iterations = len(words) - 1
@@ -431,7 +432,7 @@ class Text(commands.Cog):
             iterations = 1
 
         # Maximum iteration is 100 times and minimum iteration is 1 time
-        iterations = max(min(iterations, 100),1)
+        iterations = max(min(iterations, 100), 1)
 
         zalgo = " ".join(words)
         for i in range(iterations):

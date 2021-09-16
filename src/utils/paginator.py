@@ -8,7 +8,8 @@ from discord.ext.menus.views import ViewMenu
 
 from .functions import get_custom_emoji
 
-__all__ = ('Paginator')
+__all__ = "Paginator"
+
 
 class Paginator(menus.Menu):
     """Class for the Paginator"""

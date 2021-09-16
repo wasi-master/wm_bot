@@ -4,6 +4,7 @@ from discord.ext import commands
 
 class TTTButton(discord.ui.Button["TicTacToe"]):
     """A button class for managing tic tac toe"""
+
     def __init__(self, x: int, y: int):
         super().__init__(style=discord.ButtonStyle.secondary, label="\u200b", row=y)
         self.x = x
@@ -68,6 +69,7 @@ class TTTButton(discord.ui.Button["TicTacToe"]):
 
 class TTT(discord.ui.View):
     """A view class for managing tic tac toe"""
+
     X = -1
     O = 1
     Tie = 2

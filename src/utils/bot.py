@@ -18,10 +18,11 @@ from playsound import PlaysoundException, playsound
 
 from utils.classes import Config, CustomEmojis, NoneClass
 from utils.converters import CodeblockConverter
+from utils.errors import BlackListed, print_error
 from utils.functions import load_json, read_file
-from utils.errors import print_error, BlackListed
 
 __all__ = ("WMBot", "WMBotContext")
+
 
 async def get_prefix(_bot, message):
     """Use this to fetch the current servers prefix from the db.
@@ -147,7 +148,6 @@ class WMBot(commands.Bot):
         # TODO: Cache
         tempuser = await self.fetch_user(user.id)
         return tempuser.banner.url if tempuser.banner else None
-
 
     @property
     def owner(self) -> discord.User:
@@ -441,7 +441,9 @@ class WMBotContext(commands.Context):
                     # If it's in a codeblock, we make a url with the code language for syntax highlighting
                     url = await self.bot.hastebin_upload(cb.content)
                     url = url + "." + cb.language
-                message = await self.send(embed=discord.Embed(title="Content too long", description=f"Uploaded to cloud: {url}"))
+                message = await self.send(
+                    embed=discord.Embed(title="Content too long", description=f"Uploaded to cloud: {url}")
+                )
             else:
                 raise error
         except Exception as error:
@@ -451,7 +453,6 @@ class WMBotContext(commands.Context):
         if not hasattr(self.bot, "command_uses"):
             # If for some reason the command_uses is not there, we just add it
             self.bot.command_uses = {}
-
 
 
 async def create_db_pool(bot):
@@ -466,7 +467,7 @@ async def create_db_pool(bot):
             ssl=os.environ["ssl"],
         )
     except Exception as e:
-        bot.db = NoneClass('Database is not available, please check your configuration')
+        bot.db = NoneClass("Database is not available, please check your configuration")
         print_error("Could not connect to the database, Most likely because the database credentials are invalid")
     # We try to play a sound to let the user know that the bot is online
     # If the sound playing fails we just ignore it

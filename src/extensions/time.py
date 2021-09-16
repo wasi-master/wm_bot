@@ -7,6 +7,7 @@ from typing import Union
 import discord
 import humanize
 from discord.ext import commands
+
 from utils.converters import TimeConverter
 
 
@@ -68,7 +69,7 @@ class Time(commands.Cog):
             RETURNING *;
             """,
             ctx.author.id,
-            timezone
+            timezone,
         )
         if result:
             if result["timezone"] == timezone:
@@ -113,7 +114,7 @@ class Time(commands.Cog):
             if result is None:
                 embed = discord.Embed(
                     title=f"{location} Has not yet set is location",
-                    description='He needs to set his timezone using the timeset command',
+                    description="He needs to set his timezone using the timeset command",
                     color=14885931,
                 )
                 return await ctx.send(embed=embed)
@@ -124,15 +125,16 @@ class Time(commands.Cog):
             fj = json.loads(await r.text())
 
         # If there was a error then we notify the user
-        if fj.get("error")== "unknown location":
+        if fj.get("error") == "unknown location":
             async with self.bot.session.get("http://worldtimeapi.org/api/timezone") as resp:
                 locations = await resp.json()
             suggestions = difflib.get_close_matches(location, locations, n=5, cutoff=0.3)
             suggestions = "\n".join(suggestions)
-            embed = discord.Embed(title="Unknown Location", description="The location couldn't be found", color=14885931)
+            embed = discord.Embed(
+                title="Unknown Location", description="The location couldn't be found", color=14885931
+            )
             embed.add_field(name="Did you mean?", value=suggestions)
             return await ctx.send(embed=embed)
-
 
         currenttime = datetime.datetime.strptime(fj["datetime"][:-13], "%Y-%m-%dT%H:%M:%S")
         embed = discord.Embed(title="Time", color=0x2F3136)

@@ -3,9 +3,11 @@ from typing import Optional, Union
 
 import discord
 from discord.ext import commands
+
+from utils.converters import TimeConverter
 from utils.functions import find_user_named, format_name, get_agreement
 from utils.paginator import Paginator
-from utils.converters import TimeConverter
+
 
 class Moderation(commands.Cog):
     """commands to help you moderate a server"""
@@ -19,7 +21,9 @@ class Moderation(commands.Cog):
         """Kicks a member from the server."""
 
         if ctx.author.top_role <= member.top_role:
-            return await ctx.send(f"Your top role is lower than or equal to {member}'s top role therefore you cannot kick them")
+            return await ctx.send(
+                f"Your top role is lower than or equal to {member}'s top role therefore you cannot kick them"
+            )
 
         await member.kick(reason=reason)
         await ctx.send(f"Kicked {member.mention}")
@@ -38,7 +42,9 @@ class Moderation(commands.Cog):
     async def ban(self, ctx, member: discord.Member, *, reason=None):
         """Bans a member from the server."""
         if ctx.author.top_role <= member.top_role:
-            return await ctx.send(f"Your top role is lower than or equal to {member}'s top role therefore you cannot ban them")
+            return await ctx.send(
+                f"Your top role is lower than or equal to {member}'s top role therefore you cannot ban them"
+            )
 
         await member.ban(reason=reason)
         await ctx.send(f"Banned {member.mention}")
@@ -79,8 +85,6 @@ class Moderation(commands.Cog):
         else:
             await ctx.guild.unban(discord.Object(id=user))
             await ctx.send("Unbanned the user")
-
-
 
     @commands.group(aliases=["clear", "purge", "c"])
     @commands.guild_only()
@@ -195,7 +199,6 @@ class Moderation(commands.Cog):
 
         await ctx.send(f"Successfully removed {total_reactions} reactions.")
 
-
     @commands.command()
     async def mute(self, ctx, user: discord.Member, reason=None):
         """Mutes a user with a optional reason
@@ -212,7 +215,8 @@ class Moderation(commands.Cog):
                 return await ctx.send(
                     "The server does not have a Muted role and I have no permissions "
                     "to make a muted role. create a Muted role yourself or give me permissions "
-                    "to create a Muted role")
+                    "to create a Muted role"
+                )
             # We edit the permissions for every channel in the server
             failed = []
             done = []
@@ -234,7 +238,8 @@ class Moderation(commands.Cog):
                 return await ctx.send(
                     "I do not have permissions to edit channels to make the muted role work "
                     "Give me the proper permissions or make a muted role yourself add edit each channel "
-                    "in this server and disable permissions for the muted role")
+                    "in this server and disable permissions for the muted role"
+                )
             # If we couldn't set permissions for a few channels, we send a message'
             if failed:
                 return await ctx.send(
@@ -261,7 +266,7 @@ class Moderation(commands.Cog):
 
     @commands.command(aliases=["sd"])
     @commands.has_permissions(manage_channels=True)
-    async def slowmode(self, ctx, channel: Optional[discord.TextChannel]=None, slowmode: TimeConverter=None):
+    async def slowmode(self, ctx, channel: Optional[discord.TextChannel] = None, slowmode: TimeConverter = None):
         """Change the current slowmode of the channel,
 
         The slowmode and channel are optional, slowmode defaults to 5 and channel defaults to the current channel
@@ -304,7 +309,11 @@ class Moderation(commands.Cog):
 
         permstr = ""
         for perm_name, value in dict(member.permissions_in(channel)):
-            emoji = self.bot.get_custom_emoji("validation.green_tick") if value else self.bot.get_custom_emoji("validation.red_tick")
+            emoji = (
+                self.bot.get_custom_emoji("validation.green_tick")
+                if value
+                else self.bot.get_custom_emoji("validation.red_tick")
+            )
             permstr += f"{emoji} {format_name(perm_name)}\n"
 
         embed = discord.Embed(title=f"{member}'s Permissions", description=permstr, color=0x2F3136)
@@ -375,7 +384,9 @@ class Moderation(commands.Cog):
     async def block(self, ctx, user: discord.Member):
         """Blocks a user from chatting in current channel."""
         if ctx.author.top_role <= user.top_role:
-            return await ctx.send(f"Your top role is lower than or equal to {user}'s top role therefore you cannot block them'")
+            return await ctx.send(
+                f"Your top role is lower than or equal to {user}'s top role therefore you cannot block them'"
+            )
         try:
             await ctx.set_permissions(user, send_messages=False)
         except discord.Forbidden:
@@ -386,7 +397,9 @@ class Moderation(commands.Cog):
     async def unblock(self, ctx, user: discord.Member):
         """Unblocks a previously blocked user from the channel"""
         if ctx.author.top_role <= user.top_role:
-            return await ctx.send(f"Your top role is lower than or equal to {user}'s top role therefore you cannot unblock them'")
+            return await ctx.send(
+                f"Your top role is lower than or equal to {user}'s top role therefore you cannot unblock them'"
+            )
         try:
             await ctx.set_permissions(user, send_messages=True)
         except discord.Forbidden:

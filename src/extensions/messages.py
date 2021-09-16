@@ -5,13 +5,14 @@ import re
 import shutil
 from io import StringIO
 from typing import Optional, Union
-from utils.functions import get_all_file_paths
 from zipfile import ZipFile
 
 import discord
 import humanize
 from discord.ext import commands
 from discord.ext.commands import BucketType
+
+from utils.functions import get_all_file_paths
 
 
 class Messages(commands.Cog):
@@ -30,28 +31,28 @@ class Messages(commands.Cog):
             break
         else:
             return await ctx.send("No first message found")
-        
+
         embed = discord.Embed(title=f"First message in #{channel.name}", color=message.author.color or 0x2F3136)
         embed.set_author(name=message.author.name, icon_url=message.author.avatar.url)
-        
+
         embed.add_field(name="Message Content", value=message.content or "No message content", inline=False)
-        
+
         if message.attachments:
             attachments = "\n".join(f"[{i.filename}]({i.url})" for i in message.attachments)
             embed.add_field(name="Attachments", value=attachments, inline=False)
-        
+
         embed.add_field(
             name="Message sent at",
             value=f"{discord.utils.format_dt(message.created_at, 'F')} "
-                  f"({discord.utils.format_dt(message.created_at, 'R')})",
+            f"({discord.utils.format_dt(message.created_at, 'R')})",
         )
         if message.edited_at:
             embed.add_field(
                 name="Message last edited at",
                 value=f"{discord.utils.format_dt(message.edited_at, 'F')} "
-                      f"({discord.utils.format_dt(message.edited_at, 'R')})",
+                f"({discord.utils.format_dt(message.edited_at, 'R')})",
             )
-            
+
         embed.add_field(name="Jump to", value=message.jump_url)
         await ctx.send(embed=embed)
 
@@ -60,12 +61,12 @@ class Messages(commands.Cog):
     async def rawembed(self, ctx, message: discord.Message):
         """Shows raw embed json of a message gotten from the discord API"""
         res = await self.bot.http.get_message(message.channel.id, message.id)
-        
+
         if not res["embeds"]:
             return await ctx.send("No embed found")
-        
+
         data = json.dumps(res["embeds"][0], indent=4)
-        
+
         if len(data) < 2000:
             await ctx.send(f"```json\n{data}```")
         else:
@@ -87,7 +88,7 @@ class Messages(commands.Cog):
 
         res = await self.bot.http.get_message(message.channel.id, message.id)
         data = json.dumps(res, indent=4)
-        
+
         if len(data) < 2000:
             await ctx.send(discord.Embed(title="Jump URL", url=message.jump_url, description=f"```json\n{data}```"))
         else:
@@ -102,7 +103,7 @@ class Messages(commands.Cog):
         """Shows raw json of a channel gotten from the discord API"""
         res = await self.bot.http.get_channel(channel.id)
         data = json.dumps(res, indent=4)
-        
+
         if len(data) < 4000:
             await ctx.send(f"```json\n{data}```")
         else:
@@ -127,7 +128,7 @@ class Messages(commands.Cog):
 
         # We get all the emojis and loop through them
         emos = re.finditer(regex, msg.content)
-        
+
         for index, emo in enumerate(emos):
             ext, name, id = emo
             ext = "gif" if ext == "a" else "png"
@@ -155,13 +156,13 @@ class Messages(commands.Cog):
     @commands.cooldown(1, 5, BucketType.user)
     async def rawprofile(self, ctx, user: Union[discord.Member, discord.User, int]):
         """Shows raw json of a user's profile gotten from the discord API"""
-        
+
         if isinstance(user, discord.Member):
             res = await self.bot.http.get_member(user.guild.id, user.id)
         else:
             user_id = user if isinstance(user, discord.User) else user.id
             res = await self.bot.http.get_user(user_id)
-        
+
         data = json.dumps(res, indent=4)
         if len(data) < 4000:
             await ctx.send(f"```json\n{data}```")
@@ -175,10 +176,10 @@ class Messages(commands.Cog):
     @commands.cooldown(1, 5, BucketType.user)
     async def rawmessage(self, ctx, message: discord.Message):
         """See a raw version of a message
-        
+
         For example if someone sends a cool text formatted with bold/italics and stuff and you wanna copy it but keep the formatting"""
         res = discord.utils.escape_markdown(message.content)
-        
+
         if len(res) > 4000:
             return await ctx.send(
                 "Raw Content too large",
@@ -193,16 +194,16 @@ class Messages(commands.Cog):
         """See someone's messages in a channel, defaults to the command invoker"""
         channel = channel or ctx.channel
         member = user or ctx.author
-        
+
         msg = await ctx.send(f"Loading messages {self.bot.get_custom_emoji('load.typing')}")
-        
+
         messages = await channel.history(limit=500).flatten()
         count = len([x for x in messages if x.author.id == member.id])
         perc = (100 * int(count)) / int(600)
         emb = discord.Embed(
             description=f"{'You' if member == ctx.author else member.name} sent **{count} ({perc}%)** messages in {channel.mention} in the last **500** messages."
         )
-        
+
         await ctx.send(embed=emb)
         await msg.delete()
 
@@ -212,26 +213,26 @@ class Messages(commands.Cog):
         channel = channel or ctx.channel
         res = {}
         limit = min(limit, 1000)
-        
+
         msg = await ctx.send(f"Loading messages {self.bot.get_custom_emoji('load.typing')}")
         # FIXME: use a better way to get the message count
         history = await channel.history(limit=limit).flatten()
         for i in history:
             res[i.author] = {"messages": len([j for j in history if j.author.id == i.author.id])}
-        
+
         lb = sorted(res, key=lambda x: res[x].get("messages", 0), reverse=True)
         oof = ""
         counter = 0
-        
+
         for i in lb:
             counter += 1
             if counter > 10:
                 pass
             else:
                 oof += f"{str(i):<20} :: {res[i]['messages']}\n"
-        
+
         prolog = f"```prolog\n{'User':<20} :: Messages\n\n{oof}```"
-        
+
         emb = discord.Embed(
             description=f"Top {channel.mention} users (last {limit} messages): {prolog}",
             colour=discord.Color.blurple(),

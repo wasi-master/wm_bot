@@ -1,18 +1,24 @@
 """A file for all the classes."""
 import json
+from dataclasses import dataclass
 
 import attrdict
-
 from discord.ext import commands
-from dataclasses import dataclass
+
 from .errors import print_error
 
-__all__ = ('CodeStats', 'Config', 'CustomEmojis', 'Map',)
+__all__ = (
+    "CodeStats",
+    "Config",
+    "CustomEmojis",
+    "Map",
+)
 
 
 @dataclass
 class CodeStats:
     """A class to easily manage code statistics"""
+
     comments: int = 0
     coroutines: int = 0
     characters: int = 0
@@ -29,8 +35,10 @@ class CodeStats:
     docstrings: int = 0
     embeds = 0
 
+
 # Alias for backwards compatibility
 Map = attrdict.AttrDict
+
 
 class Config(attrdict.AttrDict):
     """A class to handle config stuff"""
@@ -47,6 +55,7 @@ class CustomEmojis(Config):
 
     # This does not have any code because this should just be a alias to Config.
     # I know there are better ways to make this an alias but this is well enough.
+
 
 class NoneClass:
     def __init__(self, message):

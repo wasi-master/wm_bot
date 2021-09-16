@@ -4,10 +4,10 @@ import datetime
 import functools
 import json
 import os
+import pprint
 import random
 import re
 from operator import attrgetter
-import pprint
 from typing import Any, AnyStr, Callable, Coroutine, Dict, Iterable, List, Union
 
 import discord
@@ -18,7 +18,6 @@ from rich.console import Console
 from rich.syntax import Syntax
 
 from .classes import CustomEmojis
-
 
 VALID_JSON_TYPES = Union[str, int, bool, list, dict, None]
 
@@ -49,6 +48,7 @@ __all__ = (
     "split_by_slice",
     "write_file",
 )
+
 
 def button_from_json(json_obj: dict, *, cls: Any = discord.ui.Button) -> discord.Button:
     """A function that returns a button from a JSON dictionary
@@ -191,9 +191,7 @@ def find_user_named(users: Iterable[discord.User], name: str) -> discord.User:
 
         # do the actual lookup and return if found
         # if it isn't found then we'll do a full name lookup below.
-        result = discord.utils.get(
-            users, name=name[:-5], discriminator=potential_discriminator
-        )
+        result = discord.utils.get(users, name=name[:-5], discriminator=potential_discriminator)
         if result is not None:
             return result
 
@@ -275,9 +273,7 @@ async def get_agreement(
         return get_bool(response.content)
 
 
-def get_all_customs(
-    obj: Any, syntax_highlighting: bool = False, print_to_console: bool = False
-) -> str:
+def get_all_customs(obj: Any, syntax_highlighting: bool = False, print_to_console: bool = False) -> str:
     """Gets all the custom attributes of the object
 
     Parameters
@@ -311,11 +307,7 @@ def get_all_customs(
         syntax = Syntax(dicted, "python", theme="monokai", line_numbers=True)
         console = Console()
         console.print(syntax)
-    return (
-        ("```python\n" if syntax_highlighting else "")
-        + dicted
-        + ("```" if syntax_highlighting else "")
-    )
+    return ("```python\n" if syntax_highlighting else "") + dicted + ("```" if syntax_highlighting else "")
 
 
 def get_all_file_paths(directory: str) -> List[str]:
@@ -429,10 +421,7 @@ def get_flag(flag: str) -> str:
     elif flag == "bug_hunter_level_2":
         return f"{get_custom_emoji('badges.bug_hunter_2')} | Bug Hunter Level 2"
     elif flag == "verified_bot_developer":
-        return (
-            f"{get_custom_emoji('badges.verified_bot_dev')} |"
-            "Early Verified Bot Developer"
-        )
+        return f"{get_custom_emoji('badges.verified_bot_dev')} |" "Early Verified Bot Developer"
     elif flag == "verified_bot":
         return f"{get_custom_emoji('badges.verified_bot')} | Verified Bot"
     elif flag == "partner":
@@ -503,9 +492,7 @@ async def get_image(
         item = ctx.message.attachments[0].url or ctx.message.attachments[0].proxy_url
 
         if is_image(item):
-            return (
-                ctx.message.attachments[0].proxy_url or ctx.message.attachments[0].url
-            )
+            return ctx.message.attachments[0].proxy_url or ctx.message.attachments[0].url
 
     if item is None:
         return str(ctx.author.avatar.with_format("png"))
@@ -652,9 +639,7 @@ def levenshtein_match_calc(s: Iterable, t: Iterable) -> float:
     return ratio
 
 
-def load_json(
-    filepath: str, *, make_keys_int=False
-) -> Union[Dict[str, VALID_JSON_TYPES], List[VALID_JSON_TYPES]]:
+def load_json(filepath: str, *, make_keys_int=False) -> Union[Dict[str, VALID_JSON_TYPES], List[VALID_JSON_TYPES]]:
     """Reads a file and returns the content
 
     Parameters
@@ -672,9 +657,7 @@ def load_json(
         return {int(k): v for k, v in data.items()} if make_keys_int else data
 
 
-def make_permissions(
-    perm_value: Union[int, str], *, oauth_url: int = None
-) -> discord.Permissions:
+def make_permissions(perm_value: Union[int, str], *, oauth_url: int = None) -> discord.Permissions:
     """Makes a discord.Permissions object from the given value
 
     Examples
@@ -705,9 +688,7 @@ def make_permissions(
         The permission object that was generated
     """
     perm = (
-        discord.Permissions(perm_value)
-        if isinstance(perm_value, int)
-        else getattr(discord.Permissions, perm_value)()
+        discord.Permissions(perm_value) if isinstance(perm_value, int) else getattr(discord.Permissions, perm_value)()
     )
     return discord.utils.oauth_url(oauth_url, permissions=perm) if oauth_url else perm
 

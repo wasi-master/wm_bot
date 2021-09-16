@@ -20,6 +20,7 @@ class Plural:
     >>> f"{Plural(5):match|es}"
     '5 matches'
     """
+
     def __init__(self, value):
         self.value = value
 
@@ -95,13 +96,10 @@ class Random(commands.Cog):
         choices = choices.split(", ").split(",")
         # We generate the embed
         embed = discord.Embed(
-            title="Chosen",
-            description=f"__Choices__: {', '.join(choices)}\n__Chosen__: {random.choice(choices)}"
+            title="Chosen", description=f"__Choices__: {', '.join(choices)}\n__Chosen__: {random.choice(choices)}"
         )
         # We send the embed
         await ctx.send(embed=embed)
-
-
 
     @commands.command(aliases=["rcmd"])
     async def randomcommand(self, ctx):

@@ -16,7 +16,7 @@ class Information(commands.Cog):
     @commands.cooldown(1, 5, BucketType.user)
     async def inviteinfo(self, ctx, invite: commands.InviteConverter):
         """Get information about an invite"""
-        
+
         embed = discord.Embed(
             title=invite.url,
             url=invite.url,
@@ -26,17 +26,17 @@ class Information(commands.Cog):
             f"**Max Age**: {invite.max_age if invite.max_age else 'Unlimited'}\n"
             f"**Max Uses**: {invite.max_uses if invite.max_uses else 'Unlimited'}"
         )
-        
+
         if ctx.guild and self.bot.get_user_named(f"{invite.inviter}#{invite.inviter.discriminator}"):
             embed.set_author(
                 name=f"{invite.inviter}#{invite.inviter.discriminator}",
                 icon_url=invite.inviter.avatar_url,
             )
-        
+
         embed.add_field(name="For Channel", value=invite.channel if invite.channel else "No Channel", inline=False)
         embed.add_field(name="For Server", value=invite.guild, inline=False)
         embed.add_field(name="Inviter", value=invite.inviter, inline=True)
-        
+
         if invite.created_at:
             embed.add_field(
                 name="Created at",
@@ -51,7 +51,7 @@ class Information(commands.Cog):
             )
         else:
             embed.add_field(name="Expires at", value="Never")
-        
+
         embed.add_field(
             name="Server Member count",
             value=invite.approximate_member_count,
@@ -62,16 +62,16 @@ class Information(commands.Cog):
             value=invite.approximate_presence_count,
             inline=True,
         )
-        
+
         await ctx.send(embed=embed)
 
     @commands.command(aliases=["ci", "chi"])
     async def channelinfo(self, ctx, channel: discord.abc.GuildChannel = None):
         """See information about a specific channel."""
         channel = channel or ctx.channel
-        
+
         embed = discord.Embed(color=0x2F3136)
-        
+
         embed.set_author(name=f"Channel Information for {channel.name}")
         if channel.topic:
             embed.add_field(name="Topic", value=channel.topic, inline=False)
@@ -87,14 +87,14 @@ class Information(commands.Cog):
                 name="Slowmode",
                 value=f"{channel.slowmode_delay} seconds ({humanize.naturaldelta(datetime.timedelta(seconds=int(channel.slowmode_delay)))})",
             )
-        
+
         await ctx.send(embed=embed)
 
     @commands.command(aliases=["ri", "rlinf"])
     async def roleinfo(self, ctx, role: discord.Role):
         """See information about a role"""
         embed = discord.Embed(title=f"Role Information for {role.name}", colour=role.colour.value or 0x2F3136)
-        
+
         embed.add_field(name="ID", value=role.id)
         embed.add_field(name="Members", value=len(role.members))
         embed.add_field(
@@ -111,7 +111,7 @@ class Information(commands.Cog):
         )
         embed.add_field(name="Mentionable", value="Yes" if role.mentionable else "No")
         embed.add_field(name="Displayed Separately?", value="Yes" if role.hoist else "No")
-        
+
         await ctx.send(embed=embed)
 
     @commands.command(aliases=["ei", "emoteinfo"])

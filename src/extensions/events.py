@@ -1,10 +1,12 @@
 import datetime
+import logging
 
 import discord
 import humanize
 from discord.ext import commands
+
 from utils.functions import format_name
-import logging
+
 
 class Events(commands.Cog):
     def __init__(self, bot):

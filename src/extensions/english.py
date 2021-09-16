@@ -2,8 +2,9 @@ import json
 
 import discord
 from discord.ext import commands
-from utils.errors import NoAPIKey
+
 from utils.converters import LanguageConverter
+from utils.errors import NoAPIKey
 from utils.functions import load_json
 from utils.paginator import Paginator
 

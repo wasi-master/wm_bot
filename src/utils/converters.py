@@ -34,7 +34,9 @@ class WMBotConverter(commands.Converter):
         Optional[str]
             the parameter name, or None if not found.
         """
-        typehint_regex = rf"(?P<param_name>[A-Za-z_]+)\s*:\s*(?P<module>[A-Za-z_]+\.)?(?P<typehint_class>{self.__class__.__name__})"
+        typehint_regex = (
+            rf"(?P<param_name>[A-Za-z_]+)\s*:\s*(?P<module>[A-Za-z_]+\.)?(?P<typehint_class>{self.__class__.__name__})"
+        )
         sig = str(inspect.signature(ctx.command.callback))
         param_name = re.search(typehint_regex, sig)
         return param_name.group("param_name") if param_name else "None"
@@ -114,8 +116,7 @@ class LanguageConverter(WMBotConverter):
             lang = lang
         else:
             raise commands.BadArgument(
-                f'Converting to "Language" failed for parameter "{self.get_param_name(ctx)}"'
-                f":Unknown language"
+                f'Converting to "Language" failed for parameter "{self.get_param_name(ctx)}"' f":Unknown language"
             )
         if lang == "zh":
             lang = "zh-CN"
@@ -150,13 +151,7 @@ class CodeblockConverter(WMBotConverter):
         for char in argument:
             if char == "`" and not in_code and not in_language:
                 backticks += 1  # to help keep track of closing backticks
-            if (
-                last
-                and last[-1] == "`"
-                and char != "`"
-                or in_code
-                and "".join(last) != "`" * backticks
-            ):
+            if last and last[-1] == "`" and char != "`" or in_code and "".join(last) != "`" * backticks:
                 in_code = True
                 code.append(char)
             if char == "\n":  # \n delimits language and code
@@ -197,8 +192,10 @@ class TagName(WMBotConverter):
             )
         return tag
 
+
 class CustomLiteral(WMBotConverter):
     """Converts to any of the passed literal (case insensitive and shortening supported)"""
+
     def __init__(self, *args):
         super().__init__()
         self.literals = args
@@ -209,7 +206,7 @@ class CustomLiteral(WMBotConverter):
         if argument.lower() in map(str.lower, self.literals):
             return argument
 
-        if (arg := [i for i in self.literals if i.startswith(argument)]):
+        if (arg := [i for i in self.literals if i.startswith(argument)]) :
             if len(arg) > 1:
                 await ctx.send(
                     f"There are more than one possible arguments (`{', '.join(self.literals)}`. "

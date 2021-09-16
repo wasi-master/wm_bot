@@ -8,14 +8,9 @@ from typing import Union
 import discord
 from attrdict import AttrDict
 from discord.ext import commands
-from utils.functions import (
-    closest_smaller,
-    compare_date,
-    get_country_emoji,
-    get_random_color,
-    read_file,
-    split_by_slice,
-)
+
+from utils.functions import (closest_smaller, compare_date, get_country_emoji, get_random_color, read_file,
+                             split_by_slice)
 from utils.paginator import Paginator
 
 
@@ -31,7 +26,7 @@ class Fun(commands.Cog):
     )
     async def random_identity(self, ctx, results: int = 1):
         """Sends all details about a randomly generated person that does not exist."""
-        async with self.bot.session.get(f"https://randomuser.me/api", params={"results":results}) as r:
+        async with self.bot.session.get(f"https://randomuser.me/api", params={"results": results}) as r:
             # We wrap the results inside a Attrdict to make it easier to access nested data
             resp = AttrDict(await r.json())
         # We use a list to store the embeds and pass them to the paginator

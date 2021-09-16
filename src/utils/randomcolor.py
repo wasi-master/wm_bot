@@ -6,7 +6,8 @@ import json
 import random
 import sys
 
-__all__ = ('RandomColor')
+__all__ = "RandomColor"
+
 
 class RandomColor:
     def __init__(self, seed=None):

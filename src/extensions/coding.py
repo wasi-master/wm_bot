@@ -14,6 +14,7 @@ from attrdict import AttrDict
 from bs4 import BeautifulSoup
 from discord.ext import commands
 from rich import print as rprint
+
 from utils.classes import AttrDict
 from utils.functions import split_by_slice
 from utils.paginator import Paginator
@@ -136,11 +137,11 @@ class Coding(commands.Cog):
         url = f"https://api.stackexchange.com/2.3/questions"
 
         params = {
-            "order" : "desc",
+            "order": "desc",
             "sort": "activity",
             "tagged": tag_name,
             "site": "stackoverflow",
-            "filter":"!6VvPDzPz(cfXL"
+            "filter": "!6VvPDzPz(cfXL",
         }
 
         async with self.bot.session.get(url, params=params) as response:
@@ -262,8 +263,7 @@ class Coding(commands.Cog):
             hp = (
                 "Github Profile"
                 if re.match(
-                    r"https://(www\.)?github\.com/[a-z\d](?:[a-z\d]|-(?=[a-z\d])){0,38}/?",
-                    parsed_json["home_page"]
+                    r"https://(www\.)?github\.com/[a-z\d](?:[a-z\d]|-(?=[a-z\d])){0,38}/?", parsed_json["home_page"]
                 )
                 else hp
             )
@@ -456,7 +456,7 @@ class Coding(commands.Cog):
                 return await ctx.send("Could not find repo.")
             # We wrap it inside a AttrDict so we can use dot notation
             data = AttrDict(await response.json())
-        embed = discord.Embed(title=data.full_name, description=data.description, url = data.html_url)
+        embed = discord.Embed(title=data.full_name, description=data.description, url=data.html_url)
         embed.set_author(name=data.owner.login, icon_url=data.owner.avatar_url)
         if data.license and data.license.name:
             embed.add_field(name="License", value=data.license.name)
@@ -469,7 +469,6 @@ class Coding(commands.Cog):
         desc += f"🏠 **Home Page:** {data.homepage}\n" if data.homepage else ""
         embed.description += desc
         await ctx.send(embed=embed)
-
 
     @commands.command(name="npm")
     async def node_package(self, ctx, package_name: str):

@@ -5,6 +5,7 @@ from collections import Counter
 import discord
 from discord.ext import commands
 from discord.ext.commands import BucketType
+
 from utils.functions import format_name, split_by_slice
 from utils.paginator import Paginator
 
@@ -235,7 +236,6 @@ class Server(commands.Cog):
         else:
             return await ctx.send("Invalid Task.send( task should be add or view")
 
-
     @commands.command(aliases=["flags"])
     @commands.cooldown(1, 60, BucketType.user)
     async def badges(self, ctx, server: discord.Guild = None):
@@ -250,7 +250,7 @@ class Server(commands.Cog):
         msg = ""
         count = dict(reversed(sorted(count.items(), key=lambda item: item[1])))
         for k, v in count.items():
-            msg += f'{format_name(k)}: **{v}**\n\n'
+            msg += f"{format_name(k)}: **{v}**\n\n"
 
         embed = discord.Embed()
         embed.set_author(name=f"Badge Count in {guild.name}", icon_url=guild.icon.url)

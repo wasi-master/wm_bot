@@ -4,6 +4,7 @@ import typing
 import asyncdagpi
 import discord
 from discord.ext import commands
+
 from utils.functions import executor_function, get_image, get_random_color
 
 
@@ -17,7 +18,9 @@ class Image(commands.Cog):
     @commands.command(aliases=["qr"], extras={"image": ""})
     async def qrcode(self, ctx, text):
         """Converts the given text to a [qr code](https://en.wikipedia.org/wiki/QR_code)"""
-        async with self.bot.session.get("https://api.qrserver.com/v1/create-qr-code", params={'size':'150x150', 'data':text}) as r:
+        async with self.bot.session.get(
+            "https://api.qrserver.com/v1/create-qr-code", params={"size": "150x150", "data": text}
+        ) as r:
             resp = await r.read()
             await ctx.send(
                 embed=discord.Embed(color=get_random_color(), title="QR Code", description=text).set_image(
@@ -555,7 +558,9 @@ class Image(commands.Cog):
     async def changemymind(self, ctx, *, message):
         message = message.replace(" ", "%20")
 
-        res = await self.bot.session.get(f"https://nekobot.xyz/api/imagegen?type=changemymind", params={'text': message})
+        res = await self.bot.session.get(
+            f"https://nekobot.xyz/api/imagegen?type=changemymind", params={"text": message}
+        )
         res = await res.json()
         res = res["message"]
         em = discord.Embed(color=get_random_color())
@@ -567,7 +572,8 @@ class Image(commands.Cog):
     async def phcomment(self, ctx, member: discord.Member, *, message):
 
         res = await self.bot.session.get(
-            f"https://nekobot.xyz/api/imagegen?type=phcomment&image={member.avatar_url_as(format='png')}&username={member.display_name}", params={'text':message}
+            f"https://nekobot.xyz/api/imagegen?type=phcomment&image={member.avatar_url_as(format='png')}&username={member.display_name}",
+            params={"text": message},
         )
         res = await res.json()
         res = res["message"]

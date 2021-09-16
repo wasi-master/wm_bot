@@ -1,18 +1,18 @@
 import argparse
 import asyncio
+import copy
 import json
 import logging
 import re
+from difflib import get_close_matches
 
 import aiohttp
 import discord
+import rich
 from cli import parser
 from emojis import EMOJIS_JSON
-import rich
 from rich.logging import RichHandler
 from rich.progress import Progress
-import copy
-from difflib import get_close_matches
 
 # You should not change these
 ITEM_REGEX = r"\"(?P<key>\w+)\": \"(?P<emoji><a?:[a-zA-Z0-9_]{2,32}:[0-9]{18,22}>)\""
@@ -42,11 +42,13 @@ else:
 LOGGING_LEVEL = logging.DEBUG if args.debug else LOGGING_LEVEL
 GUILD_ID = None
 
+
 def end():
     try:
         exit()
     except SystemExit:
         pass
+
 
 @client.event
 async def on_ready():
@@ -60,7 +62,9 @@ async def on_ready():
                 guild = discord.utils.get(client.guilds, name=gid)
                 if not guild:
                     possible_guilds = get_close_matches(gid, [g.name for g in client.guilds])
-                    rprint("[orange]Server not found, did you mean one of these?\n" + "\n".join(possible_guilds) + "[/]")
+                    rprint(
+                        "[orange]Server not found, did you mean one of these?\n" + "\n".join(possible_guilds) + "[/]"
+                    )
                 else:
                     GUILD_ID = guild.id
                     break
@@ -113,7 +117,7 @@ async def main():
                         reason=f"Created by emoji_adder.py (Original emoji: {name})",
                     )
             NEW_EMOJIS_JSON = re.sub(EMOJI_REGEX, str(emoji), NEW_EMOJIS_JSON, flags=re.MULTILINE)
-                # print("added")
+            # print("added")
         progress.stop()
 
     try:
