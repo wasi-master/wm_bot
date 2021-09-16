@@ -196,3 +196,28 @@ class TagName(WMBotConverter):
                 f"Tag {argument} doesn't exist"
             )
         return tag
+
+class CustomLiteral(WMBotConverter):
+    """Converts to any of the passed literal (case insensitive and shortening supported)"""
+    def __init__(self, *args):
+        super().__init__()
+        self.literals = args
+
+    async def convert(self, ctx: commands.Context, argument: str) -> str:
+        """Do the actual conversion."""
+        # case insensitive search
+        if argument.lower() in map(str.lower, self.literals):
+            return argument
+
+        if (arg := [i for i in self.literals if i.startswith(argument)]):
+            if len(arg) > 1:
+                await ctx.send(
+                    f"There are more than one possible arguments (`{', '.join(self.literals)}`. "
+                    f"Picked the most possible one"
+                )
+            return arg[0]
+
+        raise commands.BadArgument(
+            f'Converting to "Literal" failed for parameter "{self.get_param_name(ctx)}":'
+            f"Literal {argument} is invalid (should be `{', '.join(self.literals)}`)"
+        )
