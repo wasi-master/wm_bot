@@ -370,36 +370,37 @@ class Meta(commands.Cog):
     @commands.cooldown(1, 10, BucketType.user)
     async def users(self, ctx):
         """Shows the top 10 bot users"""
-        command_usage = await self.bot.db.fetch(
+        db_result = await self.bot.db.fetch(
             """
             SELECT *
-            FROM users;
+            FROM users
+            ORDER BY usage DESC
+            LIMIT 10;
             """
-            # TODO: make it sort by usage and return the top 10
         )
-        dict_command_usage = {}
-        for i in command_usage:
+        command_usages = {}
+        for i in db_result:
             user = self.bot.get_user(i["user_id"])
-            dict_command_usage[str(user)] = i["usage"]
-        dict_c_u = list(reversed(sorted(dict_command_usage.items(), key=lambda item: item[1])))
-        tabular = tabulate(dict_c_u[:10], headers=["User", "Commands Used"], tablefmt="fancy_grid")
+            command_usages[str(user or i["user_id"])] = i["usage"]
+        tabular = tabulate(command_usages.items(), headers=["User", "Commands Used"], tablefmt="fancy_grid")
         await ctx.send(embed=discord.Embed(title="Top 10 Users", description=f"```{tabular}```"))
 
     @commands.command(aliases=["usg", "usages"], description="Shows usage statistics about commands")
     @commands.cooldown(1, 10, BucketType.user)
     async def usage(self, ctx):
-        command_usage = await self.bot.db.fetch(
+        db_result = await self.bot.db.fetch(
             """
             SELECT *
-            FROM usages;
+            FROM usages
+            ORDER BY usage DESC
+            LIMIT 15;
             """
-            # TODO: same as users
         )
-        dict_command_usage = {}
-        for i in command_usage:
-            dict_command_usage[i["name"]] = i["usage"]
-        dict_c_u = list(reversed(sorted(dict_command_usage.items(), key=lambda item: item[1])))
-        tabular = tabulate(dict_c_u[:15], headers=["Name", "Usage"], tablefmt="fancy_grid")
+        command_usages = {}
+        for i in db_result:
+            user = self.bot.get_user(i["name"])
+            command_usages[str(user or i["name"])] = i["usage"]
+        tabular = tabulate(command_usages.items(), headers=["Name", "Usage"], tablefmt="fancy_grid")
         await ctx.send(embed=discord.Embed(title="Top 15 Commands", description=f"```{tabular}```"))
 
     @commands.command(aliases=["upt"])
