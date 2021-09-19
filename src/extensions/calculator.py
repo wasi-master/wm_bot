@@ -10,8 +10,19 @@ from discord.ext import commands
 from utils.errors import print_error
 
 try:
-    from pyparsing import (CaselessLiteral, Combine, Forward, Group, Literal, Optional, Word, ZeroOrMore, alphas, nums,
-                           oneOf)
+    from pyparsing import (
+        CaselessLiteral,
+        Combine,
+        Forward,
+        Group,
+        Literal,
+        Optional,
+        Word,
+        ZeroOrMore,
+        alphas,
+        nums,
+        oneOf,
+    )
 
     HAS_PYPARSING = True
 except ImportError:
