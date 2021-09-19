@@ -1,5 +1,4 @@
 """Main file."""
-import datetime
 import logging
 import os
 
@@ -64,9 +63,6 @@ async def on_ready():
     # We send the bot ready message to the bot owner, just in case
     # if the user is not looking at the terminal but is in discord
     await bot.owner.send(f"Bot ready")
-
-    # We save the bot start time to a variable
-    bot.started_at = datetime.datetime.utcnow()
 
     # We try to play a sound to let the user know that the bot is online
     # If the sound playing fails we just ignore it

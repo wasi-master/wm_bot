@@ -1,5 +1,6 @@
 """File for things releated to the bot."""
 import asyncio
+import datetime
 import os
 from operator import attrgetter
 from typing import Generator, List, Union
@@ -98,6 +99,9 @@ class WMBot(commands.Bot):
 
         # Set the HTTPException error codes dict to a custom property for easy access
         self.httpexception_codes = load_json("assets/data/httpexception_codes.json", make_keys_int=True)
+
+        # We save the bot start time to a variable
+        self.started_at = datetime.datetime.utcnow()
 
         # APIs
         self.cleverbot = async_cleverbot.Cleverbot(
