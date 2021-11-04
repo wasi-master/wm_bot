@@ -146,7 +146,7 @@ class Data(commands.Cog):
         if not apikey:
             raise NoAPIKey
 
-        url = f"http://www.omdbapi.com/?i=tt3896198&apikey={apikey}&t={query}"
+        url = f"http://www.omdbapi.com/?apikey={apikey}&t={query}"
         async with self.bot.session.get(url) as response:
             fj = json.loads(await response.text())
 
