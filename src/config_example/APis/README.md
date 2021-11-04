@@ -3,6 +3,7 @@
 ## Cleverbot
 
 Join the [Travitia API Discord server](https://discord.gg/k496kMS9Z5) and use the `> api` command to request an API key.
+
 ![cleverbot](https://i.imgur.com/3ScHaCj.png)
 
 ## Google Search
