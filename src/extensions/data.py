@@ -153,7 +153,7 @@ class Data(commands.Cog):
         if fj["Response"] == "True":
             embed = discord.Embed(title=fj["Title"], description=fj["Plot"], color=0x2F3136)
             # We use regex to validate the poster since it may sometimes contain an invalid poster
-            if re.search(r"(http(s?):)(.)*\.(?:jpg|gif|png)", fj["Poster"]):
+            if re.search(r"https?:.*\.(?:jpe?g|gif|png)", fj["Poster"]):
                 embed.set_image(url=fj["Poster"])
 
             embed.add_field(name="Released On", value=fj["Released"])
