@@ -146,7 +146,7 @@ class Data(commands.Cog):
         if not apikey:
             raise NoAPIKey
 
-        url = f"http://www.omdbapi.com/?i=tt3896198&apikey={apikey}&t={query}&__cf_chl_captcha_tk__=fca02a1342e0659935058a7d465492ed7a8491d1-1624343613-0-AUWpCsdbhSi8op9Jxs83r0s9SoRB8amrkdvxWqXXL6bcNTep_iKG0g9jjy_7xpxx8BGUvp8FwiI2pvH-ckjcRnsConKxWIsAwTicu1mRxK1CFSbpaTAjVoXjvD_RSCvubRRApIyX8JtUubS_CQHuMHXEvP1Ujf-UWIhlhKKN8kOHffVfTS6UKVcgC8-7P5WZPVb7BsenT_nJjAyDy-PBAZIL7ft30DlMn1IftIOfvzmY1CkMN30mLeY7B2DLo8nUOy7ZxeOeq2n93RnxKjXwA72Ylz92WsRn-Mh5N6zmH3EzXxfFMWeSqrMEwvQfnoaXTNVDr0uVVMXuQ_kWcDt7OfaG5Y7-p6r8K3srRmvy8rTZM739SiVetAcXnb0EO29Di5zA0Ta9vAOVXs0kDgGZI0Y4SYD3UQRV2u95iL7vH9ofW4hRxZjugqLZUD_Y7WZ-wLMaKGOhqAG1CAPlSyeSprE-KF6by43QxOg2czBQeKd24ZpMjtcmhOYCzFBUs1KWlAncU5RzzknFHdsxnFTCsWK3itB2OJz8oRHXQqFSL3oanuClhARZcyrKWf5XYVtdCiWD01uDAQZk6J6dOcvdpkVJgpfugMUAAkS7ehbALP4t4hhhHsDpI61PlfPKg_t-mkWTyDEsC8q7G5wQSD0LhTc5WKsvybqnMso5daiJvy6D"
+        url = f"http://www.omdbapi.com/?i=tt3896198&apikey={apikey}&t={query}"
         async with self.bot.session.get(url) as response:
             fj = json.loads(await response.text())
 
