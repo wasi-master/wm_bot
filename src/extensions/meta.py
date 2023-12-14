@@ -360,7 +360,7 @@ class Meta(commands.Cog):
             location = "src/" + os.path.relpath(filename).replace("\\", "/")
         else:
             location = module.replace(".", "/") + ".py"
-            source_url = "https://github.com/Rapptz/discord.py"
+            source_url = "https://github.com/wasi-master/wm_bot"
             branch = "master"
 
         final_url = f"<{source_url}/blob/{branch}/{location}#L{firstlineno}-L{firstlineno + len(lines) - 1}>\nBe sure to ⭐ star it if you like it"
