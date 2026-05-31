@@ -92,17 +92,14 @@ class MasterHelp(commands.HelpCommand):
                 name="Cooldown",
                 value=f"{round(command._buckets._cooldown.per)} seconds per {command._buckets._cooldown.rate} command{'s' if command._buckets._cooldown.rate > 1 else ''} usage",
             )
-        # OPTIMIZE: cache
-        command_usage = await self.context.bot.db.fetchrow(
-            """
-            SELECT *
-            FROM usages
-            WHERE name = $1;
-            """,
-            command.name,
-        )
-        if not command_usage is None:
-            embed.add_field(name="Popularity", value=f"Used {command_usage['usage']} times")
+        if not hasattr(self.context.bot, "command_usages_cache"):
+            usages = await self.context.bot.db.fetch("SELECT * FROM usages;")
+            self.context.bot.command_usages_cache = {u["name"]: u["usage"] for u in usages}
+            
+        command_usage = self.context.bot.command_usages_cache.get(command.qualified_name, 0)
+        
+        if command_usage > 0:
+            embed.add_field(name="Popularity", value=f"Used {command_usage} times")
         else:
             embed.add_field(name="Popularity", value="Command never used by anyone")
         if not command.help is None:

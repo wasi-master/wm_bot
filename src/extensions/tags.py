@@ -1,5 +1,4 @@
 """File for the tags cog"""
-# FIXME: the db calls need to be fixed
 import datetime
 
 import discord

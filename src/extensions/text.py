@@ -26,18 +26,9 @@ def tts(lang: str, text: str):
     return
 
 
-# FIXME: Should use 2.0 flags
-class Font(commands.Converter):
-    """A font converter"""
-
-    async def convert(self, ctx, argument):
-        try:
-            if "--" in argument:
-                return re.findall(r"--.+\s", argument)[0].strip()
-        except Exception as exc:
-            raise commands.BadArgument("Invalid Font")
-        else:
-            raise commands.BadArgument("No Font")
+class FontFlags(commands.FlagConverter, delimiter=" ", case_insensitive=True):
+    font: str = commands.flag(default=None)
+    text: str = commands.flag(positional=True, default=None)
 
 
 def show_diff(seqm: difflib.SequenceMatcher) -> str:
@@ -289,23 +280,9 @@ class Text(commands.Cog):
 
     @commands.command(description="English to morse")
     async def unmorse(self, ctx, *, text: str):
-        # HACK: I don't know how this works but I need to to make it cleaner
-        message = text
-        message += " "
-        decipher = ""
-        citext = ""
-        for letter in message:
-            if letter != " ":
-                i = 0
-                citext += letter.upper()
-            else:
-                i += 1
-                if i == 2:
-                    decipher += " "
-                else:
-                    decipher += list(self.morse_dict.keys())[list(self.morse_dict.values()).index(citext)]
-                    citext = ""
-        await ctx.send(embed=discord.Embed(title=str(ctx.author), description=decipher, color=0x2F3136))
+        morse_to_char = {v: k for k, v in self.morse_dict.items()}
+        decipher = " ".join("".join(morse_to_char.get(char, "") for char in word.split()) for word in text.split("  "))
+        await ctx.send(embed=discord.Embed(title=str(ctx.author), description=decipher.strip(), color=0x2F3136))
 
     @commands.command(
         aliases=["avs", "abs", "whatdoesitmean" "wdim"],
@@ -392,29 +369,15 @@ class Text(commands.Cog):
         await ctx.send(uwuify.uwu(text))
 
     @commands.command()
-    async def ascii(self, ctx, *, text: str = None):
+    async def ascii(self, ctx, *, flags: FontFlags):
+        text = flags.text
         if text is None:
             await ctx.channel.send(
-                f"Usage: `{ctx.prefix}ascii [font (optional)] [text]`\n(font list at http://artii.herokuapp.com/fonts_list)"
+                f"Usage: `{ctx.prefix}ascii [text] --font [font (optional)]`\n(font list at http://artii.herokuapp.com/fonts_list)"
             )
             return
 
-        # Get list of fonts
-        fonturl = "http://artii.herokuapp.com/fonts_list"
-        async with self.bot.session.get(fonturl) as r:
-            response = await r.text()
-        fonts = response.split()
-
-        font = None
-        # Split text by space - and see if the first word is a font
-        parts = text.split()
-        if len(parts) > 1:
-            # We have enough entries for a font
-            if parts[0] in fonts:
-                # We got a font!
-                font = parts[0]
-                text = " ".join(parts[1:])
-
+        font = flags.font
         url = "http://artii.herokuapp.com/make?{}".format(urllib.parse.urlencode({"text": text}))
         if font:
             url += "&font={}".format(font)

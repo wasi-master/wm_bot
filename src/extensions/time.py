@@ -16,6 +16,7 @@ class Time(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
+        self.timezones_cache = {}
 
     @commands.command()
     async def remind(self, ctx, time: TimeConverter, *, text: str):
@@ -71,6 +72,7 @@ class Time(commands.Cog):
             ctx.author.id,
             timezone,
         )
+        self.timezones_cache[ctx.author.id] = timezone
         if result:
             if result["timezone"] == timezone:
                 embed = discord.Embed(
@@ -104,21 +106,24 @@ class Time(commands.Cog):
 
         # If the item provided is a member then we get their location from the database
         if isinstance(location, discord.Member):
-            # TODO: Cache
-            result = await self.bot.db.fetchrow(
-                """
-                SELECT * FROM timezones
-                WHERE user_id = $1""",
-                location.id,
-            )
-            if result is None:
-                embed = discord.Embed(
-                    title=f"{location} Has not yet set is location",
-                    description="He needs to set his timezone using the timeset command",
-                    color=14885931,
+            if location.id in self.timezones_cache:
+                location = self.timezones_cache[location.id]
+            else:
+                result = await self.bot.db.fetchrow(
+                    """
+                    SELECT * FROM timezones
+                    WHERE user_id = $1""",
+                    location.id,
                 )
-                return await ctx.send(embed=embed)
-            location = result["timezone"]
+                if result is None:
+                    embed = discord.Embed(
+                        title=f"{location} Has not yet set is location",
+                        description="He needs to set his timezone using the timeset command",
+                        color=14885931,
+                    )
+                    return await ctx.send(embed=embed)
+                location = result["timezone"]
+                self.timezones_cache[result["user_id"]] = location
 
         # We get the time
         async with self.bot.session.get(f"http://worldtimeapi.org/api/timezone/{location}") as r:

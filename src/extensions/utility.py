@@ -32,7 +32,7 @@ class Utility(commands.Cog):
         Does not work for websites that do not redirect you to the long url directly.
         """
         async with self.bot.session.get(url, allow_redirects=True) as resp:
-            if resp.url == url:  # XXX: there may be a better way to do this
+            if not resp.history:
                 return await ctx.send("The url didn't redirect me to any website :(")
             result_url = resp.url
 
@@ -100,7 +100,7 @@ class Utility(commands.Cog):
             if not token:
                 return await ctx.send(f"Couldn't find a token in the message")
             token = token.group()
-        user, _, _ = token.split(".")
+        user, timestamp_b64, hmac = token.split(".")
 
         user_id = base64.b64decode(user).decode("utf-8")
         user = await self.bot.fetch_user(user_id)
@@ -113,12 +113,17 @@ class Utility(commands.Cog):
             value=f'{discord.utils.format_dt(user.created_at, "F")} ({discord.utils.format_dt(user.created_at, "R")})',
             inline=False,
         )
-        # FIXME: this does not work
-        # embed.add_field(
-        #     name="Token Creation",
-        #     value=f'{time.strftime("%a, %d %B %Y, %H:%M:%S")}  ({humanize.precisedelta(datetime.datetime.utcnow() - time)})',
-        #     inline=False,
-        # )
+        timestamp_bytes = base64.urlsafe_b64decode(timestamp_b64 + "==")
+        timestamp_int = int.from_bytes(timestamp_bytes, "big")
+        # Handle discord epoch offset for some bot tokens
+        if timestamp_int < 1293840000:
+            timestamp_int += 1293840000
+        
+        embed.add_field(
+            name="Token Creation",
+            value=f"<t:{timestamp_int}:F> (<t:{timestamp_int}:R>)",
+            inline=False,
+        )
 
         await ctx.send(embed=embed)
 
@@ -363,7 +368,7 @@ class Utility(commands.Cog):
         time_required = 0.25 * len(emojis)
         embed = discord.Embed(
             title=f"Saving {self.bot.get_custom_emoji('load.typing')}",
-            description=f"This should take {round(time_required, 2)} seconds",  # FIXME: use discord relative time
+            description=f"This should take <t:{int(datetime.datetime.now().timestamp() + time_required)}:R>",
         )
         msg = await ctx.send(embed=embed)
 
@@ -386,7 +391,7 @@ class Utility(commands.Cog):
                 time_required = 0.25 * (len(emojis) - done)
                 embed = discord.Embed(
                     title=f"Saving {self.bot.get_custom_emoji('load.typing')}",
-                    description=f"This should take {round(time_required, 2)} more seconds",  # FIXME: use discord relative time
+                    description=f"This should take <t:{int(datetime.datetime.now().timestamp() + time_required)}:R>",
                 )
                 embed.add_field(
                     name="Progress",

@@ -3,6 +3,7 @@ import json
 import os
 import re
 import shutil
+from collections import Counter
 from io import StringIO
 from typing import Optional, Union
 from zipfile import ZipFile
@@ -215,10 +216,10 @@ class Messages(commands.Cog):
         limit = min(limit, 1000)
 
         msg = await ctx.send(f"Loading messages {self.bot.get_custom_emoji('load.typing')}")
-        # FIXME: use a better way to get the message count
         history = [m async for m in channel.history(limit=limit)]
-        for i in history:
-            res[i.author] = {"messages": len([j for j in history if j.author.id == i.author.id])}
+        counts = Counter(m.author for m in history)
+        for author, count in counts.items():
+            res[author] = {"messages": count}
 
         lb = sorted(res, key=lambda x: res[x].get("messages", 0), reverse=True)
         oof = ""

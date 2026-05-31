@@ -134,25 +134,23 @@ class Events(commands.Cog):
             prefix = "wm,"
             await message.reply(f"Hi, my prefix is {prefix}", mention_author=False)
 
-        # OPTIMIZE: make it return if there isn't an afk person currently
-        # We use an list just because a person can mention multiple afk people
-        afk_people = []
-        # We check if any person mentioned in the message is afk or not,
-        # if they are we add them to the list
-        for user in message.mentions:
-            # TODO: use cache
-            is_afk = await self.bot.db.fetchrow(
-                """
-                    SELECT *
-                    FROM afk
-                    WHERE user_id=$1;
-                    """,
-                user.id,
-            )
-            afk_people.append(is_afk)
+        if not message.mentions:
+            return
+
+        user_ids = [user.id for user in message.mentions]
+        afk_people = await self.bot.db.fetch(
+            """
+            SELECT *
+            FROM afk
+            WHERE user_id = ANY($1::bigint[]);
+            """,
+            user_ids,
+        )
+
         # If the list is empty then we don't do anything
         if not afk_people:
             return
+            
         # If it is not empty then we notify the person
         for record in afk_people:
             if not record is None:
@@ -172,7 +170,6 @@ class Events(commands.Cog):
         ):
             return
         time_now = datetime.datetime.now(datetime.timezone.utc)
-        # OPTIMIZE: Make it use cache or one db call
         await self.bot.db.execute(
             """
             INSERT INTO status (last_seen, user_id)

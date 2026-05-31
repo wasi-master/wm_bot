@@ -118,8 +118,7 @@ class Users(commands.Cog):
             except TypeError:
                 pass
 
-        # fetch_banner is a custom method
-        embed.set_image(url=await self.bot.fetch_banner(member))
+        embed.set_image(url=member.display_banner.url if member.display_banner else None)
 
         # get_status is a custom method that returns a emoji based on the status
         embed.add_field(

@@ -88,9 +88,18 @@ class Space(commands.Cog):
                 name="Date",
                 value=f"{discord.utils.format_dt(taken_at, 'F')} ({discord.utils.format_dt(taken_at, 'R')})",
             )
-            # TODO: better formatting
+            coords_str = ""
+            for k, v in image["coords"].items():
+                title = k.replace('_', ' ').title()
+                if "lat" in v:
+                    coords_str += f"**{title}**: Lat {v['lat']}, Lon {v['lon']}\n"
+                elif "x" in v:
+                    coords_str += f"**{title}**: X {v.get('x', '')}, Y {v.get('y', '')}, Z {v.get('z', '')}\n"
+                elif "q0" in v:
+                    coords_str += f"**{title}**: Q0 {v.get('q0', '')}, Q1 {v.get('q1', '')}, Q2 {v.get('q2', '')}, Q3 {v.get('q3', '')}\n"
+            
             embed.add_field(
-                name="Coordinates", value=f"```json\n{json.dumps(image['coords'], indent=4)}\n```", inline=False
+                name="Coordinates", value=coords_str or "No coordinates", inline=False
             )
             date = taken_at.strftime("%Y/%m/%d")
             # We use the demo key because this is going in a embed and we don't want people to get our api key
@@ -128,9 +137,13 @@ class Space(commands.Cog):
                 name="Date",
                 value=f"{discord.utils.format_dt(earth_date, 'f')} ({discord.utils.format_dt(earth_date, 'R')})",
             )
-            # TODO: better formatting
-            embed.add_field(name="Rover", value=f"```json\n{json.dumps(image['rover'], indent=4)}\n```", inline=False)
-            embed.add_field(name="Camera", value=f"```json\n{json.dumps(image['rover'], indent=4)}\n```", inline=False)
+            rover = image["rover"]
+            camera = image["camera"]
+            rover_str = f"**Name**: {rover['name']}\n**Status**: {rover['status'].title()}\n**Launch**: {rover['launch_date']}\n**Landing**: {rover['landing_date']}"
+            camera_str = f"**Name**: {camera['full_name']} ({camera['name']})"
+            
+            embed.add_field(name="Rover", value=rover_str, inline=False)
+            embed.add_field(name="Camera", value=camera_str, inline=False)
             embeds.append(embed)
         pag = Paginator(embeds)
         await pag.start(ctx)

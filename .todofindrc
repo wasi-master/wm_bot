@@ -1,6 +1,6 @@
 [TODOFIND]
 format=color
-ignore=src\errors
+ignore=src\errors,src/extensions/abandoned.py
 repo=https://github.com/wasi-master/wm_bot
 branch=main
 gitignore=yes

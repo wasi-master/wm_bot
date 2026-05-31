@@ -8,6 +8,9 @@ from utils.errors import NoAPIKey
 from utils.functions import load_json
 from utils.paginator import Paginator
 
+class TranslateFlags(commands.FlagConverter, delimiter=" ", case_insensitive=True):
+    lang: LanguageConverter = commands.flag(name="lang", default="en")
+    text: str = commands.flag(positional=True)
 
 class English(commands.Cog):
     """Commands for the english language"""
@@ -53,10 +56,13 @@ class English(commands.Cog):
         await pag.start(ctx)
 
     @commands.command(aliases=["tr"])
-    # TODO: use flags
-    async def translate(self, ctx, lang: LanguageConverter = None, *, text: str):
+    async def translate(self, ctx, *, flags: TranslateFlags):
         """Translates a text to another language if specified, defaults to English"""
-        lang = lang or "en"
+        lang = flags.lang or "en"
+        text = flags.text
+        if not text:
+            return await ctx.send("You need to specify text to translate")
+
         result = await ctx.bot.translate_api.translate(text, dest=lang)
         # We get the full language names
         languageconverter = LanguageConverter()

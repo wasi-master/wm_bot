@@ -143,9 +143,7 @@ class WMBot(commands.Bot):
         await super().close()
 
     async def fetch_banner(self, user: discord.User) -> str:
-        # TODO: Cache
-        tempuser = await self.fetch_user(user.id)
-        return tempuser.banner.url if tempuser.banner else None
+        return user.display_banner.url if user.display_banner else None
 
     @property
     def owner(self) -> discord.User:
@@ -269,6 +267,10 @@ class WMBot(commands.Bot):
     async def on_command_completion(self, ctx):
         """Saves the command usage to database"""
         command_name = ctx.command.qualified_name
+        
+        if hasattr(self, "command_usages_cache"):
+            self.command_usages_cache[command_name] = self.command_usages_cache.get(command_name, 0) + 1
+            
         await self.db.execute(
             """
                 INSERT INTO usages (usage, name)

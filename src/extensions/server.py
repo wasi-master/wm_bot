@@ -176,64 +176,64 @@ class Server(commands.Cog):
         paginator = Paginator(embeds)
         await paginator.start(ctx)
 
-    @commands.command(description="Adds a emoji from https://emoji.gg to your server")
-    @commands.has_permissions(manage_emojis=True)
-    async def emoji(self, ctx, task: str, emoji_name: str):
-        # TODO: Add subcommands
-        if len(ctx.bot.emoji_list) == 0:
+    async def get_emoji_from_api(self, ctx, emoji_name: str):
+        if not hasattr(ctx.bot, "emoji_list") or len(ctx.bot.emoji_list) == 0:
             msg1 = await ctx.send(f"Loading emojis {self.bot.get_custom_emoji('load.typing')}")
 
             async with self.bot.session.get("https://emoji.gg/api") as resp:
                 ctx.bot.emoji_list = json.loads(await resp.text())
-                fj = ctx.bot.emoji_list
             await msg1.delete()
-            ctx.bot.emoji_list_str = [i["title"].lower() for i in fj]
+            ctx.bot.emoji_list_str = [i["title"].lower() for i in ctx.bot.emoji_list]
 
-        emoji_from_api = None
-        if task == "view" or task == "add":
-            for i in ctx.bot.emoji_list:
-                if i["title"].lower() == emoji_name.lower():
-                    emoji_from_api = i
-                    break
-                else:
-                    continue
-            if emoji_from_api is None:
-                embed = discord.Embed(
-                    title="Emoji not found",
-                    description=f"Did you mean any of these?\n{', '.join(difflib.get_close_matches(emoji_name.lower(), ctx.bot.emoji_list_str, n=5, cutoff=0.2))}",
-                    color=0x2F3136,
-                )
-                return await ctx.send(embed=embed)
-            else:
-                if task == "view":
-                    embed = discord.Embed(
-                        title=emoji_name,
-                        url=emoji_from_api["image"].replace("discordemoji.com", "emoji.gg"),
-                        color=0x2F3136,
-                    )
-                    embed.add_field(name="Author", value=emoji_from_api["submitted_by"])
-                    # await ctx.send(f"""```{emoji_from_api['image']].replace("discordemoji.com".send("emoji.gg")}```""")
-                    embed.set_thumbnail(url=emoji_from_api["image"].replace("discordemoji.com", "emoji.gg"))
-                    embed.set_image(url=emoji_from_api["image"].replace("discordemoji.com", "emoji.gg"))
-                    embed.set_footer(
-                        text="Because of a discord bug, we may bot be able to show the emoji as a big image, so here is the small version",
-                        icon_url=emoji_from_api["image"],
-                    )
-                    await ctx.send(embed=embed)
-                elif task == "add":
-                    if not ctx.author.guild_permissions.manage_emojis:
-                        return await ctx.send(
-                            "You don't have the Manage Emojis permission to add a emoji to this server"
-                        )
+        emoji_from_api = next((i for i in ctx.bot.emoji_list if i["title"].lower() == emoji_name.lower()), None)
+        
+        if emoji_from_api is None:
+            embed = discord.Embed(
+                title="Emoji not found",
+                description=f"Did you mean any of these?\n{', '.join(difflib.get_close_matches(emoji_name.lower(), ctx.bot.emoji_list_str, n=5, cutoff=0.2))}",
+                color=0x2F3136,
+            )
+            await ctx.send(embed=embed)
+            return None
+        return emoji_from_api
 
-                    async with self.bot.session.get(emoji_from_api["image"]) as r:
-                        try:
-                            emoji = await ctx.guild.create_custom_emoji(name=emoji_name, image=await r.read())
-                            await ctx.send(f"Emoji {emoji} added succesfully :)")
-                        except discord.Forbidden:
-                            await ctx.send("Unable to add emoji, check my permissions and try again")
-        else:
-            return await ctx.send("Invalid Task.send( task should be add or view")
+    @commands.group(description="Adds or views a emoji from https://emoji.gg to your server", invoke_without_command=True)
+    async def emoji(self, ctx):
+        await ctx.send_help(ctx.command)
+
+    @emoji.command(name="view")
+    async def emoji_view(self, ctx, emoji_name: str):
+        emoji_from_api = await self.get_emoji_from_api(ctx, emoji_name)
+        if not emoji_from_api:
+            return
+            
+        embed = discord.Embed(
+            title=emoji_name,
+            url=emoji_from_api["image"].replace("discordemoji.com", "emoji.gg"),
+            color=0x2F3136,
+        )
+        embed.add_field(name="Author", value=emoji_from_api["submitted_by"])
+        embed.set_thumbnail(url=emoji_from_api["image"].replace("discordemoji.com", "emoji.gg"))
+        embed.set_image(url=emoji_from_api["image"].replace("discordemoji.com", "emoji.gg"))
+        embed.set_footer(
+            text="Because of a discord bug, we may bot be able to show the emoji as a big image, so here is the small version",
+            icon_url=emoji_from_api["image"],
+        )
+        await ctx.send(embed=embed)
+
+    @emoji.command(name="add")
+    @commands.has_permissions(manage_emojis=True)
+    async def emoji_add(self, ctx, emoji_name: str):
+        emoji_from_api = await self.get_emoji_from_api(ctx, emoji_name)
+        if not emoji_from_api:
+            return
+            
+        async with self.bot.session.get(emoji_from_api["image"]) as r:
+            try:
+                emoji = await ctx.guild.create_custom_emoji(name=emoji_name, image=await r.read())
+                await ctx.send(f"Emoji {emoji} added succesfully :)")
+            except discord.Forbidden:
+                await ctx.send("Unable to add emoji, check my permissions and try again")
 
     @commands.command(aliases=["flags"])
     @commands.cooldown(1, 60, BucketType.user)
