@@ -173,34 +173,15 @@ class Events(commands.Cog):
             return
         time_now = datetime.datetime.now(datetime.timezone.utc)
         # OPTIMIZE: Make it use cache or one db call
-        status = await self.bot.db.fetchrow(
+        await self.bot.db.execute(
             """
-                SELECT *
-                FROM status
-                WHERE user_id=$1
-                """,
+            INSERT INTO status (last_seen, user_id)
+            VALUES ($1, $2)
+            ON CONFLICT (user_id) DO UPDATE SET last_seen = EXCLUDED.last_seen;
+            """,
+            time_now,
             new.id,
         )
-
-        if status is None:
-            await self.bot.db.execute(
-                """
-                        INSERT INTO status (last_seen, user_id)
-                        VALUES ($1, $2)
-                        """,
-                time_now,
-                new.id,
-            )
-        else:
-            await self.bot.db.execute(
-                """
-                    UPDATE status
-                    SET last_seen = $2
-                    WHERE user_id = $1;
-                    """,
-                new.id,
-                time_now,
-            )
 
 
 async def setup(bot):

@@ -15,35 +15,15 @@ class Economy(commands.Cog):
         self.celebs = read_file("assets/data/celebs.json")
 
     async def get_account(self, user):
-        info = await self.db.fetchrow(
+        return await self.db.fetchrow(
             """
-            SELECT *
-            FROM economy
-            WHERE user_id=$1
+            INSERT INTO economy (user_id, wallet, bank, inventory)
+            VALUES ($1, 0, 0, '{}')
+            ON CONFLICT (user_id) DO UPDATE SET user_id = EXCLUDED.user_id
+            RETURNING *;
             """,
             user,
         )
-        if info is None:
-            await self.db.execute(
-                """
-                    INSERT INTO economy (user_id, wallet, bank, inventory)
-                    VALUES ($1, $2, $3, $4)
-                """,
-                user,
-                0,
-                0,
-                "{}",
-            )
-            return await self.db.fetchrow(
-                """
-                SELECT *
-                FROM economy
-                WHERE user_id=$1
-                """,
-                user,
-            )
-        else:
-            return info
 
     @commands.command(aliases=["bal"])
     async def balance(self, ctx, user: discord.User = None):
@@ -68,18 +48,15 @@ class Economy(commands.Cog):
         if amount > info["bank"]:
             await ctx.send("Can't withdraw more than you have in your bank")
             return
-        bank = info["bank"] - amount
-        wallet = info["wallet"] + amount
         await self.db.execute(
             """
                 UPDATE economy
-                SET wallet = $2,
-                    bank   = $3
+                SET wallet = wallet + $2,
+                    bank   = bank - $2
                 WHERE user_id = $1;
                 """,
             ctx.author.id,
-            wallet,
-            bank,
+            amount,
         )
         await ctx.send(f"{amount} coins withdrawn")
 
@@ -98,18 +75,15 @@ class Economy(commands.Cog):
         if amount > info["wallet"]:
             await ctx.send("Can't withdraw more than you have in your wallet")
             return
-        bank = info["bank"] + amount
-        wallet = info["wallet"] - amount
         await self.db.execute(
             """
                 UPDATE economy
-                SET wallet = $2,
-                    bank   = $3
+                SET wallet = wallet - $2,
+                    bank   = bank + $2
                 WHERE user_id = $1;
                 """,
             ctx.author.id,
-            wallet,
-            bank,
+            amount,
         )
         await ctx.send(f"{amount} coins deposited")
 
@@ -120,16 +94,15 @@ class Economy(commands.Cog):
             return await ctx.send(random.choice(self.celebs) + " said he doesn't want to give you money")
         amount = random.randint(1, 500)
         info = await self.get_account(ctx.author.id)
-        wallet = info["wallet"] + amount
         celeb = random.choice(self.celebs)
         await self.db.execute(
             """
                 UPDATE economy
-                SET wallet = $2
+                SET wallet = wallet + $2
                 WHERE user_id = $1;
                 """,
             ctx.author.id,
-            wallet,
+            amount,
         )
         await ctx.send(f"{celeb} gave you {amount} coins")
 
@@ -145,25 +118,23 @@ class Economy(commands.Cog):
             amount = random.randint(1, user_account["wallet"])
         else:
             amount = random.randint(1, 1000)
-        wallet = author_account["wallet"] + amount
         await self.db.execute(
             """
                 UPDATE economy
-                SET wallet = $2
+                SET wallet = wallet + $2
                 WHERE user_id = $1;
                 """,
             ctx.author.id,
-            wallet,
+            amount,
         )
-        wallet = user_account["wallet"] - amount
         await self.db.execute(
             """
                 UPDATE economy
-                SET wallet = $2
+                SET wallet = wallet - $2
                 WHERE user_id = $1;
                 """,
             user.id,
-            wallet,
+            amount,
         )
         await ctx.send(f"You stole {amount} coins from {user.name}")
 
@@ -178,25 +149,23 @@ class Economy(commands.Cog):
         if amount > user_account["wallet"]:
             await ctx.send("You don't have enough money")
             return
-        wallet = author_account["wallet"] + amount
         await self.db.execute(
             """
                 UPDATE economy
-                SET wallet = $2
+                SET wallet = wallet + $2
                 WHERE user_id = $1;
                 """,
             user.id,
-            wallet,
+            amount,
         )
-        wallet = user_account["wallet"] - amount
         await self.db.execute(
             """
                 UPDATE economy
-                SET wallet = $2
+                SET wallet = wallet - $2
                 WHERE user_id = $1;
                 """,
             ctx.author.id,
-            wallet,
+            amount,
         )
         await ctx.send(f"You gave {amount} coins to {user.name}")
 

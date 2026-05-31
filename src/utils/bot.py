@@ -45,27 +45,18 @@ async def get_prefix(_bot, message):
     if message.author == _bot.owner:
         return _bot.config.owner_prefix
 
-    prefix_for_this_guild = await _bot.db.fetchrow(
+    prefix_for_this_guild = await _bot.db.fetchval(
         """
-            SELECT prefix
-            FROM guilds
-            WHERE id=$1
+            INSERT INTO guilds (id, prefix)
+            VALUES ($1, $2)
+            ON CONFLICT (id) DO UPDATE SET id = guilds.id
+            RETURNING prefix;
             """,
         message.guild.id,
+        _bot.config.default_prefix,
     )
 
-    if prefix_for_this_guild is None:
-        await _bot.db.execute(
-            """
-                INSERT INTO guilds (id, prefix)
-                VALUES ($1, $2)
-                """,
-            message.guild.id,
-            ",",
-        )
-        prefix_for_this_guild = {"prefix": _bot.config.default_prefix}
-
-    prefix_return = str(prefix_for_this_guild["prefix"])
+    prefix_return = str(prefix_for_this_guild)
     return commands.when_mentioned_or(prefix_return)(_bot, message)
 
 
@@ -278,35 +269,14 @@ class WMBot(commands.Bot):
     async def on_command_completion(self, ctx):
         """Saves the command usage to database"""
         command_name = ctx.command.qualified_name
-        usage = await self.db.fetchrow(
+        await self.db.execute(
             """
-                SELECT usage
-                FROM usages
-                WHERE name=$1
+                INSERT INTO usages (usage, name)
+                VALUES (1, $1)
+                ON CONFLICT (name) DO UPDATE SET usage = usages.usage + 1;
                 """,
             command_name,
         )
-        if usage is None:
-            await self.db.execute(
-                """
-                    INSERT INTO usages (usage, name)
-                    VALUES ($1, $2)
-                    """,
-                1,
-                command_name,
-            )
-        else:
-            usage = usage["usage"]
-            usage += 1
-            await self.db.execute(
-                """
-                    UPDATE usages
-                    SET usage = $2
-                    WHERE name = $1;
-                    """,
-                command_name,
-                usage,
-            )
 
     async def on_command(self, ctx):
         """Saves the details about the user of the command
@@ -317,35 +287,14 @@ class WMBot(commands.Bot):
             a command is being invoked under.
         """
         user_id = ctx.author.id
-        usage = await self.db.fetchrow(
+        await self.db.execute(
             """
-                SELECT usage
-                FROM users
-                WHERE user_id=$1
+                INSERT INTO users (usage, user_id)
+                VALUES (1, $1)
+                ON CONFLICT (user_id) DO UPDATE SET usage = users.usage + 1;
                 """,
             user_id,
         )
-        if usage is None:
-            await self.db.execute(
-                """
-                    INSERT INTO users (usage, user_id)
-                    VALUES ($1, $2)
-                    """,
-                1,
-                user_id,
-            )
-        else:
-            usage = usage["usage"]
-            usage += 1
-            await self.db.execute(
-                """
-                    UPDATE users
-                    SET usage = $2
-                    WHERE user_id = $1;
-                    """,
-                user_id,
-                usage,
-            )
 
     async def bot_check(self, ctx):
         """Checks if the user is blocked
