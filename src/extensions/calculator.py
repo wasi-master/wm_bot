@@ -161,10 +161,10 @@ class Calculator(commands.Cog):
         await ctx.send(f"{formula} = {answer}")
 
 
-def setup(bot):
+async def setup(bot):
     """Adds the cog to the bot"""
     if HAS_PYPARSING:
-        bot.add_cog(Calculator(bot))
+        await bot.add_cog(Calculator(bot))
     else:
         print_error(
             "You don't have [yellow]pyparsing[/] installed. please install all "

@@ -51,7 +51,7 @@ class Anime(commands.Cog):
                 return await message.remove_reaction("\u2764\ufe0f", ctx.guild.me)
         else:
             if str(reaction.emoji) == "\u2764\ufe0f":
-                embed.set_footer(icon_url=ctx.author.avatar.url, text=f"Claimed by {ctx.author.name}")
+                embed.set_footer(icon_url=ctx.author.display_avatar.url, text=f"Claimed by {ctx.author.name}")
                 await message.edit(embed=embed)
                 return await ctx.send(
                     f":couple_with_heart: {ctx.author.mention} is now married with"
@@ -59,6 +59,6 @@ class Anime(commands.Cog):
                 )
 
 
-def setup(bot):
+async def setup(bot):
     """Adds the cog to the bot"""
-    bot.add_cog(Anime(bot))
+    await bot.add_cog(Anime(bot))

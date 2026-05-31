@@ -136,5 +136,5 @@ class Space(commands.Cog):
         await pag.start(ctx)
 
 
-def setup(bot):
-    bot.add_cog(Space(bot))
+async def setup(bot):
+    await bot.add_cog(Space(bot))

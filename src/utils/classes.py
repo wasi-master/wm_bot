@@ -2,7 +2,6 @@
 import json
 from dataclasses import dataclass
 
-import attrdict
 from discord.ext import commands
 
 from .errors import print_error
@@ -13,6 +12,32 @@ __all__ = (
     "CustomEmojis",
     "Map",
 )
+
+
+class AttrDict(dict):
+    """A dictionary subclass that allows attribute-style access.
+
+    Replaces the unmaintained `attrdict` package which is incompatible with Python 3.10+.
+    """
+
+    def __getattr__(self, key):
+        try:
+            value = self[key]
+        except KeyError:
+            raise AttributeError(f"'AttrDict' object has no attribute '{key}'")
+        if isinstance(value, dict) and not isinstance(value, AttrDict):
+            value = AttrDict(value)
+            self[key] = value
+        return value
+
+    def __setattr__(self, key, value):
+        self[key] = value
+
+    def __delattr__(self, key):
+        try:
+            del self[key]
+        except KeyError:
+            raise AttributeError(f"'AttrDict' object has no attribute '{key}'")
 
 
 @dataclass
@@ -37,10 +62,10 @@ class CodeStats:
 
 
 # Alias for backwards compatibility
-Map = attrdict.AttrDict
+Map = AttrDict
 
 
-class Config(attrdict.AttrDict):
+class Config(AttrDict):
     """A class to handle config stuff"""
 
     @classmethod

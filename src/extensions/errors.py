@@ -221,6 +221,6 @@ class Errors(commands.Cog):
                 await ctx.send(embed=embed, delete_after=120)
 
 
-def setup(bot):
+async def setup(bot):
     """Adds the cog to the bot"""
-    bot.add_cog(Errors(bot))
+    await bot.add_cog(Errors(bot))

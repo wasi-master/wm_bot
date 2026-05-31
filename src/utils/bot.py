@@ -78,14 +78,13 @@ class WMBot(commands.Bot):
             members=True,
             presences=True,
             guilds=True,
-            emojis=True,
+            emojis_and_stickers=True,
             invites=True,
             messages=True,
             reactions=True,
             voice_states=True,
+            message_content=True,
         )
-        loop = asyncio.get_event_loop()
-        session = aiohttp.ClientSession(loop=loop)
 
         # Load all the environment variables
         load_dotenv("config/Bot/token.env")
@@ -101,16 +100,14 @@ class WMBot(commands.Bot):
         self.httpexception_codes = load_json("assets/data/httpexception_codes.json", make_keys_int=True)
 
         # We save the bot start time to a variable
-        self.started_at = datetime.datetime.utcnow()
+        self.started_at = datetime.datetime.now(datetime.timezone.utc)
 
         # APIs
-        self.cleverbot = async_cleverbot.Cleverbot(
-            os.environ["cleverbot"],
-            session=session,
-            context=async_cleverbot.DictContext(),
-        )
-        self.dagpi = asyncdagpi.Client(os.environ["dagpi"])
-        self.google_api = async_cse.Search(os.environ["google_search"], session=session)
+        # Initialize these as None here; they will be set up in setup_hook
+        self.session = None
+        self.cleverbot = None
+        self.dagpi = asyncdagpi.Client(os.environ.get("dagpi", ""))
+        self.google_api = None
         self.translate_api = aiogoogletrans.Translator()
         self.aki = Akinator()
         self.apis = ["OMDB", "tenor", "owlbot", "gender_api", "nasa"]
@@ -122,15 +119,10 @@ class WMBot(commands.Bot):
         # For tracking commands
         self.command_uses = {}
 
-        # For api requests
-        self.session = session
-
         super().__init__(
             command_prefix=get_prefix,
             case_insensitive=True,
             intents=intents,
-            session=session,
-            loop=specified_loop or loop,
             strip_after_prefix=True,
             owner_ids=self.config.owner_ids,
         )
@@ -138,7 +130,18 @@ class WMBot(commands.Bot):
         # For before_invoke
         self._before_invoke = self.before_invoke
         # For blacklisted check
-        self._checks.append(self.bot_check)
+        self.add_check(self.bot_check)
+
+    async def setup_hook(self) -> None:
+        """Async initialization for the bot."""
+        self.session = aiohttp.ClientSession()
+        
+        self.cleverbot = async_cleverbot.Cleverbot(
+            os.environ.get("cleverbot", ""),
+            session=self.session,
+            context=async_cleverbot.DictContext(),
+        )
+        self.google_api = async_cse.Search(os.environ.get("google_search", ""), session=self.session)
 
     async def get_context(self, message: discord.Message, *, cls: commands.Context = None) -> commands.Context:
         """Return the custom context."""
@@ -270,7 +273,7 @@ class WMBot(commands.Bot):
         ctx : commands.Context
             Represents the context in which a command is being invoked under.
         """
-        await ctx.channel.trigger_typing()
+        await ctx.typing().__aenter__()
 
     async def on_command_completion(self, ctx):
         """Saves the command usage to database"""

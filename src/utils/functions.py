@@ -17,7 +17,7 @@ from discord.ext import commands
 from rich.console import Console
 from rich.syntax import Syntax
 
-from .classes import CustomEmojis
+from .classes import AttrDict, CustomEmojis
 
 VALID_JSON_TYPES = Union[str, int, bool, list, dict, None]
 
@@ -173,7 +173,7 @@ def executor_function(sync_function: Callable) -> Coroutine:
         Asynchronous function that wraps a sync function with an executor.
         """
 
-        loop = asyncio.get_event_loop()
+        loop = asyncio.get_running_loop()
         internal_function = functools.partial(sync_function, *args, **kwargs)
         return await loop.run_in_executor(None, internal_function)
 
@@ -183,20 +183,9 @@ def executor_function(sync_function: Callable) -> Coroutine:
 def find_user_named(users: Iterable[discord.User], name: str) -> discord.User:
     result = None
 
-    if len(name) > 5 and name[-5] == "#":
-        # The 5 length is checking to see if #0000 is in the string,
-        # as a#0000 has a length of 6, the minimum for a potential
-        # discriminator lookup.
-        potential_discriminator = name[-4:]
-
-        # do the actual lookup and return if found
-        # if it isn't found then we'll do a full name lookup below.
-        result = discord.utils.get(users, name=name[:-5], discriminator=potential_discriminator)
-        if result is not None:
-            return result
-
+    # Try global_name (display name) first, then username
     def pred(user):
-        return user.nick == name or user.name == name
+        return user.name == name or (hasattr(user, 'global_name') and user.global_name == name) or (hasattr(user, 'nick') and user.nick == name)
 
     return discord.utils.find(pred, users)
 
@@ -464,11 +453,11 @@ async def get_image(
         # the image url if it is not empty and if it is empty
         # then we return the thumbnail url
         if ref.embeds:
-            if ref.embeds[0].image.url != discord.Embed.Empty:
+            if ref.embeds[0].image.url is not None:
                 if is_image(ref.embeds[0].image.url):
                     return ref.embeds[0].image.url
 
-            if ref.embeds[0].thumbnail.url != discord.Embed.Empty:
+            if ref.embeds[0].thumbnail.url is not None:
                 if is_image(ref.embeds[0].thumbnail.url):
                     return ref.embeds[0].thumbnail.url
         # If the referenced message has attachments we return the url of the first one
@@ -478,7 +467,7 @@ async def get_image(
                 return item
     # If the user mentioned a member then we use their avatar
     if isinstance(item, discord.Member):
-        return str(item.avatar.with_format("png"))
+        return str(item.display_avatar.with_format("png"))
     # If the text is a string but not a emoji
     elif isinstance(item, str):
         if is_image(item):
@@ -495,7 +484,7 @@ async def get_image(
             return ctx.message.attachments[0].proxy_url or ctx.message.attachments[0].url
 
     if item is None:
-        return str(ctx.author.avatar.with_format("png"))
+        return str(ctx.author.display_avatar.with_format("png"))
 
 
 def get_p(
@@ -687,9 +676,19 @@ def make_permissions(perm_value: Union[int, str], *, oauth_url: int = None) -> d
     discord.Permissions
         The permission object that was generated
     """
-    perm = (
-        discord.Permissions(perm_value) if isinstance(perm_value, int) else getattr(discord.Permissions, perm_value)()
-    )
+    # Permissions.general(), .text(), .voice() were removed in discord.py v2.x
+    # Map the old classmethod names to hardcoded permission values
+    removed_classmethods = {
+        "general": discord.Permissions(104324673),
+        "text": discord.Permissions(515136),
+        "voice": discord.Permissions(66060544),
+    }
+    if isinstance(perm_value, str) and perm_value in removed_classmethods:
+        perm = removed_classmethods[perm_value]
+    elif isinstance(perm_value, int):
+        perm = discord.Permissions(perm_value)
+    else:
+        perm = getattr(discord.Permissions, perm_value)()
     return discord.utils.oauth_url(oauth_url, permissions=perm) if oauth_url else perm
 
 

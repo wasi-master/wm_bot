@@ -75,7 +75,7 @@ class Moderation(commands.Cog):
     async def unban(self, ctx, *, user: Union[int, str]):
         """Bans a user by their name#discriminator or their name or their id"""
         if isinstance(user, str):
-            banned_users = await ctx.guild.bans()
+            banned_users = [entry async for entry in ctx.guild.bans()]
             user = find_user_named(banned_users, user)
             if user:
                 await ctx.guild.unban(user)
@@ -406,6 +406,6 @@ class Moderation(commands.Cog):
             await ctx.send("No permissions")
 
 
-def setup(bot):
+async def setup(bot):
     """Adds the cog to the bot"""
-    bot.add_cog(Moderation(bot))
+    await bot.add_cog(Moderation(bot))

@@ -279,6 +279,6 @@ class Data(commands.Cog):
             await ctx.send("Service down")
 
 
-def setup(bot):
+async def setup(bot):
     """Adds the cog to the bot"""
-    bot.add_cog(Data(bot))
+    await bot.add_cog(Data(bot))

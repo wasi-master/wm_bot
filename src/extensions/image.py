@@ -408,7 +408,7 @@ class Image(commands.Cog):
 
         img = await self.bot.dagpi.image_process(
             asyncdagpi.ImageFeatures.discord(),
-            url=str(member.avatar.with_format("png")),
+            url=str(member.display_avatar.with_format("png")),
             username=member.display_name,
             text=text,
         )
@@ -434,11 +434,11 @@ class Image(commands.Cog):
                 ):
                     url = ctx.message.attachments[0].proxy_url or ctx.message.attachments[0].url
                 else:
-                    url = ctx.author.with_format("png")
+                    url = ctx.author.display_avatar.with_format("png")
             else:
-                url = ctx.author.with_format("png")
+                url = ctx.author.display_avatar.with_format("png")
         else:
-            url = member.with_format("png")
+            url = member.display_avatar.with_format("png")
 
             img = await self.bot.dagpi.image_process(asyncdagpi.ImageFeatures.jail(), url=str(url))
             file = discord.File(img.image, f"{ctx.command.name}.png")
@@ -572,7 +572,7 @@ class Image(commands.Cog):
     async def phcomment(self, ctx, member: discord.Member, *, message):
 
         res = await self.bot.session.get(
-            f"https://nekobot.xyz/api/imagegen?type=phcomment&image={member.avatar_url_as(format='png')}&username={member.display_name}",
+            f"https://nekobot.xyz/api/imagegen?type=phcomment&image={member.display_avatar.with_format('png')}&username={member.display_name}",
             params={"text": message},
         )
         res = await res.json()
@@ -614,5 +614,5 @@ class Image(commands.Cog):
         await ctx.send(embed=em)
 
 
-def setup(bot):
-    bot.add_cog(Image(bot))
+async def setup(bot):
+    await bot.add_cog(Image(bot))

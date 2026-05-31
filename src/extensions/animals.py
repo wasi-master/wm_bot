@@ -140,6 +140,6 @@ class Animals(commands.Cog):
         await ctx.send(embed=discord.Embed(title="Heres a fox picture").set_image(url=img_url))
 
 
-def setup(bot):
+async def setup(bot):
     """Adds the cog to the bot"""
-    bot.add_cog(Animals(bot))
+    await bot.add_cog(Animals(bot))

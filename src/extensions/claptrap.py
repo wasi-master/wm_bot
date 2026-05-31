@@ -27,10 +27,10 @@ class Claptrap(commands.Cog):
         await ctx.send(random.choice(self.claptraps))
 
 
-def setup(bot):
+async def setup(bot):
     """Adds the cog to the bot"""
     if "claptraps.json" in os.listdir("assets/data"):
-        bot.add_cog(Claptrap(bot))
+        await bot.add_cog(Claptrap(bot))
     else:
         print_error(
             "The claptrap cog can't load because the file [underline yellow]assets/data/claptraps.json[/] is missing, "

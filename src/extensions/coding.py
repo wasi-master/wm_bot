@@ -10,13 +10,18 @@ from urllib.parse import quote
 
 import discord
 import humanize
-from attrdict import AttrDict
 from bs4 import BeautifulSoup
 from discord.ext import commands
 from rich import print as rprint
 
 from utils.functions import split_by_slice
 from utils.paginator import Paginator
+
+
+class AttrDict(dict):
+    def __init__(self, *args, **kwargs):
+        super(AttrDict, self).__init__(*args, **kwargs)
+        self.__dict__ = self
 
 
 def parse_pypi_index(text):
@@ -43,13 +48,15 @@ class Coding(commands.Cog):
         self.bot = bot
         # Setting up our pypi index
         self.pypi_index = []
-        bot.loop.create_task(self.get_pypi_packages())
+
+    async def cog_load(self):
+        asyncio.create_task(self.get_pypi_packages())
 
     async def get_pypi_packages(self):
         """Gets the pypi packages from the index and saves them"""
         async with self.bot.session.get("https://pypi.org/simple/") as r:
             resp = await r.text()
-            self.pypi_index = await self.bot.loop.run_in_executor(None, parse_pypi_index, resp)
+            self.pypi_index = await asyncio.get_running_loop().run_in_executor(None, parse_pypi_index, resp)
         rprint(f"[green]Loaded[/] [yellow]{len(self.pypi_index):,}[/] [green]pypi packages[/]")
 
     @commands.command(name="regex", extras={"image": "https://i.imgur.com/Tab4FUF.gif"})
@@ -58,7 +65,7 @@ class Coding(commands.Cog):
         try:
 
             # We wrap it inside a executor so it doesn't block the event loop.
-            task = self.bot.loop.run_in_executor(None, re.search, regex, text)
+            task = asyncio.get_running_loop().run_in_executor(None, re.search, regex, text)
             # We use timeout=10 so if the search takes more than 10 seconds a TimeoutError is raised.
             match = await asyncio.wait_for(task, timeout=10)
 
@@ -565,6 +572,6 @@ class Coding(commands.Cog):
         await ctx.send(embed=discord.Embed(description=final))
 
 
-def setup(bot):
+async def setup(bot):
     """Adds the cog to the bot"""
-    bot.add_cog(Coding(bot))
+    await bot.add_cog(Coding(bot))

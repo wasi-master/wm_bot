@@ -1,5 +1,5 @@
 import random
-from datetime import datetime
+from datetime import datetime, timezone
 
 import discord
 from discord.ext import commands
@@ -52,7 +52,7 @@ class Reddit(commands.Cog):
         embed = discord.Embed(
             title=post["title"],
             description=post["selftext"],
-            timestamp=datetime.utcfromtimestamp(post["created"]),
+            timestamp=datetime.fromtimestamp(post["created"], tz=timezone.utc),
             url=base + post["permalink"],
             color=0xFF5700,
         )
@@ -66,6 +66,6 @@ class Reddit(commands.Cog):
         await ctx.send(base + post["permalink"], embed=embed)
 
 
-def setup(bot):
+async def setup(bot):
     """Adds the cog to the bot"""
-    bot.add_cog(Reddit(bot))
+    await bot.add_cog(Reddit(bot))

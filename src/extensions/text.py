@@ -77,7 +77,8 @@ class Text(commands.Cog):
         self.morse_dict = load_json("assets/data/morse_code.json")
         self.abs = load_json("assets/data/abs.json")
 
-        bot.loop.create_task(self.get_words())
+    async def cog_load(self):
+        asyncio.create_task(self.get_words())
 
     def _zalgo(self, text: str) -> str:
         """Converts a text to zalgo
@@ -330,7 +331,7 @@ class Text(commands.Cog):
     async def texttospeech(self, ctx, lang: str, *, text: str):
         """Converts some text to speech (TTS)"""
         msg = await ctx.send(f"Generating {self.bot.get_custom_emoji('load.typing')}")
-        await self.bot.loop.run_in_executor(None, tts, lang, text)
+        await asyncio.get_running_loop().run_in_executor(None, tts, lang, text)
         await ctx.send(f"{ctx.author.mention} Here you go:", file=discord.File("tts.mp3"))
         await msg.delete()
 
@@ -444,6 +445,6 @@ class Text(commands.Cog):
         await ctx.send(zalgo)
 
 
-def setup(bot):
+async def setup(bot):
     """Adds the cog to the bot"""
-    bot.add_cog(Text(bot))
+    await bot.add_cog(Text(bot))

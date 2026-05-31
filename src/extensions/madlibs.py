@@ -105,6 +105,6 @@ class MadLibs(commands.Cog):
         await ctx.channel.send(data)
 
 
-def setup(bot):
+async def setup(bot):
     """Adds the cog to the bot"""
-    bot.add_cog(MadLibs(bot))
+    await bot.add_cog(MadLibs(bot))

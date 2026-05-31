@@ -61,10 +61,10 @@ class Miscellaneous(commands.Cog):
         if not re.match("http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*(),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+", url):
             await ctx.send(f"Invalid URL: {url}")
 
-        start = datetime.datetime.utcnow()
+        start = datetime.datetime.now(datetime.timezone.utc)
         async with self.bot.session.get(url) as resp:
             status = resp.status
-        end = datetime.datetime.utcnow()
+        end = datetime.datetime.now(datetime.timezone.utc)
 
         elapsed = end - start
         embed = discord.Embed(
@@ -105,12 +105,12 @@ class Miscellaneous(commands.Cog):
                 embed=discord.Embed(title=f"{ctx.author}, you didn't react with a :white_check_mark:")
             )
         else:
-            delay = round((datetime.datetime.utcnow() - message.created_at).total_seconds() - self.bot.latency, 2)
+            delay = round((datetime.datetime.now(datetime.timezone.utc) - message.created_at).total_seconds() - self.bot.latency, 2)
             embed = discord.Embed(title=f"You reacted to this message with :white_check_mark: after {delay} seconds")
-            embed.set_footer(text=f"Exact time is {(datetime.datetime.utcnow() - message.created_at).total_seconds()}")
+            embed.set_footer(text=f"Exact time is {(datetime.datetime.now(datetime.timezone.utc) - message.created_at).total_seconds()}")
             await message.edit(embed=embed)
 
 
-def setup(bot):
+async def setup(bot):
     """Adds the cog to the bot"""
-    bot.add_cog(Miscellaneous(bot))
+    await bot.add_cog(Miscellaneous(bot))

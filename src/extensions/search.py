@@ -238,6 +238,6 @@ class Search(commands.Cog):
         await ctx.send(embed=embed)
 
 
-def setup(bot):
+async def setup(bot):
     """Adds the cog to the bot"""
-    bot.add_cog(Search(bot))
+    await bot.add_cog(Search(bot))

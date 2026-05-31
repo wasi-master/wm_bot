@@ -107,6 +107,6 @@ class Random(commands.Cog):
         await ctx.send_help(random.choice(list(self.bot.commands)))
 
 
-def setup(bot):
+async def setup(bot):
     """Adds the cog to the bot"""
-    bot.add_cog(Random(bot))
+    await bot.add_cog(Random(bot))

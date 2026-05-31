@@ -80,6 +80,6 @@ class Colors(commands.Cog):
         await ctx.send(embed=embed)
 
 
-def setup(bot):
+async def setup(bot):
     """Adds the cog to the bot"""
-    bot.add_cog(Colors(bot))
+    await bot.add_cog(Colors(bot))

@@ -290,6 +290,6 @@ class Owner(commands.Cog):
             await ctx.send(embed=embed, file=discord.File(io.StringIO(trace), filename="traceback.py"))
 
 
-def setup(bot):
+async def setup(bot):
     """Adds the cog to the bot"""
-    bot.add_cog(Owner(bot))
+    await bot.add_cog(Owner(bot))

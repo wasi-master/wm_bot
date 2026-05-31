@@ -70,6 +70,6 @@ class English(commands.Cog):
         await ctx.send(embed=embed)
 
 
-def setup(bot):
+async def setup(bot):
     """Adds the cog to the bot"""
-    bot.add_cog(English(bot))
+    await bot.add_cog(English(bot))

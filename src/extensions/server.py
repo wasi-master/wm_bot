@@ -46,8 +46,7 @@ class Server(commands.Cog):
                 f"Name: {guild.name}\n"
                 f"Created At: {discord.utils.format_dt(guild.created_at, 'F')} ({discord.utils.format_dt(guild.created_at, 'R')})"
                 f"ID: {guild.id}\nOwner: {guild_owner}\n"
-                f"Icon Url: [click here]({guild.icon.url})\n"
-                f"Region: {str(guild.region)}\n"
+                f"Icon Url: [click here]({guild.icon.url if guild.icon else None})\n"
                 f"Verification Level: {str(guild.verification_level)}\n"
                 f"Members: {len(guild.members)}\n"
                 f"{self.bot.get_custom_emoji('server.boost_level')} Boost Level: {guild.premium_tier}\n"
@@ -63,7 +62,7 @@ class Server(commands.Cog):
                 f"**Features:** {features}"
             ),
         )
-        embed.set_thumbnail(url=guild.icon.url)
+        embed.set_thumbnail(url=guild.icon.url if guild.icon else None)
         await ctx.send(embed=embed)
 
     @commands.command()
@@ -253,10 +252,10 @@ class Server(commands.Cog):
             msg += f"{format_name(k)}: **{v}**\n\n"
 
         embed = discord.Embed()
-        embed.set_author(name=f"Badge Count in {guild.name}", icon_url=guild.icon.url)
+        embed.set_author(name=f"Badge Count in {guild.name}", icon_url=guild.icon.url if guild.icon else None)
         await ctx.send(embed=embed)
 
 
-def setup(bot):
+async def setup(bot):
     """Adds the cog to the bot"""
-    bot.add_cog(Server(bot))
+    await bot.add_cog(Server(bot))

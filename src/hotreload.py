@@ -50,7 +50,7 @@ class HotReload(commands.Cog):
         self.last_modified_time = {}
         self.hot_reload_loop.start()
 
-    def cog_unload(self):
+    async def cog_unload(self):
         """Occurs when the cog is unloaded"""
         self.hot_reload_loop.stop()
 
@@ -77,7 +77,7 @@ class HotReload(commands.Cog):
                 self.last_modified_time[extension] = time
 
             try:
-                self.bot.reload_extension(extension)
+                await self.bot.reload_extension(extension)
             except commands.ExtensionNotLoaded:
                 continue
             except commands.ExtensionError as exception:
@@ -112,6 +112,6 @@ class HotReload(commands.Cog):
             self.last_modified_time[extension] = time
 
 
-def setup(bot):
+async def setup(bot):
     """Adds the cog to the bot"""
-    bot.add_cog(HotReload(bot))
+    await bot.add_cog(HotReload(bot))

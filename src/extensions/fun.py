@@ -6,7 +6,6 @@ import unicodedata
 from typing import Union
 
 import discord
-from attrdict import AttrDict
 from discord.ext import commands
 
 from utils.functions import (
@@ -18,6 +17,12 @@ from utils.functions import (
     split_by_slice,
 )
 from utils.paginator import Paginator
+
+
+class AttrDict(dict):
+    def __init__(self, *args, **kwargs):
+        super(AttrDict, self).__init__(*args, **kwargs)
+        self.__dict__ = self
 
 
 class Fun(commands.Cog):
@@ -109,7 +114,7 @@ class Fun(commands.Cog):
 
         # If the time is 0 then we start the challenge
         # First we save the start time
-        start = datetime.datetime.utcnow()
+        start = datetime.datetime.now(datetime.timezone.utc)
         await m.add_reaction("🍪")
         try:
             # Now we wait for the reaction
@@ -123,7 +128,7 @@ class Fun(commands.Cog):
         except asyncio.TimeoutError:
             await ctx.send("No one got the cookie :(")
         else:
-            time = round((datetime.datetime.utcnow() - start).total_seconds() - self.bot.latency, 3)
+            time = round((datetime.datetime.now(datetime.timezone.utc) - start).total_seconds() - self.bot.latency, 3)
             await m.edit(embed=discord.Embed(title=f"**{user.display_name}** got the cookie in **{time}** seconds"))
 
     @commands.command(aliases=["giveyouup", "gyu", "nggyu", "never_gonna_give_you_up", "rickroll"])
@@ -167,10 +172,10 @@ class Fun(commands.Cog):
             color=discord.Colour.green(),
         )
         # We set the thumbnail
-        embed.set_thumbnail(url=author.avatar.url)
+        embed.set_thumbnail(url=author.display_avatar.url)
         # We set the name
         name = f"{author} ({author.display_name})" if author.nick else author.name
-        embed.set_author(icon_url=author.avatar.url, name=name)
+        embed.set_author(icon_url=author.display_avatar.url, name=name)
         # We send the message
         await ctx.send(embed=embed)
 
@@ -188,7 +193,7 @@ class Fun(commands.Cog):
     async def cakeday(self, ctx):
         """Shows the people who has their discord birthday today, inspired by reddit"""
         # We get the current time
-        current = datetime.datetime.utcnow()
+        current = datetime.datetime.now(datetime.timezone.utc)
         # We get the people that created their account on this day
         people = []
 
@@ -502,6 +507,6 @@ class Fun(commands.Cog):
     #             return
 
 
-def setup(bot):
+async def setup(bot):
     """Adds the cog to the bot"""
-    bot.add_cog(Fun(bot))
+    await bot.add_cog(Fun(bot))

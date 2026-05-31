@@ -201,7 +201,7 @@ class Economy(commands.Cog):
         await ctx.send(f"You gave {amount} coins to {user.name}")
 
 
-def setup(bot):
+async def setup(bot):
     """Adds the cog to the bot"""
     if hasattr(bot, "db"):
-        bot.add_cog(Economy(bot))
+        await bot.add_cog(Economy(bot))

@@ -144,6 +144,6 @@ class Time(commands.Cog):
         await ctx.send(embed=embed)
 
 
-def setup(bot):
+async def setup(bot):
     """Adds the cog to the bot"""
-    bot.add_cog(Time(bot))
+    await bot.add_cog(Time(bot))

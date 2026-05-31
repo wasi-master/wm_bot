@@ -43,7 +43,7 @@ class Users(commands.Cog):
             RETURNING *;
             """,
             ctx.author.id,
-            datetime.datetime.utcnow(),
+            datetime.datetime.now(datetime.timezone.utc),
             reason,
         )
 
@@ -55,9 +55,9 @@ class Users(commands.Cog):
     async def avatar(self, ctx, *, user: discord.User = None):
         """See someone's avatar, if user is not provided then it shows your avatar"""
         user = user or ctx.author
-        ext = "gif" if user.is_avatar_animated() else "png"
+        ext = "gif" if user.display_avatar.is_animated() else "png"
 
-        await ctx.send(file=discord.File(BytesIO(await user.avatar.url.read()), f"{user}.{ext}"))
+        await ctx.send(file=discord.File(BytesIO(await user.display_avatar.read()), f"{user}.{ext}"))
 
     @commands.command(
         aliases=["ui", "whois", "wi", "whoami", "me"],
@@ -80,8 +80,8 @@ class Users(commands.Cog):
 
         join_position = sorted(ctx.guild.members, key=lambda member: member.joined_at).index(member) + 1
         embed = discord.Embed(colour=member.color)
-        embed.set_thumbnail(url=member.avatar.url)
-        embed.set_author(name=f"{member}", icon_url=member.avatar.url)
+        embed.set_thumbnail(url=member.display_avatar.url)
+        embed.set_author(name=f"{member}", icon_url=member.display_avatar.url)
         embed.set_footer(text=f"Requested by {ctx.author}")
         # If the mentioned user is the bot owner then we say that
         if member.id in self.bot.owner_ids:
@@ -113,7 +113,7 @@ class Users(commands.Cog):
             try:
                 embed.add_field(
                     name="Last Seen",
-                    value=humanize.precisedelta(datetime.datetime.utcnow() - status["last_seen"]) + " ago",
+                    value=humanize.precisedelta(datetime.datetime.now(datetime.timezone.utc) - status["last_seen"]) + " ago",
                 )
             except TypeError:
                 pass
@@ -189,10 +189,10 @@ class Users(commands.Cog):
             # I don't know why I have this in a try except but I don't wanna remove it
             try:
                 current_time = convert_sec_to_min(
-                    (datetime.datetime.utcnow() - activity.start.replace(tzinfo=None)).total_seconds()
+                    (datetime.datetime.now(datetime.timezone.utc) - activity.start.replace(tzinfo=None)).total_seconds()
                 )
                 progress_bar = get_p(
-                    (abs((datetime.datetime.utcnow() - activity.start.replace(tzinfo=None)).total_seconds()))
+                    (abs((datetime.datetime.now(datetime.timezone.utc) - activity.start.replace(tzinfo=None)).total_seconds()))
                     / (abs(((activity.start - activity.end)).total_seconds()) / 100),
                     length=13,
                 )
@@ -208,6 +208,6 @@ class Users(commands.Cog):
             await ctx.send("Not listening to spotify :(")
 
 
-def setup(bot):
+async def setup(bot):
     """Adds the cog to the bot"""
-    bot.add_cog(Users(bot))
+    await bot.add_cog(Users(bot))

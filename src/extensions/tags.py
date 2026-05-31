@@ -37,7 +37,7 @@ class Tags(commands.Cog):
             SET last_used = $1
             WHERE name = $2
             """,
-            datetime.datetime.utcnow(),
+            datetime.datetime.now(datetime.timezone.utc),
             tag_name,
         )
         await ctx.send(tag["content"])
@@ -63,7 +63,7 @@ class Tags(commands.Cog):
             SET last_used = $1
             WHERE name = $2
             """,
-            datetime.datetime.utcnow(),
+            datetime.datetime.now(datetime.timezone.utc),
             tag_name,
         )
         await ctx.send(discord.utils.escape_markdown(tag["content"]))
@@ -90,7 +90,7 @@ class Tags(commands.Cog):
             """,
             tag_name,
             tag_content,
-            datetime.datetime.utcnow(),
+            datetime.datetime.now(datetime.timezone.utc),
             ctx.author.id,
         )
         await ctx.send("Tag created")
@@ -119,7 +119,7 @@ class Tags(commands.Cog):
                     """,
             tag_content,
             tag_name,
-            datetime.datetime.utcnow(),
+            datetime.datetime.now(datetime.timezone.utc),
         )
         await ctx.send("Tag edited")
 
@@ -138,16 +138,16 @@ class Tags(commands.Cog):
 
         embed = discord.Embed(title=tag["name"])
         user = self.bot.get_user(tag["author_id"])
-        embed.set_thumbnail(url=user.avatar.url if user else discord.Embed.Empty)
+        embed.set_thumbnail(url=user.display_avatar.url if user else None)
         embed.add_field(name="Author", value=f"{user} (ID: `{user.id})`", inline=False)
         embed.add_field(
             name="Created at",
-            value=f'{tag["created_at"].strftime("%a, %d %B %Y, %H:%M:%S")}  ({humanize.precisedelta(datetime.datetime.utcnow() - tag["created_at"])})',
+            value=f'{tag["created_at"].strftime("%a, %d %B %Y, %H:%M:%S")}  ({humanize.precisedelta(datetime.datetime.now(datetime.timezone.utc).replace(tzinfo=None) - tag["created_at"])})',
             inline=False,
         )
         embed.add_field(
             name="Last used at",
-            value=f'{tag["last_used"].strftime("%a, %d %B %Y, %H:%M:%S")}  ({humanize.precisedelta(datetime.datetime.utcnow() - tag["last_used"])})',
+            value=f'{tag["last_used"].strftime("%a, %d %B %Y, %H:%M:%S")}  ({humanize.precisedelta(datetime.datetime.now(datetime.timezone.utc).replace(tzinfo=None) - tag["last_used"])})',
             inline=False,
         )
         await ctx.send(embed=embed)
@@ -217,6 +217,6 @@ class Tags(commands.Cog):
         await menu.start(ctx)
 
 
-def setup(bot):
+async def setup(bot):
     """Adds the cog to the bot"""
-    bot.add_cog(Tags(bot))
+    await bot.add_cog(Tags(bot))

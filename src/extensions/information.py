@@ -27,10 +27,10 @@ class Information(commands.Cog):
             f"**Max Uses**: {invite.max_uses if invite.max_uses else 'Unlimited'}"
         )
 
-        if ctx.guild and self.bot.get_user_named(f"{invite.inviter}#{invite.inviter.discriminator}"):
+        if ctx.guild and invite.inviter and self.bot.get_user(invite.inviter.id):
             embed.set_author(
-                name=f"{invite.inviter}#{invite.inviter.discriminator}",
-                icon_url=invite.inviter.avatar_url,
+                name=str(invite.inviter),
+                icon_url=invite.inviter.display_avatar.url,
             )
 
         embed.add_field(name="For Channel", value=invite.channel if invite.channel else "No Channel", inline=False)
@@ -132,6 +132,6 @@ class Information(commands.Cog):
         await ctx.send(embed=embed)
 
 
-def setup(bot):
+async def setup(bot):
     """Adds the cog to the bot"""
-    bot.add_cog(Information(bot))
+    await bot.add_cog(Information(bot))

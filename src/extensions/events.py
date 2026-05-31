@@ -35,12 +35,11 @@ class Events(commands.Cog):
                 f"({discord.utils.format_dt(guild.created_at, 'R')})"
                 f"ID: {guild.id}\n"
                 f"Owner: {guild_owner}\n"
-                f"Icon Url: [click here]({guild.icon.url})\n"
-                f"Region: {str(guild.region)}\n"
+                f"Icon Url: [click here]({guild.icon.url if guild.icon else None})\n"
                 f"Members: {len(guild.members)}\n"
             ),
         )
-        embed.set_thumbnail(url=guild.icon.url)
+        embed.set_thumbnail(url=guild.icon.url if guild.icon else None)
         # We send the message to the bot owner
         await self.bot.owner.send(embed=embed)
         # We add the prefix to our database
@@ -67,12 +66,11 @@ class Events(commands.Cog):
                 f"({discord.utils.format_dt(guild.created_at, 'R')})"
                 f"ID: {guild.id}\n"
                 f"Owner: {guild_owner}\n"
-                f"Icon Url: [click here]({guild.icon.url})\n"
-                f"Region: {str(guild.region)}\n"
+                f"Icon Url: [click here]({guild.icon.url if guild.icon else None})\n"
                 f"Members: {len(guild.members)}\n"
             ),
         )
-        embed.set_thumbnail(url=guild.icon.url)
+        embed.set_thumbnail(url=guild.icon.url if guild.icon else None)
         await self.bot.owner.send(embed=embed)
 
     @commands.Cog.listener()
@@ -159,7 +157,7 @@ class Events(commands.Cog):
         for record in afk_people:
             if not record is None:
                 await message.channel.send(
-                    f"Hey {message.author.mention}, the person you mentioned: {self.bot.get_user(record['user_id'])} is currently afk for {humanize.naturaldelta(datetime.datetime.utcnow() - record['last_seen'])}\n\nreason: {record['reason']}"
+                    f"Hey {message.author.mention}, the person you mentioned: {self.bot.get_user(record['user_id'])} is currently afk for {humanize.naturaldelta(datetime.datetime.now(datetime.timezone.utc) - record['last_seen'])}\n\nreason: {record['reason']}"
                 )
 
     @commands.Cog.listener()
@@ -173,7 +171,7 @@ class Events(commands.Cog):
             or len(new.guild.members) < 500  # The server is a big server
         ):
             return
-        time = datetime.datetime.utcnow()
+        time_now = datetime.datetime.now(datetime.timezone.utc)
         # OPTIMIZE: Make it use cache or one db call
         status = await self.bot.db.fetchrow(
             """
@@ -190,7 +188,7 @@ class Events(commands.Cog):
                         INSERT INTO status (last_seen, user_id)
                         VALUES ($1, $2)
                         """,
-                time,
+                time_now,
                 new.id,
             )
         else:
@@ -201,10 +199,10 @@ class Events(commands.Cog):
                     WHERE user_id = $1;
                     """,
                 new.id,
-                time,
+                time_now,
             )
 
 
-def setup(bot):
+async def setup(bot):
     """Adds the cog to the bot"""
-    bot.add_cog(Events(bot))
+    await bot.add_cog(Events(bot))

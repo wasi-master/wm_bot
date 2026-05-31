@@ -61,6 +61,6 @@ class Cryptography(commands.Cog):
         await ctx.send(embed=discord.Embed(description=f"**Number**: {binary_number}\n**Text**: {decoded_str}"))
 
 
-def setup(bot):
+async def setup(bot):
     """Adds the cog to the bot"""
-    bot.add_cog(Cryptography(bot))
+    await bot.add_cog(Cryptography(bot))

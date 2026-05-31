@@ -13,7 +13,7 @@ from discord.ext.commands import BucketType
 from tabulate import tabulate
 
 from utils.classes import CodeStats
-from utils.functions import get_random_color, make_permissions, split_by_slice
+from utils.functions import get_random_color, split_by_slice
 from utils.paginator import Paginator
 
 
@@ -406,7 +406,7 @@ class Meta(commands.Cog):
     @commands.command(aliases=["upt"])
     async def uptime(self, ctx):
         """Shows how long the bot is online for"""
-        delta = datetime.datetime.utcnow() - ctx.bot.started_at
+        delta = datetime.datetime.now(datetime.timezone.utc) - ctx.bot.started_at
         precisedelta = humanize.precisedelta(delta, minimum_unit="seconds")
         naturalday = humanize.naturalday(ctx.bot.started_at)
 
@@ -459,10 +459,14 @@ class Meta(commands.Cog):
             color=bot.color,
         )
 
-        # These are either classmethods of discord.Permissions or the values of permissions
-        perms = [8, "all", "none", 109640, "general", "voice", "text"]
         # We define all the variables
-        admin, all_, none, suggested, default, voice, text = (make_permissions(i, oauth_url=bot.id) for i in perms)
+        admin = discord.utils.oauth_url(bot.id, permissions=discord.Permissions(8))
+        all_ = discord.utils.oauth_url(bot.id, permissions=discord.Permissions.all())
+        none = discord.utils.oauth_url(bot.id, permissions=discord.Permissions.none())
+        suggested = discord.utils.oauth_url(bot.id, permissions=discord.Permissions(109640))
+        default = discord.utils.oauth_url(bot.id, permissions=discord.Permissions(104324673))
+        voice = discord.utils.oauth_url(bot.id, permissions=discord.Permissions(36700160))
+        text = discord.utils.oauth_url(bot.id, permissions=discord.Permissions(522304))
         if ctx.guild:
             current = discord.utils.oauth_url(bot.id, permissions=bot.guild_permissions)
 
@@ -497,6 +501,6 @@ class Meta(commands.Cog):
         await ctx.send(embed=embed)
 
 
-def setup(bot):
+async def setup(bot):
     """Adds the cog to the bot"""
-    bot.add_cog(Meta(bot))
+    await bot.add_cog(Meta(bot))

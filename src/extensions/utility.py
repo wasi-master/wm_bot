@@ -42,7 +42,7 @@ class Utility(commands.Cog):
             color=discord.Colour.red(),
         )
         embed.set_footer(
-            icon_url=ctx.author.avatar.url,
+            icon_url=ctx.author.display_avatar.url,
             text=f"Command executed by {ctx.author}, to see all redirects use the redirects command",
         )
         await ctx.send(embed=embed)
@@ -106,7 +106,7 @@ class Utility(commands.Cog):
         user = await self.bot.fetch_user(user_id)
 
         embed = discord.Embed(title=(user), description=f"ID: `{user.id}`")
-        embed.set_thumbnail(url=str(user.avatar.url))
+        embed.set_thumbnail(url=str(user.display_avatar.url))
         embed.add_field(name="Type", value="Bot Token" if user.bot else "Account Token")
         embed.add_field(
             name="Account Creation",
@@ -212,7 +212,7 @@ class Utility(commands.Cog):
             )
 
         menu = Paginator(embeds)
-        menu.start(ctx)
+        await menu.start(ctx)
 
     @commands.command()
     async def tos(self, ctx, *, term: str):
@@ -240,13 +240,13 @@ class Utility(commands.Cog):
 
         if channel:
             # If a channel was provided then we get the last 8 messages in the provided channel
-            messages = await channel.history(limit=8, oldest_first=False, before=ctx.message).flatten()
+            messages = [m async for m in channel.history(limit=8, oldest_first=False, before=ctx.message)]
         elif message:
             # If a message was provided then we use the message
             messages = [message]
         else:
             # If nothing was provided then we get the last 8 messages in the current channel
-            messages = await ctx.channel.history(limit=8, oldest_first=False, before=ctx.message).flatten()
+            messages = [m async for m in ctx.channel.history(limit=8, oldest_first=False, before=ctx.message)]
 
         # We get the messages and check for a image
         async for message in messages:
@@ -337,7 +337,7 @@ class Utility(commands.Cog):
             text=f"Long press the p!catch {result} on mobile to copy quickly\n\n"
             f"Command Invoked by {ctx.author}\n"
             f"Raw Result: {raw_result}",
-            icon_url=ctx.author.avatar.url,
+            icon_url=ctx.author.display_avatar.url,
         )
         await ctx.send(embed=emby)
         await msg.delete()
@@ -431,6 +431,6 @@ class Utility(commands.Cog):
         shutil.rmtree(guild_name)
 
 
-def setup(bot):
+async def setup(bot):
     """Adds the cog to the bot"""
-    bot.add_cog(Utility(bot))
+    await bot.add_cog(Utility(bot))

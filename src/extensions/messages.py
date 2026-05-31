@@ -33,7 +33,7 @@ class Messages(commands.Cog):
             return await ctx.send("No first message found")
 
         embed = discord.Embed(title=f"First message in #{channel.name}", color=message.author.color or 0x2F3136)
-        embed.set_author(name=message.author.name, icon_url=message.author.avatar.url)
+        embed.set_author(name=message.author.name, icon_url=message.author.display_avatar.url)
 
         embed.add_field(name="Message Content", value=message.content or "No message content", inline=False)
 
@@ -197,7 +197,7 @@ class Messages(commands.Cog):
 
         msg = await ctx.send(f"Loading messages {self.bot.get_custom_emoji('load.typing')}")
 
-        messages = await channel.history(limit=500).flatten()
+        messages = [m async for m in channel.history(limit=500)]
         count = len([x for x in messages if x.author.id == member.id])
         perc = (100 * int(count)) / int(600)
         emb = discord.Embed(
@@ -216,7 +216,7 @@ class Messages(commands.Cog):
 
         msg = await ctx.send(f"Loading messages {self.bot.get_custom_emoji('load.typing')}")
         # FIXME: use a better way to get the message count
-        history = await channel.history(limit=limit).flatten()
+        history = [m async for m in channel.history(limit=limit)]
         for i in history:
             res[i.author] = {"messages": len([j for j in history if j.author.id == i.author.id])}
 
@@ -241,6 +241,6 @@ class Messages(commands.Cog):
         await msg.delete()
 
 
-def setup(bot):
+async def setup(bot):
     """Adds the cog to the bot"""
-    bot.add_cog(Messages(bot))
+    await bot.add_cog(Messages(bot))

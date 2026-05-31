@@ -182,7 +182,7 @@ class AkinatorView(discord.ui.View):
                 embeds.append(embed)
             # This paginator class is custom made and defined in utils
             paginator = Paginator(embeds)
-            paginator.start(self.ctx)
+            await paginator.start(self.ctx)
 
         self.clear_items()
         self.stop()
@@ -204,7 +204,7 @@ class Akinator(commands.Cog):
         view.message = await ctx.send(embed=await view.get_embed(), view=view)
 
 
-def setup(bot):
+async def setup(bot):
     """Adds the cog to the bot"""
     try:
         import akinator  # pylint: disable=import-outside-toplevel
@@ -215,4 +215,4 @@ def setup(bot):
         )
     else:
         del akinator
-        bot.add_cog(Akinator(bot))
+        await bot.add_cog(Akinator(bot))
