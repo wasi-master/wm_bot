@@ -78,14 +78,14 @@ class WMBot(commands.Bot):
         )
 
         # Load all the environment variables
-        load_dotenv("config/Bot/token.env")
-        load_dotenv("config/Apis/tokens.env")
-        load_dotenv("config/Database/db.env")
+        load_dotenv("config/bot/token.env")
+        load_dotenv("config/apis/tokens.env")
+        load_dotenv("config/database/db.env")
 
         # Read the emoji file
-        self.emoji_config = CustomEmojis.from_json(read_file("config/General/emojis.json"))
+        self.emoji_config = CustomEmojis.from_json(read_file("config/general/emojis.json"))
         # Read the config file
-        self.config = Config.from_json(read_file("config/General/config.json"))
+        self.config = Config.from_json(read_file("config/general/config.json"))
 
         # Set the HTTPException error codes dict to a custom property for easy access
         self.httpexception_codes = load_json("assets/data/httpexception_codes.json", make_keys_int=True)

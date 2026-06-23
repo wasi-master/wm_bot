@@ -375,7 +375,7 @@ def get_custom_emoji(emoji: str) -> str:
     str
         The emoji that it got
     """
-    emoji_config = CustomEmojis.from_json(read_file("config/General/emojis.json"))
+    emoji_config = CustomEmojis.from_json(read_file("config/general/emojis.json"))
     return attrgetter(emoji)(emoji_config)
 
 
