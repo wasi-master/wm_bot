@@ -70,6 +70,9 @@ class Server(commands.Cog):
         """Sends all the boosters of this server"""
         people_who_boosted = sorted(ctx.guild.premium_subscribers, key=lambda member: member.joined_at)
 
+        if not people_who_boosted:
+            return await ctx.send("No one has boosted this server yet")
+
         peoples = commands.Paginator(max_size=500, prefix="```ini\n", suffix="```")
         for n, i in enumerate(people_who_boosted):
             peoples.add_line(f"[{n}] {i.name} ID: [{i.id}]")
