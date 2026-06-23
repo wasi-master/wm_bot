@@ -1,5 +1,5 @@
 CREATE TABLE afk (
-   last_seen TIMESTAMP,
+   last_seen TIMESTAMPTZ,
    user_id BIGINT NOT NULL,
    reason TEXT,
    UNIQUE (user_id)
@@ -31,7 +31,7 @@ CREATE TABLE invitetracker (
 );
 
 CREATE TABLE status (
-   last_seen TIMESTAMP,
+   last_seen TIMESTAMPTZ,
    user_id BIGINT NOT NULL,
    PRIMARY KEY (user_id)
 );
@@ -59,9 +59,9 @@ CREATE TABLE telephones (
    PRIMARY KEY (user_id)
 );
 CREATE TABLE tags (
-   last_used TIMESTAMP,
-   created_at TIMESTAMP,
-   edited_at TIMESTAMP,
+   last_used TIMESTAMPTZ,
+   created_at TIMESTAMPTZ,
+   edited_at TIMESTAMPTZ,
    tag_id SMALLSERIAL NOT NULL ,
    author_id BIGINT,
    name VARCHAR(32) NOT NULL,
