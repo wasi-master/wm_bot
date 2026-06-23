@@ -63,25 +63,24 @@ class MasterHelp(commands.HelpCommand):
                 description=f"Total {len(self.context.bot.commands)} Commands,\n https://wasi-master.github.io/wm_bot/commands",
                 color=get_random_color(),
             )
-            cogs = []
             for cog, commands in page:
                 if cog is None:
                     continue
                 filtered = await self.filter_commands(commands, sort=True)
                 if not filtered:
                     continue
-                commands_string = "".join(f"`{command.qualified_name}`, " for command in filtered)
-                cogs.append(cog.qualified_name)
+                commands_string = ", ".join(f"`{command.qualified_name}`" for command in filtered)
+                # Truncate to stay under Discord's 1024-char embed field value limit
+                if len(commands_string) > 1020:
+                    commands_string = commands_string[:1020] + "..."
                 emb.add_field(
                     name=cog.qualified_name,
-                    value=cog.description + "\n" + commands_string,
+                    value=(cog.description or "No description") + "\n" + commands_string,
                     inline=True,
                 )
             items.append(emb)
         menu = Paginator(embeds=items)
         await menu.start(self.context)
-        if len(items) == 1:
-            return await self.context.send(items[0])
 
     # !help <command>
     async def send_command_help(self, command):
