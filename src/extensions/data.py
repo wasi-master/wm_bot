@@ -30,25 +30,42 @@ class Data(commands.Cog):
     @commands.bot_has_permissions(use_external_emojis=True)
     async def lyrics(self, ctx, *, song_name: str):
         """Sends the lyrics of a song"""
-        # We get the actual json response
-        async with self.bot.session.get(f"https://some-random-api.ml/lyrics", params={"title": song_name}) as cs:
-            fj = await cs.json()
+        # Search for the song on LRCLIB
+        headers = {"User-Agent": "WMBot/1.0"}
+        async with self.bot.session.get(
+            "https://lrclib.net/api/search", params={"q": song_name}, headers=headers
+        ) as cs:
+            results = await cs.json()
+
+        if not results:
+            return await ctx.send("No lyrics found for that song.")
+
+        # Use the first result that has plainLyrics
+        fj = None
+        for result in results:
+            if result.get("plainLyrics"):
+                fj = result
+                break
+
+        if fj is None:
+            return await ctx.send("No lyrics found for that song.")
+
         # We make a paginator in case the song is more than 2048 characters
         paginator = commands.Paginator(prefix="", suffix="", max_size=2048)
         # We make a pages variable to store the embeds
         pages = []
         # For each line in the lyrics, we add that line to the paginator
-        for line in fj["lyrics"].splitlines():
+        for line in fj["plainLyrics"].splitlines():
             paginator.add_line(line)
         # Now for each page, we need to add a embed with the contents of the page to the pages list
         for page in paginator.pages:
             embed = discord.Embed(
-                title=fj["title"],
+                title=fj["trackName"],
                 description=page,
-                url=list(fj["links"].values())[0],
             )
-            embed.set_thumbnail(url=list(fj["thumbnail"].values())[0])
-            embed.set_author(name=fj["author"])
+            embed.set_author(name=fj["artistName"])
+            if fj.get("albumName"):
+                embed.set_footer(text=f"Album: {fj['albumName']}")
             pages.append(embed)
         # now we create our custom paginator that uses reactions
         paginator = Paginator(pages)
@@ -59,36 +76,103 @@ class Data(commands.Cog):
     @commands.bot_has_permissions(use_external_emojis=True)
     async def pokedex(self, ctx, pokemon: str):
         """Sends the details about a [pokemon](https://en.wikipedia.org/wiki/Pok%C3%A9mon)"""
-        # We encode the song name for the web request
-        pokemon = quote(pokemon)
-        # We get the actual json response
-        async with self.bot.session.get(f"https://some-random-api.ml/pokedex", params={"pokemon": pokemon}) as cs:
-            fj = await cs.json()
-        # We get the stats key and save it to a variable named stats
-        stats = fj["stats"]
-        # We add the details of the pokemon to the embed
-        embed = discord.Embed(title=fj["name"].title(), description=fj["description"])
-        embed.add_field(name="Type", value=", ".join(fj["type"]))
-        embed.add_field(name="Abilities", value=", ".join(fj["abilities"]))
+        pokemon = quote(pokemon.lower())
+
+        # Fetch basic pokemon data from PokéAPI
+        async with self.bot.session.get(f"https://pokeapi.co/api/v2/pokemon/{pokemon}") as cs:
+            if cs.status == 404:
+                return await ctx.send("Pokémon not found.")
+            poke_data = await cs.json()
+
+        # Fetch species data for description, gender, and evolution chain URL
+        async with self.bot.session.get(f"https://pokeapi.co/api/v2/pokemon-species/{pokemon}") as cs:
+            species_data = await cs.json()
+
+        # Get English description from flavor text entries
+        description = "No description available."
+        for entry in species_data.get("flavor_text_entries", []):
+            if entry["language"]["name"] == "en":
+                description = entry["flavor_text"].replace("\n", " ").replace("\f", " ")
+                break
+
+        # Extract types and abilities
+        types = [t["type"]["name"].title() for t in poke_data["types"]]
+        abilities = [a["ability"]["name"].replace("-", " ").title() for a in poke_data["abilities"]]
+
+        # Calculate gender ratio from gender_rate (eighths of being female, -1 = genderless)
+        gender_rate = species_data.get("gender_rate", -1)
+        if gender_rate == -1:
+            gender_text = "Genderless"
+        else:
+            female_pct = (gender_rate / 8) * 100
+            male_pct = 100 - female_pct
+            gender_text = f"Male: {male_pct:.1f}%\n        Female: {female_pct:.1f}%"
+
+        # Extract stats
+        stat_map = {}
+        for s in poke_data["stats"]:
+            stat_map[s["stat"]["name"]] = s["base_stat"]
+        total = sum(stat_map.values())
+
+        # Height in decimetres -> formatted, Weight in hectograms -> formatted
+        height = f"{poke_data['height'] / 10:.1f} m"
+        weight = f"{poke_data['weight'] / 10:.1f} kg"
+
+        # Fetch evolution chain
+        evo_url = species_data.get("evolution_chain", {}).get("url")
+        evolution_line = []
+        current_stage_name = poke_data["name"]
+        if evo_url:
+            async with self.bot.session.get(evo_url) as cs:
+                evo_data = await cs.json()
+            # Walk the recursive chain structure
+            chain = evo_data["chain"]
+            while chain:
+                evolution_line.append(chain["species"]["name"].title())
+                chain = chain["evolves_to"][0] if chain["evolves_to"] else None
+
+        # Build the embed
+        embed = discord.Embed(title=poke_data["name"].title(), description=description)
+        embed.add_field(name="Type", value=", ".join(types))
+        embed.add_field(name="Abilities", value=", ".join(abilities))
         embed.add_field(
             name="Stats",
-            value=f"Height: {fj['height']}\nWeight: {fj['weight']}\nGender Ratio:\n        Male: {fj['gender'][0][:-5]}\n        Female:{fj['gender'][1][:-7]}",
+            value=f"Height: {height}\nWeight: {weight}\nGender Ratio:\n        {gender_text}",
             inline=False,
         )
         embed.add_field(
             name="More Stats",
-            value=f"HP: {stats['hp']}\nAttack: {stats['attack']}\nDefense: {stats['defense']}\nSpecial Attack: {stats['sp_atk']}\nSpecial Defense: {stats['sp_def']}\nSpeed: {stats['speed']}\n**Total**: {stats['total']}",
-            inline=False,
-        )
-        embed.add_field(
-            name="Evoloution",
-            value="\n".join(unique(fj["family"]["evolutionLine"])).replace(
-                fj["family"]["evolutionLine"][fj["family"]["evolutionStage"] - 1],
-                f'**{fj["family"]["evolutionLine"][fj["family"]["evolutionStage"]-1]}**',
+            value=(
+                f"HP: {stat_map.get('hp', '?')}\n"
+                f"Attack: {stat_map.get('attack', '?')}\n"
+                f"Defense: {stat_map.get('defense', '?')}\n"
+                f"Special Attack: {stat_map.get('special-attack', '?')}\n"
+                f"Special Defense: {stat_map.get('special-defense', '?')}\n"
+                f"Speed: {stat_map.get('speed', '?')}\n"
+                f"**Total**: {total}"
             ),
             inline=False,
         )
-        embed.set_thumbnail(url=fj["sprites"]["animated"])
+        if evolution_line:
+            # Bold the current pokemon in the evolution line
+            evo_display = []
+            for name in unique(evolution_line):
+                if name.lower() == current_stage_name.lower():
+                    evo_display.append(f"**{name}**")
+                else:
+                    evo_display.append(name)
+            embed.add_field(
+                name="Evolution",
+                value="\n".join(evo_display),
+                inline=False,
+            )
+        # Use animated sprite if available, otherwise fall back to default
+        sprite_url = (
+            poke_data.get("sprites", {}).get("other", {}).get("showdown", {}).get("front_default")
+            or poke_data.get("sprites", {}).get("front_default")
+        )
+        if sprite_url:
+            embed.set_thumbnail(url=sprite_url)
         # Now we send the embed
         await ctx.send(embed=embed)
 
