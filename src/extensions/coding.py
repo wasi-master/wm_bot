@@ -16,12 +16,8 @@ from rich import print as rprint
 
 from utils.functions import split_by_slice
 from utils.paginator import Paginator
+from utils.classes import AttrDict
 
-
-class AttrDict(dict):
-    def __init__(self, *args, **kwargs):
-        super(AttrDict, self).__init__(*args, **kwargs)
-        self.__dict__ = self
 
 
 def parse_pypi_index(text):
