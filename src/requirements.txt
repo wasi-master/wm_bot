@@ -1,4 +1,4 @@
-aiogoogletrans
+gpytranslate
 aiohttp[speedups]
 akinator.py
 async_cleverbot
@@ -16,7 +16,7 @@ lxml
 Mako
 numpy
 Pillow
-playsound
+playsound3
 Pygments
 pyparsing
 python_dotenv
@@ -24,5 +24,5 @@ rich
 tabulate
 uwuify
 wikipedia
-youtube_dl
+yt-dlp
 youtube_search_python
