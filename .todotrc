@@ -1,4 +1,4 @@
-[TODOFIND]
+[TODOT]
 format=color
 ignore=src\errors,src/extensions/abandoned.py
 repo=https://github.com/wasi-master/wm_bot
