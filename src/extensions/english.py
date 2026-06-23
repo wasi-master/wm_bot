@@ -63,7 +63,7 @@ class English(commands.Cog):
         if not text:
             return await ctx.send("You need to specify text to translate")
 
-        result = await ctx.bot.translate_api.translate(text, dest=lang)
+        result = await ctx.bot.translate_api.translate(text, targetlang=lang)
         # We get the full language names
         languageconverter = LanguageConverter()
         source = languageconverter.convert(ctx, result.src)

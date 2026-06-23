@@ -4,7 +4,7 @@ import os
 
 import discord
 from discord.ext import commands
-from playsound import PlaysoundException, playsound
+from playsound3 import PlaysoundException, playsound
 from rich.console import Console
 from rich.logging import RichHandler
 from rich.progress import track

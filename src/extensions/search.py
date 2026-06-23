@@ -7,7 +7,7 @@ from io import BytesIO
 import async_cse
 import discord
 import wikipedia
-import youtube_dl as ytdl
+import yt_dlp as ytdl
 from discord.ext import commands
 from discord.ext.commands import BucketType
 from youtubesearchpython.__future__ import VideosSearch
