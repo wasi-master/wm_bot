@@ -17,13 +17,7 @@ from utils.functions import (
     split_by_slice,
 )
 from utils.paginator import Paginator
-
-
-class AttrDict(dict):
-    def __init__(self, *args, **kwargs):
-        super(AttrDict, self).__init__(*args, **kwargs)
-        self.__dict__ = self
-
+from utils.classes import AttrDict
 
 class Fun(commands.Cog):
     """Fun commands :)"""
@@ -137,9 +131,9 @@ class Fun(commands.Cog):
         """Textual rickroll, sends the rickroll lyrics with the name being the person specified"""
         person = whotogiveup.display_name if isinstance(whotogiveup, discord.Member) else whotogiveup
 
-        # We don't want people spamming
-        if len(person) > 2:
-            return await ctx.send("Why so large name? not gonna do that")
+        # # We don't want people spamming
+        # if len(person) > 2:
+        #     return await ctx.send("Why so large name? not gonna do that")
 
         # We format the text
         rickroll_text = self.rickroll.format(person)
