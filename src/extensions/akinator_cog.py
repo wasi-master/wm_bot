@@ -199,7 +199,7 @@ class Akinator(commands.Cog):
     @commands.bot_has_permissions(use_external_emojis=True)
     async def akinator(self, ctx):
         """A command to play a game of akinator"""
-        game = await self.bot.aki.start_game(client_session=self.bot.session)
+        game = await self.bot.aki.start_game()
         view = AkinatorView(game, ctx)
         view.message = await ctx.send(embed=await view.get_embed(), view=view)
 
