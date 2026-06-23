@@ -158,6 +158,7 @@ class Errors(commands.Cog):
                 f"Something was wrong with the request, the response I got was: "
                 f"{self.bot.httpexception_codes[error.code]} ({error.code})"
             )
+            raise error
         elif isinstance(error, commands.CommandOnCooldown):
             # If the command is on cooldown then we send a message
             embed = discord.Embed(

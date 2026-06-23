@@ -5,17 +5,17 @@ import os
 from operator import attrgetter
 from typing import Generator, List, Union
 
-import aiogoogletrans
+from gpytranslate import Translator as GoogleTranslator
 import aiohttp
 import async_cleverbot
 import async_cse
 import asyncdagpi
 import asyncpg
 import discord
-from akinator.async_aki import Akinator
+from akinator import AsyncAkinator
 from discord.ext import commands
 from dotenv import load_dotenv
-from playsound import PlaysoundException, playsound
+from playsound3 import PlaysoundException, playsound
 
 from utils.classes import Config, CustomEmojis, NoneClass
 from utils.converters import CodeblockConverter
@@ -97,10 +97,10 @@ class WMBot(commands.Bot):
         # Initialize these as None here; they will be set up in setup_hook
         self.session = None
         self.cleverbot = None
-        self.dagpi = asyncdagpi.Client(os.environ.get("dagpi", ""))
+        self.dagpi = None
         self.google_api = None
-        self.translate_api = aiogoogletrans.Translator()
-        self.aki = Akinator()
+        self.translate_api = GoogleTranslator()
+        self.aki = AsyncAkinator()
         self.apis = ["OMDB", "tenor", "owlbot", "gender_api", "nasa"]
         self.api_keys = {api: os.environ[api.lower()] for api in self.apis}
 
@@ -126,6 +126,7 @@ class WMBot(commands.Bot):
     async def setup_hook(self) -> None:
         """Async initialization for the bot."""
         self.session = aiohttp.ClientSession()
+        self.dagpi = asyncdagpi.Client(os.environ.get("dagpi", ""))
         
         self.cleverbot = async_cleverbot.Cleverbot(
             os.environ.get("cleverbot", ""),
@@ -148,10 +149,10 @@ class WMBot(commands.Bot):
     @property
     def owner(self) -> discord.User:
         """Call to get the owner of the bot."""
-        if self.config.owner_id:
-            return self.get_user(self.config.owner_id)
         if self.owner_ids:
             return self.get_user(self.config.owner_ids[0])
+        if self.config.owner_id:
+            return self.get_user(self.config.owner_id)
         return None
 
     @property
@@ -262,7 +263,7 @@ class WMBot(commands.Bot):
         ctx : commands.Context
             Represents the context in which a command is being invoked under.
         """
-        await ctx.typing().__aenter__()
+        await ctx.bot.http.send_typing(ctx.channel.id)
 
     async def on_command_completion(self, ctx):
         """Saves the command usage to database"""
@@ -370,47 +371,51 @@ class WMBotContext(commands.Context):
             discord.MessageReference or discord.PartialMessage.
 
         """
-        if kwargs.get("no_reply") is True:
-            # If the no_reply flag is set, we don't want to send a reply
-            message = await self.send(*args, **kwargs)
-        # Wrapping this in a try/except block because the original message can be deleted.
-        # and if it is deleted then we won't be able to reply and it will raise an error
-        try:
-            # First we try to reply
-            message = await self.reply(*args, **kwargs)
-        except discord.NotFound:
-            # If the original message was deleted, we just send it normally
-            message = await self.send(*args, **kwargs, no_reply=True)
-        except discord.HTTPException as error:
-            if kwargs.get("no_upload") is True:
-                # If the no_upload flag is set, we just raise the error instead of uploading
-                raise error
-            # If the content is too large then we send it using hastebin
-            if error.status == 400 and error.code == 50035:
-                if not args:
-                    # If no content was passed (probably only embed was passed), we just raise the error
+        # Pop custom kwargs so they don't get forwarded to the Discord API
+        no_reply = kwargs.pop("no_reply", False)
+        no_upload = kwargs.pop("no_upload", False)
+
+        if no_reply:
+            # If the no_reply flag is set, we send without a reply reference
+            message = await super().send(*args, **kwargs)
+        else:
+            # Wrapping this in a try/except block because the original message can be deleted.
+            # and if it is deleted then we won't be able to reply and it will raise an error
+            try:
+                # First we try to reply by sending with a reference to the original message
+                message = await super().send(*args, reference=self.message, **kwargs)
+            except discord.NotFound:
+                # If the original message was deleted, we just send it normally
+                message = await super().send(*args, **kwargs)
+            except discord.HTTPException as error:
+                if no_upload:
+                    # If the no_upload flag is set, we just raise the error instead of uploading
                     raise error
-                # We check if the content was in a codeblock
-                cb = await CodeblockConverter().convert(self, args[0])
-                if cb is None:
-                    # If it's not in a codeblock, we just make a url normally
-                    url = await self.bot.hastebin_upload(args[0])
+                # If the content is too large then we send it using hastebin
+                if error.status == 400 and error.code == 50035:
+                    if not args:
+                        # If no content was passed (probably only embed was passed), we just raise the error
+                        raise error
+                    # We check if the content was in a codeblock
+                    cb = await CodeblockConverter().convert(self, args[0])
+                    if cb is None:
+                        # If it's not in a codeblock, we just make a url normally
+                        url = await self.bot.hastebin_upload(args[0])
+                    else:
+                        # If it's in a codeblock, we make a url with the code language for syntax highlighting
+                        url = await self.bot.hastebin_upload(cb.content)
+                        url = url + "." + cb.language
+                    message = await super().send(
+                        embed=discord.Embed(title="Content too long", description=f"Uploaded to cloud: {url}")
+                    )
                 else:
-                    # If it's in a codeblock, we make a url with the code language for syntax highlighting
-                    url = await self.bot.hastebin_upload(cb.content)
-                    url = url + "." + cb.language
-                message = await self.send(
-                    embed=discord.Embed(title="Content too long", description=f"Uploaded to cloud: {url}")
-                )
-            else:
-                raise error
-        except Exception as error:
-            raise error
+                    raise error
+
         # We add the current message to the command_uses dictionary for tracking
-        self.bot.command_uses[self.message] = message
         if not hasattr(self.bot, "command_uses"):
-            # If for some reason the command_uses is not there, we just add it
             self.bot.command_uses = {}
+        self.bot.command_uses[self.message] = message
+        return message
 
 
 async def create_db_pool(bot):
