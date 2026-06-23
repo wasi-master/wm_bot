@@ -1,6 +1,5 @@
 import argparse
 import asyncio
-import copy
 import json
 import logging
 import re
@@ -30,7 +29,7 @@ rinput = console.input
 
 
 logging.basicConfig(level=LOGGING_LEVEL, format=LOGGING_FORMAT, datefmt="[%X]", handlers=[RichHandler()])
-client = discord.Client()
+client = discord.Client(intents=discord.Intents.default())
 # We create the client
 
 if not args.token:
@@ -54,23 +53,29 @@ def end():
 async def on_ready():
     global GUILD_ID
     if not args.guild_id:
-        while not GUILD_ID:
+        while True:
             gid = rinput("[bold cyan]Enter the server ID or name:[/] ")
             if gid.isdigit():
                 GUILD_ID = int(gid)
-            elif re.match(r"[\w\d\s.-'\"]+", gid):
-                guild = discord.utils.get(client.guilds, name=gid)
-                if not guild:
-                    possible_guilds = get_close_matches(gid, [g.name for g in client.guilds])
-                    rprint(
-                        "[orange]Server not found, did you mean one of these?\n" + "\n".join(possible_guilds) + "[/]"
-                    )
-                else:
-                    GUILD_ID = guild.id
-                    break
-        else:
-            rprint("[red]Invalid ID or name[/]")
-            end()
+                break
+
+            if not re.match(r"[\w\d\s.-'\"]+", gid):
+                rprint("[red]Invalid ID or name[/]")
+                continue
+
+            guild = discord.utils.get(client.guilds, name=gid)
+            if not guild:
+                guild = discord.utils.find(lambda candidate: candidate.name.lower() == gid.lower(), client.guilds)
+
+            if not guild:
+                possible_guilds = get_close_matches(gid, [g.name for g in client.guilds])
+                rprint(
+                    "[orange]Server not found, did you mean one of these?\n" + "\n".join(possible_guilds) + "[/]"
+                )
+                continue
+
+            GUILD_ID = guild.id
+            break
 
     client.loop.create_task(main())
 
@@ -85,39 +90,48 @@ async def main():
         rprint("[red]No guild found[/]")
         logging.error("No guild found")
         end()
-    already_added_emojis = guild.emojis
-
     with Progress() as progress:
         process = progress.add_task("[cyan]Processing...", total=32)
         download = progress.add_task("[red]Downloading...", total=32)
         add = progress.add_task("[green]Adding...", total=32)
 
-        NEW_EMOJIS_JSON = copy.copy(EMOJIS_JSON)
-        for i in re.finditer(ITEM_REGEX, EMOJIS_JSON):
-            progress.update(process, advance=1)
+        emojis_data = json.loads(EMOJIS_JSON)
 
-            key = i.group("key")
-            emoji_item = i.group("emoji")
-            animated, name, id = re.search(EMOJI_REGEX, emoji_item).groups()
+        async def process_node(node):
+            if isinstance(node, dict):
+                result = {}
+                for key, value in node.items():
+                    progress.update(process, advance=1)
+                    if isinstance(value, str):
+                        emoji_match = re.fullmatch(EMOJI_REGEX, value)
+                        if emoji_match:
+                            _, name, emoji_id = emoji_match.groups()
+                            already_added = discord.utils.get(guild.emojis, name=key)
+                            if already_added:
+                                emoji = already_added
+                                progress.update(download, advance=1)
+                            else:
+                                emoji_url = EMOJI_FORMAT.format(emoji_id)
+                                progress.update(download, advance=1)
+                                async with session.get(emoji_url) as resp:
+                                    data = await resp.read()
+                                    progress.update(add, advance=1)
+                                    emoji = await guild.create_custom_emoji(
+                                        name=key,
+                                        image=data,
+                                        reason=f"Created by emoji_adder.py (Original emoji: {name})",
+                                    )
+                            result[key] = str(emoji)
+                            continue
+                    result[key] = await process_node(value)
+                return result
 
-            already_added = discord.utils.get(already_added_emojis, name=key)
-            if already_added:
-                emoji = already_added
-                progress.update(download, advance=1)
-            else:
-                emoji_url = EMOJI_FORMAT.format(id)
-                progress.update(download, advance=1)
-                async with session.get(emoji_url) as resp:
-                    data = await resp.read()
-                    progress.update(add, advance=1)
-                    # print("adding")
-                    emoji = await guild.create_custom_emoji(
-                        name=key,
-                        image=data,
-                        reason=f"Created by emoji_adder.py (Original emoji: {name})",
-                    )
-            NEW_EMOJIS_JSON = re.sub(EMOJI_REGEX, str(emoji), NEW_EMOJIS_JSON, flags=re.MULTILINE)
-            # print("added")
+            if isinstance(node, list):
+                return [await process_node(value) for value in node]
+
+            return node
+
+        emojis_data = await process_node(emojis_data)
         progress.stop()
 
     try:
@@ -126,7 +140,7 @@ async def main():
     except RuntimeError:
         pass
 
-    rprint(json.dumps(json.loads(NEW_EMOJIS_JSON), indent=4))
+    rprint(json.dumps(emojis_data, indent=4))
 
     try:
         exit()
