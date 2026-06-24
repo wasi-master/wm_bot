@@ -181,7 +181,7 @@ class WMBot(commands.Bot):
             if user.bot:
                 yield user
 
-    def get_config_emoji(self, emoji_name: str) -> str:
+    def get_custom_emoji(self, emoji_name: str) -> str:
         """Gets a emoji from the bot config.
 
         Parameters
