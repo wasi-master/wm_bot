@@ -7,7 +7,7 @@ asyncdagpi
 asyncpg
 better_profanity
 bs4
-discord.py[speed]>=2.3.0
+discord.py[speed]>=2.7.1
 dpytest
 gTTS
 humanize @ git+https://github.com/jmoiron/humanize.git
